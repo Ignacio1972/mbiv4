@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI - Archivo de Mensajes</title>
+    <link rel="stylesheet" href="new-design/css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="new-design/css/palette-custom.css">
+    <style>
+        /* Estilos específicos para el archivo */
+        .archives-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .page-title-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .archives-list {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .list-header {
+            display: grid;
+            grid-template-columns: 50px 2fr 120px 120px 150px;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+        
+        .list-item {
+            display: grid;
+            grid-template-columns: 50px 2fr 120px 120px 150px;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .list-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .btn-preview {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-preview:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        /* Colores de categorías */
+        .badge-ofertas { background: #10b981; color: white; }
+        .badge-eventos { background: #8b5cf6; color: white; }
+        .badge-informacion { background: #0891b2; color: white; }
+        .badge-servicios { background: #f59e0b; color: white; }
+        .badge-horarios { background: #6366f1; color: white; }
+        .badge-emergencias { background: #dc2626; color: white; }
+    </style>
+</head>
+<body>
+    <div class="archives-container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">🗄️</span>
+                Archivo de Mensajes
+            </h1>
+        </div>
+
+        <div class="archives-list">
+            <div class="list-header">
+                <div>Play</div>
+                <div>Título</div>
+                <div>Categoría</div>
+                <div>Voz</div>
+                <div>Fecha</div>
+            </div>
+            <div id="archive-items" class="list-items">
+                <!-- Los items se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Cargar mensajes desde la base de datos
+        async function loadArchives() {
+            try {
+                const response = await fetch('/api/saved-messages.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'list' })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.messages) {
+                    displayArchives(result.messages);
+                }
+            } catch (error) {
+                console.error('Error loading archives:', error);
+            }
+        }
+        
+        function displayArchives(messages) {
+            const container = document.getElementById('archive-items');
+            
+            container.innerHTML = messages.map(msg => `
+                <div class="list-item" data-filename="${msg.filename}">
+                    <button class="btn-preview" onclick="playAudio('${msg.filename}')">▶</button>
+                    <div class="item-title">${msg.display_name || msg.filename}</div>
+                    <span class="category-badge badge-${msg.category || 'informacion'}">${getCategoryLabel(msg.category)}</span>
+                    <div class="item-voice">🎤 ${msg.voice || 'Desconocida'}</div>
+                    <div class="item-date">📅 ${formatDate(msg.created_at)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryLabel(category) {
+            const labels = {
+                'ofertas': 'Ofertas',
+                'eventos': 'Eventos',
+                'informacion': 'Info',
+                'servicios': 'Servicios',
+                'horarios': 'Horarios',
+                'emergencias': 'Urgente'
+            };
+            return labels[category] || 'General';
+        }
+        
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('es-CL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        window.playAudio = function(filename) {
+            const audio = new Audio(`/api/biblioteca.php?filename=${filename}`);
+            audio.play();
+        }
+        
+        // Cargar al iniciar
+        loadArchives();
+    </script>
+</body>
+</html>

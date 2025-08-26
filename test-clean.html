@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Limpio</title>
+</head>
+<body>
+    <div id="dashboard-container"></div>
+    
+    <script type="module">
+        import DashboardV2Module from './modules/dashboard-v2/index.js';
+        
+        window.eventBus = {
+            events: {},
+            on(event, callback) {
+                if (!this.events[event]) this.events[event] = [];
+                this.events[event].push(callback);
+            },
+            emit(event, data) {
+                if (this.events[event]) {
+                    this.events[event].forEach(cb => cb(data));
+                }
+            }
+        };
+        
+        window.apiClient = {
+            async post(url, data) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data)
+                    });
+                    return await response.json();
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+        };
+        
+        const dashboardModule = new DashboardV2Module();
+        dashboardModule.load(document.getElementById('dashboard-container'));
+    </script>
+</body>
+</html>

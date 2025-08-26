@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Campaign Library</title>
+    <link rel="stylesheet" href="new-design/css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="new-design/css/palette-custom.css">
+</head>
+<body>
+    <div id="app-container"></div>
+    
+    <script type="module">
+        import CampaignLibraryModule from '/modules/campaign-library/index.js';
+        
+        const container = document.getElementById('app-container');
+        const module = new CampaignLibraryModule();
+        module.load(container);
+    </script>
+</body>
+</html>
