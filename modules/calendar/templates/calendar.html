@@ -1,0 +1,33 @@
+<!-- Calendar Template (sin header ni tabs) -->
+<div class="calendar-module">
+    <!-- Contenedor de filtros (se llena desde JavaScript) -->
+    <div id="calendar-filters"></div>
+    
+    <!-- Calendar View Section -->
+    <div class="message-section">
+        <!-- Calendar Container -->
+        <div id="calendar-container" class="calendar-view"></div>
+    </div>
+    
+    <!-- Lista de Programaciones Activas -->
+    <div class="schedules-list-section" style="margin-top: 2rem;">
+        <div class="result-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>📋 Todas las Programaciones Activas</h3>
+            <button id="refresh-schedules-btn" class="btn btn-secondary btn-sm">
+                <span>🔄</span> Actualizar Lista
+            </button>
+        </div>
+        <div id="schedules-table-container" class="schedules-table-container">
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Cargando programaciones...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="calendar-loading" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Cargando calendario...</p>
+    </div>
+</div>

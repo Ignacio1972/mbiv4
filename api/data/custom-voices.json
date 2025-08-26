@@ -1,0 +1,44 @@
+{
+    "malena": {
+        "id": "1WXz8v08ntDcSTeVXMN2",
+        "label": "Malena",
+        "gender": "F",
+        "custom": true,
+        "added_date": "2025-08-23 15:41:07"
+    },
+    "cristi": {
+        "id": "9bDwPIakVNJ6w1nZOeRD",
+        "label": "Cristi",
+        "gender": "F",
+        "custom": true,
+        "added_date": "2025-08-23 15:50:46"
+    },
+    "richard": {
+        "id": "Cpm6N9BNC1M75bYS7kO1",
+        "label": "richard",
+        "gender": "F",
+        "custom": true,
+        "added_date": "2025-08-23 17:00:14"
+    },
+    "juan_carlos": {
+        "id": "G4IAP30yc6c1gK0csDfu",
+        "label": "Juan Carlos",
+        "gender": "M",
+        "custom": true,
+        "added_date": "2025-08-23 17:06:14"
+    },
+    "gringo": {
+        "id": "MFZUKuGQUsGJPQjTS4wC",
+        "label": "Gringo",
+        "gender": "M",
+        "custom": true,
+        "added_date": "2025-08-24 00:04:04"
+    },
+    "christopher": {
+        "id": "G17SuINrv2H9FC6nvetn",
+        "label": "Christopher",
+        "gender": "M",
+        "custom": true,
+        "added_date": "2025-08-24 00:05:16"
+    }
+}

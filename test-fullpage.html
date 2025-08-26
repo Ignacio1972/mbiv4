@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI Dashboard v2 - Test Completo</title>
+    <link rel="stylesheet" href="new-design/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="modules/dashboard-v2/styles/dashboard.css">
+    <style>
+        /* Variables CSS básicas si no cargan los archivos */
+        :root {
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-md: 1rem;
+            --space-sm: 0.5rem;
+            --space-xs: 0.25rem;
+            --space-2xl: 3rem;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --radius-lg: 0.5rem;
+            --radius-md: 0.375rem;
+            --radius-sm: 0.25rem;
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --gray-500: #64748b;
+            --font-mono: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header del nuevo diseño -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link active">Generador</a>
+                <a href="#" class="nav-link">Biblioteca</a>
+                <a href="#" class="nav-link">Calendario</a>
+                <a href="#" class="nav-link">Radio</a>
+                <a href="#" class="nav-link">Reportes</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container" id="dashboard-container">
+        <!-- El contenido se cargará aquí -->
+    </div>
+    
+    <!-- Dependencias del sistema MBI -->
+    <script type="module">
+        // Simular las dependencias del sistema MBI
+        
+        // Event Bus básico
+        window.eventBus = {
+            events: {},
+            on(event, callback) {
+                if (!this.events[event]) this.events[event] = [];
+                this.events[event].push(callback);
+            },
+            off(event) {
+                delete this.events[event];
+            },
+            emit(event, data) {
+                if (this.events[event]) {
+                    this.events[event].forEach(cb => cb(data));
+                }
+            }
+        };
+        
+        // API Client básico
+        window.apiClient = {
+            async post(url, data) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+        };
+        
+        // Importar y cargar el módulo Dashboard v2
+        import DashboardV2Module from './modules/dashboard-v2/index.js';
+        
+        window.addEventListener('DOMContentLoaded', async () => {
+            const dashboardModule = new DashboardV2Module();
+            const container = document.getElementById('dashboard-container');
+            
+            // Cargar el módulo
+            await dashboardModule.load(container);
+            
+            // Funcionalidad manual para el toggle (temporal)
+            setTimeout(() => {
+                const toggleBtn = document.getElementById('toggleControls');
+                const controlsSection = document.getElementById('controlsSection');
+                
+                if (toggleBtn && controlsSection) {
+                    let isVisible = false;
+                    toggleBtn.addEventListener('click', () => {
+                        isVisible = !isVisible;
+                        controlsSection.style.display = isVisible ? 'block' : 'none';
+                        toggleBtn.innerHTML = isVisible 
+                            ? '<span>⚙️ Controles Avanzados ▲</span>'
+                            : '<span>⚙️ Controles Avanzados ▼</span>';
+                    });
+                }
+                
+                // Funcionalidad para sliders
+                const sliders = [
+                    { id: 'styleSlider', valueId: 'styleValue', trackId: 'styleTrack' },
+                    { id: 'stabilitySlider', valueId: 'stabilityValue', trackId: 'stabilityTrack' },
+                    { id: 'claritySlider', valueId: 'clarityValue', trackId: 'clarityTrack' }
+                ];
+                
+                sliders.forEach(slider => {
+                    const sliderEl = document.getElementById(slider.id);
+                    const valueEl = document.getElementById(slider.valueId);
+                    const trackEl = document.getElementById(slider.trackId);
+                    
+                    if (sliderEl && valueEl && trackEl) {
+                        sliderEl.addEventListener('input', (e) => {
+                            const value = e.target.value;
+                            valueEl.textContent = value + '%';
+                            trackEl.style.width = value + '%';
+                        });
+                    }
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

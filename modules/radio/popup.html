@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio - Mall Barrio Independencia</title>
+    
+    <style>
+        /* Variables del tema */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a26;
+            --bg-input: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --success: #10b981;
+            --border-radius: 16px;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .popup-header {
+            background-color: var(--bg-card);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .popup-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Main content */
+        .popup-content {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        /* Player controls */
+        .player-section {
+            background: #1e2332;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+        
+        .play-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .play-button:active {
+            transform: scale(0.95);
+        }
+        
+        /* Volume */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 0 1rem;
+        }
+        
+        .volume-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-input);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border: 2px solid var(--primary-light);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Now playing */
+        .now-playing {
+            background: #232937;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .song-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .song-artist {
+            color: var(--text-secondary);
+        }
+        
+        /* Control buttons section */
+        .control-buttons {
+            background: #232937;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .skip-button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .skip-button:hover {
+            background-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .skip-button:active {
+            transform: translateY(0);
+        }
+        
+        .vote-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .vote-button {
+            padding: 0.75rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .vote-button:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .vote-button:active {
+            transform: translateY(0);
+        }
+        
+        .vote-button.like:hover {
+            background-color: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+        
+        .vote-button.dislike:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+        
+        .vote-button.voted {
+            background-color: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Message display */
+        .message {
+            background: #1e2332;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .message.show {
+            display: block;
+        }
+        
+        .message.success {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .message.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .message.info {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        /* Results link */
+        .results-link {
+            background: #232937;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        .results-link a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        .results-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Close button */
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .popup-header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .play-button {
+                width: 70px;
+                height: 70px;
+                font-size: 1.75rem;
+            }
+            
+            .player-section {
+                padding: 1.5rem;
+            }
+            
+            .popup-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="popup-header">
+        <button class="close-button" onclick="window.close()">×</button>
+        <h1>📻 Radio MBI</h1>
+        <div class="status">
+            <span class="status-indicator"></span>
+            <span id="status-text">Conectando...</span>
+        </div>
+    </header>
+    
+    <main class="popup-content">
+        <!-- Player -->
+        <section class="player-section">
+            <audio id="radio-audio" preload="none">
+                <source src="http://51.222.25.222/listen/ovh/radio.mp3" type="audio/mpeg">
+            </audio>
+            
+            <button id="play-button" class="play-button">
+                <span id="play-icon">▶️</span>
+                <span id="pause-icon" style="display: none;">⏸️</span>
+            </button>
+            
+            <div class="volume-control">
+                <span>🔊</span>
+                <input type="range" id="volume-slider" min="0" max="100" value="80" class="volume-slider">
+                <span id="volume-value">80%</span>
+            </div>
+        </section>
+        
+        <!-- Now Playing -->
+        <section class="now-playing">
+            <div class="song-title" id="song-title">Cargando...</div>
+            <div class="song-artist" id="song-artist">--</div>
+        </section>
+        
+        <!-- Control Buttons -->
+        <section class="control-buttons">
+            <button id="skip-button" class="skip-button">
+                ⏭️ Adelantar canción
+            </button>
+            
+            <div class="vote-buttons">
+                <button id="like-button" class="vote-button like">
+                    👍 Me gusta
+                </button>
+                <button id="dislike-button" class="vote-button dislike">
+                    👎 No me gusta
+                </button>
+            </div>
+        </section>
+        
+        <!-- Message Display -->
+        <div id="message" class="message"></div>
+        
+        <!-- Results Link -->
+        <div class="results-link">
+            <a href="https://radioislanegra.com/mall/" target="_blank">Ver resultados de votación →</a>
+        </div>
+    </main>
+    
+    <script>
+        // Radio Popup Player con funciones avanzadas
+        class RadioPopup {
+            constructor() {
+                this.audio = document.getElementById('radio-audio');
+                this.apiUrl = 'http://51.222.25.222/api/nowplaying/ovh';
+                this.azuracastApiKey = 'c3802cba5b5e61e8:fed31be9adb82ca57f1cf482d170851f';
+                this.wordpressUrl = 'https://radioislanegra.com/mall/wp-json/radio/v1';
+                this.stationId = 1;
+                this.isPlaying = false;
+                this.updateInterval = null;
+                this.currentSong = {
+                    title: '',
+                    artist: ''
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                // Event listeners
+                document.getElementById('play-button').addEventListener('click', () => this.togglePlay());
+                document.getElementById('volume-slider').addEventListener('input', (e) => this.updateVolume(e.target.value));
+                document.getElementById('skip-button').addEventListener('click', () => this.skipSong());
+                document.getElementById('like-button').addEventListener('click', () => this.voteSong('like'));
+                document.getElementById('dislike-button').addEventListener('click', () => this.voteSong('dislike'));
+                
+                // Audio events
+                this.audio.addEventListener('play', () => this.onPlay());
+                this.audio.addEventListener('pause', () => this.onPause());
+                this.audio.addEventListener('error', () => this.onError());
+                
+                // Auto-play al abrir
+                setTimeout(() => {
+                    this.audio.play();
+                }, 500);
+                
+                // Iniciar actualización de metadata
+                this.updateMetadata();
+                this.startMetadataUpdates();
+                
+                // Cargar votos locales
+                this.updateVoteButtons();
+            }
+            
+            togglePlay() {
+                if (this.isPlaying) {
+                    this.audio.pause();
+                } else {
+                    this.audio.play();
+                }
+            }
+            
+            onPlay() {
+                this.isPlaying = true;
+                document.getElementById('play-icon').style.display = 'none';
+                document.getElementById('pause-icon').style.display = 'inline';
+                document.getElementById('status-text').textContent = 'En vivo';
+            }
+            
+            onPause() {
+                this.isPlaying = false;
+                document.getElementById('play-icon').style.display = 'inline';
+                document.getElementById('pause-icon').style.display = 'none';
+                document.getElementById('status-text').textContent = 'Pausado';
+            }
+            
+            onError() {
+                document.getElementById('status-text').textContent = 'Error de conexión';
+                this.showMessage('Error de conexión con la radio', 'error');
+            }
+            
+            updateVolume(value) {
+                this.audio.volume = value / 100;
+                document.getElementById('volume-value').textContent = `${value}%`;
+            }
+            
+            async skipSong() {
+                this.showMessage('Enviando solicitud...', 'info');
+                
+                try {
+                    const response = await fetch(`http://51.222.25.222/api/station/${this.stationId}/backend/skip`, {
+                        method: 'POST',
+                        headers: {
+                            'X-API-Key': this.azuracastApiKey,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        this.showMessage('✅ Canción adelantada correctamente', 'success');
+                        // Actualizar metadata después de un breve delay
+                        setTimeout(() => this.updateMetadata(), 2000);
+                    } else {
+                        this.showMessage('❌ Error al adelantar la canción', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error skipping song:', error);
+                    this.showMessage('⚠️ No se pudo conectar con el servidor', 'error');
+                }
+            }
+            
+            async voteSong(type) {
+                // Verificar si ya votó esta canción
+                const songKey = `${this.currentSong.artist}-${this.currentSong.title}`;
+                const votes = this.getLocalVotes();
+                
+                if (votes[songKey]) {
+                    this.showMessage('Ya has votado esta canción', 'info');
+                    return;
+                }
+                
+                this.showMessage('Enviando voto...', 'info');
+                
+                try {
+                    const response = await fetch(`${this.wordpressUrl}/${type}/${this.stationId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            artist: this.currentSong.artist,
+                            title: this.currentSong.title
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        // Guardar voto localmente
+                        this.saveLocalVote(songKey, type);
+                        
+                        // Actualizar UI
+                        this.updateVoteButtons();
+                        
+                        const message = type === 'like' 
+                            ? '✅ Marcado como Me gusta' 
+                            : '✅ Marcado como No me gusta';
+                        this.showMessage(message, 'success');
+                    } else {
+                        this.showMessage('❌ Error al enviar el voto', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error voting:', error);
+                    this.showMessage('⚠️ Error de conexión', 'error');
+                    
+                    // Guardar voto localmente como fallback
+                    this.saveLocalVote(songKey, type);
+                    this.updateVoteButtons();
+                    this.showMessage('Voto guardado localmente', 'info');
+                }
+            }
+            
+            saveLocalVote(songKey, type) {
+                const votes = this.getLocalVotes();
+                votes[songKey] = {
+                    type,
+                    timestamp: Date.now(),
+                    song: { ...this.currentSong }
+                };
+                localStorage.setItem('radio_votes', JSON.stringify(votes));
+            }
+            
+            getLocalVotes() {
+                try {
+                    return JSON.parse(localStorage.getItem('radio_votes') || '{}');
+                } catch {
+                    return {};
+                }
+            }
+            
+            updateVoteButtons() {
+                const songKey = `${this.currentSong.artist}-${this.currentSong.title}`;
+                const votes = this.getLocalVotes();
+                const vote = votes[songKey];
+                
+                const likeBtn = document.getElementById('like-button');
+                const dislikeBtn = document.getElementById('dislike-button');
+                
+                // Reset estados
+                likeBtn.classList.remove('voted');
+                dislikeBtn.classList.remove('voted');
+                
+                if (vote) {
+                    if (vote.type === 'like') {
+                        likeBtn.classList.add('voted');
+                    } else {
+                        dislikeBtn.classList.add('voted');
+                    }
+                }
+            }
+            
+            showMessage(text, type = 'info') {
+                const messageEl = document.getElementById('message');
+                messageEl.textContent = text;
+                messageEl.className = `message show ${type}`;
+                
+                // Auto-ocultar después de 4 segundos
+                setTimeout(() => {
+                    messageEl.classList.remove('show');
+                }, 4000);
+            }
+            
+            async updateMetadata() {
+                try {
+                    const response = await fetch(this.apiUrl);
+                    const data = await response.json();
+                    
+                    // Actualizar canción actual
+                    this.currentSong.title = data.now_playing.song.title || 'Sin título';
+                    this.currentSong.artist = data.now_playing.song.artist || 'Artista desconocido';
+                    
+                    // Actualizar UI
+                    document.getElementById('song-title').textContent = this.currentSong.title;
+                    document.getElementById('song-artist').textContent = this.currentSong.artist;
+                    
+                    // Actualizar botones de votación
+                    this.updateVoteButtons();
+                    
+                } catch (error) {
+                    console.error('Error updating metadata:', error);
+                }
+            }
+            
+            startMetadataUpdates() {
+                this.updateInterval = setInterval(() => {
+                    this.updateMetadata();
+                }, 15000);
+            }
+        }
+        
+        // Inicializar al cargar
+        window.addEventListener('DOMContentLoaded', () => {
+            window.radioPopup = new RadioPopup();
+        });
+        
+        // Limpiar al cerrar
+        window.addEventListener('beforeunload', () => {
+            if (window.radioPopup && window.radioPopup.audio) {
+                window.radioPopup.audio.pause();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS Mall - Sistema de Mensajes</title>
+    
+    <!-- CSS Base -->
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <!-- CSS del Configurator para los tabs -->
+    <link rel="stylesheet" href="/modules/message-configurator/styles/configurator-layout.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>">
+</head>
+<body>
+    <!-- Container wrapper para mantener la estética -->
+    <div class="configurator-container">
+        <!-- Header Principal -->
+        <header class="configurator-header">
+            <h1>🎙️ Radio Barrio Independencia</h1>
+            <p class="header-subtitle">Sistema avanzado de Text-to-Speech para Mall Barrio Independencia</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="configurator-tabs" role="navigation">
+            <button class="tab-button tab-button--active" data-route="/radio">
+                📻 Radio
+            </button>
+            <button class="tab-button" data-route="/configuracion">
+                ✏️ Texto Personalizado
+            </button>
+            <button class="tab-button" data-route="/campanas">
+                📝 Mensajes Guardados
+            </button>
+            <button class="tab-button" data-route="/audio-library">
+                📚 Biblioteca de Audio
+            </button>
+            <button class="tab-button" data-route="/calendario">
+                📅 Calendario
+            </button>
+        </nav>
+
+        <!-- Container Principal para Módulos -->
+        <main class="configurator-content">
+            <div id="app-container" style="padding: 0;">
+                <!-- Los módulos se cargarán aquí dinámicamente -->
+                <div class="loading loading--active">
+                    <div class="loading__spinner"></div>
+                    <p class="loading__text">Cargando sistema...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Indicator Global -->
+    <div id="global-loading" class="global-loading" aria-hidden="true">
+        <div class="global-loading__overlay"></div>
+        <div class="global-loading__content">
+            <div class="global-loading__spinner"></div>
+            <p class="global-loading__text">Procesando...</p>
+        </div>
+    </div>
+
+    <!-- Error Container Global -->
+    <div id="global-error" class="global-error" role="alert" aria-hidden="true">
+        <div class="global-error__content">
+            <span class="global-error__icon">⚠️</span>
+            <p class="global-error__message"></p>
+            <button class="global-error__close" aria-label="Cerrar mensaje de error">×</button>
+        </div>
+    </div>
+
+    <!-- Scripts Base -->
+    <script type="module">
+        // Import de módulos core
+        import { eventBus, SystemEvents } from '/shared/event-bus.js';
+        import { moduleLoader } from '/shared/module-loader.js';
+        import { router } from '/shared/router.js';
+
+        // Inicialización del sistema
+        window.addEventListener('DOMContentLoaded', async () => {
+            console.log('[TTS-Mall] Inicializando sistema...');
+            
+            // Configurar module loader con el container
+            const container = document.getElementById('app-container');
+            moduleLoader.init(container);
+            
+            // Configurar navegación de tabs
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const route = e.currentTarget.dataset.route;
+                    router.navigate(route);
+                });
+            });
+            
+            // Escuchar cambios de navegación para actualizar tabs activos
+            eventBus.on(SystemEvents.NAVIGATION_CHANGE, ({ to }) => {
+                document.querySelectorAll('.tab-button').forEach(tab => {
+                    const isActive = tab.dataset.route === to;
+                    tab.classList.toggle('tab-button--active', isActive);
+                    tab.setAttribute('aria-current', isActive ? 'page' : 'false');
+                });
+            });
+            
+            // Inicializar router
+            router.init();
+        });
+    </script>
+    <!-- Plugin de Programación -->
+    <script type="module" src="/modules/campaign-library/plugins/scheduler-plugin.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!-- Message Configurator Template (sin header ni tabs) -->
+<div class="message-configurator-module">
+    <!-- Row 2: Mensaje y Acciones -->
+    <div class="message-section">
+        <div class="message-header">
+            <h3>✏️ Mensaje</h3>
+            <button class="btn btn-link" data-action="use-template">
+                📋 Usar plantilla
+            </button>
+        </div>
+        
+        <!-- Textarea único estilo legacy -->
+        <div class="textarea-wrapper">
+            <textarea id="message-text" 
+                      data-field="text"
+                      class="legacy-textarea"
+                      rows="8" 
+                      maxlength="500"
+                      placeholder="Escribe aquí tu mensaje..."></textarea>
+            <div class="char-counter">
+                <span id="char-count">0</span> / 500 caracteres
+            </div>
+        </div>
+        
+        <!-- Selector de voz justo debajo del textarea -->
+        <div class="form-group" style="margin-top: 1rem;">
+            <label>Voz del anuncio:</label>
+            <select id="message-voice" data-field="voice" class="form-control" style="max-width: 300px;">
+                <!-- Se llenará dinámicamente -->
+                <option value="">Cargando voces...</option>
+            </select>
+        </div>
+        
+        <!-- Botones de acción debajo del textarea -->
+        <div class="message-actions">
+            <button class="btn btn-primary" data-action="generate-audio">
+                🎧 Generar Audio
+            </button>
+<!-- ELIMINADO:             <button class="btn btn-success" data-action="save-message" id="saveMessageBtn" style="display: none;">-->
+<!-- ELIMINADO:                 💾 Guardar en Biblioteca-->
+<!-- ELIMINADO:             </button>-->
+        </div>
+    </div>
+    
+    <!-- Audio Player (justo después del mensaje) -->
+    <div id="audio-player-container" class="audio-section" style="display: none;">
+        <div class="result-header">
+            <h3>🎵 Anuncio Generado</h3>
+            <button class="btn btn-secondary" data-action="clear-result">
+                ✖️ Limpiar
+            </button>
+        </div>
+        
+        <div class="audio-container">
+            <audio id="audio-player" controls></audio>
+        <!-- Mensaje informativo -->
+        <div class="alert alert-info" style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-left: 3px solid #2196F3;">
+            <strong>💡 Tip:</strong> Todos los audios generados se guardan automáticamente en la <strong>Biblioteca de Audio</strong>. 
+            Desde allí puedes marcarlos como favoritos, enviarlos a la radio o gestionarlos.
+        </div>
+        </div>
+        
+        <div class="audio-actions">
+<!-- ELIMINADO:             <button class="btn btn-success" data-action="send-radio">-->
+<!-- ELIMINADO:                 📻 Enviar a Radio-->
+<!-- ELIMINADO:             </button>-->
+<!-- ELIMINADO:             <button class="btn btn-secondary" data-action="download-audio">-->
+<!-- ELIMINADO:                 💾 Descargar-->
+<!-- ELIMINADO:             </button>-->
+        </div>
+        
+        <div class="form-group">
+            <label>Texto procesado:</label>
+            <div id="processedText" class="processed-text"></div>
+        </div>
+    </div>
+    
+    <!-- Row 3: Controles de Voz SIMPLIFICADOS -->
+    <div class="controls-section">
+        <div class="controls-header">
+            <h3>🎛️ Controles de Voz</h3>
+            <button class="btn btn-link" data-action="reset-controls">
+                ↺ Restaurar valores
+            </button>
+        </div>
+        
+        <!-- Controles en una sola fila -->
+        <div class="voice-controls-container">
+            <div class="controls-row">
+                <!-- Expresividad -->
+                <div class="control-item">
+                    <div id="style-slider-container" 
+                         data-component="styleSlider" 
+                         data-slider-config='{"label":"🎭 Expresividad","icon":"","min":0,"max":100,"unit":"%","value":50}'></div>
+                </div>
+                
+                <!-- Estabilidad -->
+                <div class="control-item">
+                    <div id="stability-slider-container" 
+                         data-component="stabilitySlider" 
+                         data-slider-config='{"label":"🎯 Estabilidad","icon":"","min":0,"max":100,"unit":"%","value":75}'></div>
+                </div>
+                
+                <!-- Fidelidad -->
+                <div class="control-item">
+                    <div id="similarity-slider-container" 
+                         data-component="similaritySlider" 
+                         data-slider-config='{"label":"🔊 Fidelidad","icon":"","min":0,"max":100,"unit":"%","value":80}'></div>
+                </div>
+                
+                <!-- Speaker Boost Toggle -->
+                <div class="control-item control-item--toggle">
+                    <div id="speaker-boost-container" data-component="speakerBoostToggle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estado -->
+    <div id="generation-status" class="status-container"></div>
+</div>

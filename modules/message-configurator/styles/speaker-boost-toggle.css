@@ -1,0 +1,115 @@
+/* ==========================================================================
+   Speaker Boost Toggle Component
+   ========================================================================== */
+
+.speaker-boost-toggle {
+    padding: var(--space-md);
+    background-color: var(--bg-input);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-switch__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch__slider {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background-color: var(--gray-600);
+    border-radius: 12px;
+    transition: all var(--transition-fast);
+    margin-right: var(--space-md);
+}
+
+.toggle-switch__slider::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+}
+
+/* Estado activo */
+.toggle-switch__input:checked + .toggle-switch__slider {
+    background-color: var(--success);
+}
+
+.toggle-switch__input:checked + .toggle-switch__slider::before {
+    transform: translateX(24px);
+}
+
+/* Animación del slider activo */
+.toggle-switch__slider--active {
+    animation: togglePulse var(--transition-base);
+}
+
+@keyframes togglePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Label */
+.toggle-switch__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.toggle-switch__icon {
+    font-size: 1.25rem;
+}
+
+.toggle-switch__text {
+    font-size: 1rem;
+}
+
+/* Status */
+.toggle-switch__status {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    padding-left: calc(48px + var(--space-md));
+    transition: all var(--transition-fast);
+}
+
+/* Hover effects */
+.toggle-switch:hover .toggle-switch__slider {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Focus visible */
+.toggle-switch__input:focus-visible + .toggle-switch__slider {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .speaker-boost-toggle {
+        padding: var(--space-sm);
+    }
+    
+    .toggle-switch__label {
+        font-size: 0.875rem;
+    }
+}

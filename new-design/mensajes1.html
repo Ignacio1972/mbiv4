@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI - Mensajes Guardados</title>
+    <link rel="stylesheet" href="../css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="../css/palettes/palette-custom.css">
+    
+    <style>
+        /* Layout para mensajes guardados */
+        .saved-messages-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .page-title-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+        
+        .filter-select {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .messages-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .message-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .message-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-md);
+        }
+        
+        .message-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        
+        .message-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        .message-content {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: var(--space-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .message-info {
+            display: flex;
+            gap: var(--space-md);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .message-info-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .btn-icon:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Hover específicos para acciones */
+        .btn-schedule:hover {
+            background: #6366f1;
+            border-color: #6366f1;
+        }
+        
+        .btn-radio:hover {
+            background: #10b981;
+            border-color: #10b981;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+        
+        /* Colores de categorías */
+        .badge-ofertas { background: #10b981; color: white; }
+        .badge-eventos { background: #8b5cf6; color: white; }
+        .badge-informacion { background: #0891b2; color: white; }
+        .badge-servicios { background: #f59e0b; color: white; }
+        .badge-horarios { background: #6366f1; color: white; }
+        .badge-emergencias { background: #dc2626; color: white; }
+        .badge-sin-categoria { background: var(--gray-500); color: white; }
+        
+        /* Dropdown de categorías */
+        .category-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            min-width: 140px;
+            margin-top: var(--space-xs);
+            display: none;
+        }
+        
+        .category-dropdown.active {
+            display: block;
+        }
+        
+        .category-option {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .category-option:last-child {
+            border-bottom: none;
+        }
+        
+        .category-option:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .messages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Generador</a>
+                <a href="#" class="nav-link active">Biblioteca</a>
+                <a href="#" class="nav-link">Calendario</a>
+                <a href="#" class="nav-link">Radio</a>
+                <a href="#" class="nav-link">Reportes</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="saved-messages-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">💾</span>
+                Mensajes Guardados
+            </h1>
+            <div class="filter-bar">
+                <select class="filter-select">
+                    <option>Todas las categorías</option>
+                    <option>Ofertas</option>
+                    <option>Eventos</option>
+                    <option>Información</option>
+                    <option>Servicios</option>
+                    <option>Horarios</option>
+                    <option>Emergencias</option>
+                    <option>Sin Categoría</option>
+                </select>
+                <select class="filter-select">
+                    <option>Más recientes</option>
+                    <option>Más antiguos</option>
+                    <option>Más reproducidos</option>
+                    <option>Alfabético</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Messages Grid -->
+        <div class="messages-grid">
+            <!-- Message Card 1 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Atención visitantes, este viernes...</h3>
+                    <div style="position: relative;">
+                        <span class="message-badge badge-ofertas" data-category="ofertas">Ofertas</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    Atención visitantes, este viernes tenemos increíbles descuentos de hasta 50% en todas las tiendas participantes. No se pierdan esta oportunidad única de renovar su guardarropa con las mejores marcas.
+                </div>
+                <div class="message-meta">
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>Fernanda</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>Hace 2 horas</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>15 veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" title="Preview">▶</button>
+                        <button class="btn-icon btn-schedule" title="Programar">📅</button>
+                        <button class="btn-icon btn-radio" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Card 2 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Informamos a nuestros visitantes que...</h3>
+                    <div style="position: relative;">
+                        <span class="message-badge badge-informacion" data-category="informacion">Info</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    Informamos a nuestros visitantes que a partir del próximo lunes el mall abrirá a las 10:00 AM. Este cambio de horario es permanente y aplica para todos los días de la semana incluyendo fines de semana.
+                </div>
+                <div class="message-meta">
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>Cristian</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>Ayer</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>23 veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" title="Preview">▶</button>
+                        <button class="btn-icon btn-schedule" title="Programar">📅</button>
+                        <button class="btn-icon btn-radio" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Card 3 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Este sábado a las 6...</h3>
+                    <div style="position: relative;">
+                        <span class="message-badge badge-eventos" data-category="eventos">Eventos</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    Este sábado a las 6 PM presentamos música en vivo en la plaza central con la banda local "Los Independientes". Entrada liberada para todo público. Los esperamos con toda la familia.
+                </div>
+                <div class="message-meta">
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>Rosa</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>2 días</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>8 veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" title="Preview">▶</button>
+                        <button class="btn-icon btn-schedule" title="Programar">📅</button>
+                        <button class="btn-icon btn-radio" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Card 4 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Atención, en 15 minutos realizaremos...</h3>
+                    <div style="position: relative;">
+                        <span class="message-badge badge-emergencias" data-category="emergencias">Urgente</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    Atención, en 15 minutos realizaremos un simulacro de evacuación. Por favor sigan las instrucciones del personal de seguridad y mantengan la calma. Este es solo un simulacro.
+                </div>
+                <div class="message-meta">
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>Diego</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>3 días</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>45 veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" title="Preview">▶</button>
+                        <button class="btn-icon btn-schedule" title="Programar">📅</button>
+                        <button class="btn-icon btn-radio" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Card 5 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Hoy jueves disfrute de estacionamiento...</h3>
+                    <div style="position: relative;">
+                        <span class="message-badge badge-servicios" data-category="servicios">Servicios</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    Hoy jueves disfrute de estacionamiento gratuito las primeras 3 horas en todos nuestros niveles. Promoción válida presentando boleta de compra en cualquiera de nuestras tiendas.
+                </div>
+                <div class="message-meta">
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>Laura</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>Hace 5 horas</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>12 veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" title="Preview">▶</button>
+                        <button class="btn-icon btn-schedule" title="Programar">📅</button>
+                        <button class="btn-icon btn-radio" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Card 6 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Les recordamos que nuestro horario...</h3>
+                    <div style="position: relative;">
+                        <span class="message-badge badge-horarios" data-category="horarios">Horarios</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    Les recordamos que nuestro horario de atención es de lunes a domingo de 10 AM a 10 PM. El patio de comidas permanece abierto hasta las 11 PM todos los días.
+                </div>
+                <div class="message-meta">
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>Fernanda</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>Hace 1 día</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>34 veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" title="Preview">▶</button>
+                        <button class="btn-icon btn-schedule" title="Programar">📅</button>
+                        <button class="btn-icon btn-radio" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de cambio de categorías
+        document.querySelectorAll('.message-badge').forEach(badge => {
+            // Crear dropdown para cada badge
+            const dropdown = document.createElement('div');
+            dropdown.className = 'category-dropdown';
+            dropdown.innerHTML = `
+                <div class="category-option" data-category="ofertas">✅ Ofertas</div>
+                <div class="category-option" data-category="eventos">🎉 Eventos</div>
+                <div class="category-option" data-category="informacion">ℹ️ Información</div>
+                <div class="category-option" data-category="servicios">🛠️ Servicios</div>
+                <div class="category-option" data-category="horarios">🕐 Horarios</div>
+                <div class="category-option" data-category="emergencias">🚨 Emergencias</div>
+                <div class="category-option" data-category="sin-categoria">📋 Sin Categoría</div>
+            `;
+            
+            // Agregar dropdown al contenedor
+            badge.parentElement.appendChild(dropdown);
+            
+            // Click en badge abre dropdown
+            badge.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // Cerrar otros dropdowns
+                document.querySelectorAll('.category-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('active');
+                });
+                
+                // Toggle este dropdown
+                dropdown.classList.toggle('active');
+            });
+            
+            // Click en opción cambia categoría
+            dropdown.querySelectorAll('.category-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    const newCategory = this.dataset.category;
+                    const categoryLabels = {
+                        'ofertas': 'Ofertas',
+                        'eventos': 'Eventos',
+                        'informacion': 'Info',
+                        'servicios': 'Servicios',
+                        'horarios': 'Horarios',
+                        'emergencias': 'Urgente',
+                        'sin-categoria': 'Sin Cat.'
+                    };
+                    
+                    // Actualizar badge
+                    badge.textContent = categoryLabels[newCategory];
+                    badge.className = `message-badge badge-${newCategory}`;
+                    badge.dataset.category = newCategory;
+                    
+                    // Cerrar dropdown
+                    dropdown.classList.remove('active');
+                    
+                    // Animación de confirmación
+                    badge.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        badge.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+        });
+
+        // Cerrar dropdowns al hacer click fuera
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.category-dropdown').forEach(d => {
+                d.classList.remove('active');
+            });
+        });
+
+        // Preview button
+        document.querySelectorAll('.btn-icon[title="Preview"]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Toggle play/pause
+                if (this.textContent === '▶') {
+                    this.textContent = '⏸';
+                    this.style.background = 'var(--primary)';
+                    this.style.color = 'white';
+                } else {
+                    this.textContent = '▶';
+                    this.style.background = '';
+                    this.style.color = '';
+                }
+            });
+        });
+
+        // Schedule button (placeholder)
+        document.querySelectorAll('.btn-schedule').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                alert('Modal de programación - Por implementar');
+            });
+        });
+
+        // Radio button
+        document.querySelectorAll('.btn-radio').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('¿Enviar este mensaje a la radio ahora?')) {
+                    // Feedback visual
+                    this.style.background = '#10b981';
+                    this.style.color = 'white';
+                    this.textContent = '✓';
+                    setTimeout(() => {
+                        this.textContent = '📡';
+                        this.style.background = '';
+                        this.style.color = '';
+                    }, 2000);
+                }
+            });
+        });
+
+        // Delete button
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('¿Eliminar este mensaje guardado?')) {
+                    const card = this.closest('.message-card');
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        card.remove();
+                    }, 300);
+                }
+            });
+        });
+
+        // Click en card para seleccionar
+        document.querySelectorAll('.message-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Toggle selection
+                this.style.borderColor = this.style.borderColor === 'var(--primary)' 
+                    ? 'var(--border-color)' 
+                    : 'var(--primary)';
+            });
+        });
+
+        // Filtros
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Filtro aplicado:', this.value);
+                // Aquí iría la lógica de filtrado
+            });
+        });
+
+        // Nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

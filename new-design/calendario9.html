@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI - Calendario y Programación</title>
+    <link rel="stylesheet" href="../css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="../css/palettes/palette-custom.css">
+    
+    <style>
+        /* Layout para calendario */
+        .calendar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .page-title-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+        
+        .filter-select {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .btn-new-schedule {
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .btn-new-schedule:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        /* Layout de dos columnas */
+        .content-grid {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+        
+        /* Calendario */
+        .calendar-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: var(--space-sm);
+        }
+        
+        .calendar-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .calendar-nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .calendar-month {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .calendar-day-header {
+            background: var(--bg-tertiary);
+            padding: var(--space-sm);
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .calendar-day {
+            background: var(--bg-secondary);
+            min-height: 80px;
+            padding: var(--space-xs);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .calendar-day-number {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .calendar-day.other-month .calendar-day-number {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        
+        .calendar-day.today {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .calendar-day.today .calendar-day-number {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .calendar-events {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .calendar-event {
+            font-size: 0.625rem;
+            padding: 2px 4px;
+            border-radius: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .event-ofertas { background: #10b981; color: white; }
+        .event-eventos { background: #8b5cf6; color: white; }
+        .event-informacion { background: #0891b2; color: white; }
+        .event-servicios { background: #f59e0b; color: white; }
+        .event-horarios { background: #6366f1; color: white; }
+        .event-emergencias { background: #dc2626; color: white; }
+        
+        /* Lista de eventos programados */
+        .schedule-list-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            /* Removemos max-height para que no tenga límite */
+        }
+        
+        .schedule-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .schedule-list-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .schedule-count {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+        }
+        
+        /* Grid para los items de schedule */
+        .schedule-items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+        }
+        
+        .schedule-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg); /* Más padding */
+            margin-bottom: 0; /* Removemos margin-bottom porque usamos gap */
+            transition: all 0.2s;
+        }
+        
+        .schedule-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+        
+        .schedule-item.disabled {
+            opacity: 0.5;
+        }
+        
+        .schedule-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .schedule-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            flex: 1;
+        }
+        
+        .schedule-type {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+        }
+        
+        .type-repeticion {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+        
+        .type-unico {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .schedule-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-md);
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+        
+        .schedule-detail {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .schedule-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: var(--gray-500);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: var(--success);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+        
+        .btn-edit {
+            padding: var(--space-xs) var(--space-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .btn-edit:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* AGREGAR estilo para el texto completo del mensaje */
+        .schedule-message {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: var(--space-md);
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* MODIFICAR los botones de acción */
+        .schedule-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+
+        .btn-radio {
+            padding: var(--space-xs) var(--space-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .btn-radio:hover {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .btn-delete-icon {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-delete-icon:hover {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+
+        /* Badge de categoría con colores */
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+        }
+
+        .badge-ofertas { background: #10b981; color: white; }
+        .badge-eventos { background: #8b5cf6; color: white; }
+        .badge-informacion { background: #0891b2; color: white; }
+        .badge-servicios { background: #f59e0b; color: white; }
+        .badge-horarios { background: #6366f1; color: white; }
+        .badge-emergencias { background: #dc2626; color: white; }
+
+        /* Modal para eventos del calendario */
+        .calendar-event-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Ajustar estilos para el nuevo orden */
+        .schedule-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Actualizar .schedule-info para menos items */
+        .schedule-info {
+            display: flex;
+            gap: var(--space-xl); /* Más espacio entre fecha y hora */
+            width: 100%;
+        }
+
+        .schedule-detail {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-secondary);
+        }
+
+        /* El primer detalle (fecha) sigue siendo grande */
+        .schedule-detail:first-child {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0; /* Ya no necesita margin porque hay menos items */
+        }
+
+        .schedule-detail:first-child span:first-child {
+            font-size: 1.25rem;
+        }
+
+        /* El segundo detalle (horario) también puede ser un poco más grande */
+        .schedule-detail:nth-child(2) {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .schedule-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-md);
+        }
+
+        .schedule-message {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary);
+        }
+        
+        /* Responsive */
+        
+        @media (max-width: 1024px) {
+            .schedule-items-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-select, .btn-new-schedule {
+                width: 100%;
+            }
+            
+            .calendar-grid {
+                gap: 1px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                font-size: 0.75rem;
+            }
+            
+            .schedule-items-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Generador</a>
+                <a href="#" class="nav-link">Biblioteca</a>
+                <a href="#" class="nav-link active">Calendario</a>
+                <a href="#" class="nav-link">Radio</a>
+                <a href="#" class="nav-link">Reportes</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="calendar-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">📅</span>
+                Calendario de Programación
+            </h1>
+            <div class="filter-bar">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">Todas las categorías</option>
+                    <option value="ofertas">Ofertas</option>
+                    <option value="eventos">Eventos</option>
+                    <option value="informacion">Información</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="horarios">Horarios</option>
+                    <option value="emergencias">Emergencias</option>
+                </select>
+                <button class="btn-new-schedule">
+                    <span>➕</span>
+                    <span>Nueva Programación</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Calendario -->
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" id="prevMonth">◀</button>
+                        <button class="calendar-nav-btn" id="todayBtn">Hoy</button>
+                        <button class="calendar-nav-btn" id="nextMonth">▶</button>
+                    </div>
+                    <div class="calendar-month" id="currentMonth">Noviembre 2024</div>
+                </div>
+                
+                <div class="calendar-grid">
+                    <!-- Días de la semana -->
+                    <div class="calendar-day-header">Dom</div>
+                    <div class="calendar-day-header">Lun</div>
+                    <div class="calendar-day-header">Mar</div>
+                    <div class="calendar-day-header">Mié</div>
+                    <div class="calendar-day-header">Jue</div>
+                    <div class="calendar-day-header">Vie</div>
+                    <div class="calendar-day-header">Sáb</div>
+                    
+                    <!-- Días del mes (ejemplo) -->
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">29</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">30</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">31</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">1</div>
+                        <div class="calendar-events">
+                            <div class="calendar-event event-ofertas">Black Friday</div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">2</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">3</div>
+                        <div class="calendar-events">
+                            <div class="calendar-event event-eventos">Música en vivo</div>
+                            <div class="calendar-event event-horarios">Horario especial</div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">4</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">5</div>
+                        <div class="calendar-events">
+                            <div class="calendar-event event-informacion">Info parking</div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">6</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">7</div>
+                    </div>
+                    <div class="calendar-day today">
+                        <div class="calendar-day-number">8</div>
+                        <div class="calendar-events">
+                            <div class="calendar-event event-ofertas">2x1 Cafetería</div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">9</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">10</div>
+                        <div class="calendar-events">
+                            <div class="calendar-event event-eventos">Show infantil</div>
+                        </div>
+                    </div>
+                    <!-- Continuar con más días... -->
+                    <div class="calendar-day"><div class="calendar-day-number">11</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">12</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">13</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">14</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">15</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">16</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">17</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">18</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">19</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">20</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">21</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">22</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">23</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">24</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">25</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">26</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">27</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">28</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">29</div></div>
+                    <div class="calendar-day"><div class="calendar-day-number">30</div></div>
+                </div>
+            </div>
+
+            <!-- Lista de Eventos Programados -->
+            <div class="schedule-list-section">
+                <div class="schedule-list-header">
+                    <h2 class="schedule-list-title">Eventos Programados</h2>
+                    <select class="filter-select" id="categoryFilterBottom">
+                        <option value="">Todas las categorías</option>
+                        <option value="ofertas">Ofertas</option>
+                        <option value="eventos">Eventos</option>
+                        <option value="informacion">Información</option>
+                        <option value="servicios">Servicios</option>
+                        <option value="horarios">Horarios</option>
+                        <option value="emergencias">Emergencias</option>
+                    </select>
+                </div>
+
+                <div class="schedule-items-grid">
+                    <!-- Schedule Item 1 - Repetición -->
+                    <div class="schedule-item">
+                        <!-- Solo fecha y horario -->
+                        <div class="schedule-details">
+                            <div class="schedule-info">
+                                <div class="schedule-detail">
+                                    <span>📅</span>
+                                    <span>Lun, Mar, Mié, Jue, Vie</span>
+                                </div>
+                                <div class="schedule-detail">
+                                    <span>🕐</span>
+                                    <span>10:00, 14:00, 18:00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Header con título y categoría -->
+                        <div class="schedule-item-header">
+                            <div class="schedule-title">Atención visitantes, este viernes...</div>
+                            <span class="category-badge badge-ofertas">Ofertas</span>
+                        </div>
+                        
+                        <!-- Texto completo -->
+                        <div class="schedule-message">
+                            Atención visitantes, este viernes tenemos increíbles descuentos de hasta 50% en todas las tiendas participantes. No se pierdan esta oportunidad única de renovar su guardarropa con las mejores marcas del mall. Los esperamos con las mejores ofertas del año.
+                        </div>
+                        
+                        <!-- Solo trash y toggle -->
+                        <div class="schedule-actions">
+                            <!-- Trash a la izquierda -->
+                            <button class="btn-delete-icon" title="Eliminar">
+                                <span>🗑️</span>
+                            </button>
+                            
+                            <!-- Solo toggle a la derecha -->
+                            <div class="action-buttons">
+                                <div class="toggle-switch active" data-schedule-id="1">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Schedule Item 2 - Una vez -->
+                <div class="schedule-item">
+                    <!-- Solo fecha y horario -->
+                    <div class="schedule-details">
+                        <div class="schedule-info">
+                            <div class="schedule-detail">
+                                <span>📅</span>
+                                <span>Sábado 10 Nov</span>
+                            </div>
+                            <div class="schedule-detail">
+                                <span>🕐</span>
+                                <span>18:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Header con título y categoría -->
+                    <div class="schedule-item-header">
+                        <div class="schedule-title">Este sábado a las 6...</div>
+                        <span class="category-badge badge-eventos">Eventos</span>
+                    </div>
+                    
+                    <!-- Texto completo -->
+                    <div class="schedule-message">
+                        Este sábado a las 6 PM presentamos música en vivo en la plaza central con la banda local Los Navegantes. Ven con tu familia y disfruta de una tarde mágica llena de ritmo y diversión. Entrada libre para todos nuestros visitantes.
+                    </div>
+                    
+                    <!-- Solo trash y toggle -->
+                    <div class="schedule-actions">
+                        <!-- Trash a la izquierda -->
+                        <button class="btn-delete-icon" title="Eliminar">
+                            <span>🗑️</span>
+                        </button>
+                        
+                        <!-- Solo toggle a la derecha -->
+                        <div class="action-buttons">
+                            <div class="toggle-switch active" data-schedule-id="2">
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Item 3 - Repetición -->
+                <div class="schedule-item">
+                    <!-- Solo fecha y horario -->
+                    <div class="schedule-details">
+                        <div class="schedule-info">
+                            <div class="schedule-detail">
+                                <span>📅</span>
+                                <span>Todos los días</span>
+                            </div>
+                            <div class="schedule-detail">
+                                <span>🕐</span>
+                                <span>09:30, 21:30</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Header con título y categoría -->
+                    <div class="schedule-item-header">
+                        <div class="schedule-title">Les recordamos que nuestro horario...</div>
+                        <span class="category-badge badge-horarios">Horarios</span>
+                    </div>
+                    
+                    <!-- Texto completo -->
+                    <div class="schedule-message">
+                        Les recordamos que nuestro horario de atención es de lunes a sábado de 10:00 AM a 10:00 PM y domingos de 11:00 AM a 9:00 PM. Para mayor información pueden dirigirse a nuestro punto de atención al cliente ubicado en el primer piso.
+                    </div>
+                    
+                    <!-- Solo trash y toggle -->
+                    <div class="schedule-actions">
+                        <!-- Trash a la izquierda -->
+                        <button class="btn-delete-icon" title="Eliminar">
+                            <span>🗑️</span>
+                        </button>
+                        
+                        <!-- Solo toggle a la derecha -->
+                        <div class="action-buttons">
+                            <div class="toggle-switch active" data-schedule-id="3">
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Item 4 - Desactivado -->
+                <div class="schedule-item disabled">
+                    <!-- Solo fecha y horario -->
+                    <div class="schedule-details">
+                        <div class="schedule-info">
+                            <div class="schedule-detail">
+                                <span>📅</span>
+                                <span>Sáb, Dom</span>
+                            </div>
+                            <div class="schedule-detail">
+                                <span>🕐</span>
+                                <span>12:00, 16:00, 20:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Header con título y categoría -->
+                    <div class="schedule-item-header">
+                        <div class="schedule-title">Informamos a nuestros visitantes que...</div>
+                        <span class="category-badge badge-informacion">Información</span>
+                    </div>
+                    
+                    <!-- Texto completo -->
+                    <div class="schedule-message">
+                        Informamos a nuestros visitantes que a partir del próximo lunes el centro comercial abrirá con horario extendido de 9:00 AM a 11:00 PM. Aprovecha más tiempo para tus compras y disfruta de nuestras instalaciones renovadas.
+                    </div>
+                    
+                    <!-- Solo trash y toggle -->
+                    <div class="schedule-actions">
+                        <!-- Trash a la izquierda -->
+                        <button class="btn-delete-icon" title="Eliminar">
+                            <span>🗑️</span>
+                        </button>
+                        
+                        <!-- Solo toggle a la derecha -->
+                        <div class="action-buttons">
+                            <div class="toggle-switch" data-schedule-id="4">
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Item 5 -->
+                <div class="schedule-item">
+                    <!-- Solo fecha y horario -->
+                    <div class="schedule-details">
+                        <div class="schedule-info">
+                            <div class="schedule-detail">
+                                <span>📅</span>
+                                <span>Jueves</span>
+                            </div>
+                            <div class="schedule-detail">
+                                <span>🕐</span>
+                                <span>Cada hora de 10:00 a 20:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Header con título y categoría -->
+                    <div class="schedule-item-header">
+                        <div class="schedule-title">Hoy jueves disfrute de estacionamiento...</div>
+                        <span class="category-badge badge-servicios">Servicios</span>
+                    </div>
+                    
+                    <!-- Texto completo -->
+                    <div class="schedule-message">
+                        Hoy jueves disfrute de estacionamiento gratuito durante las primeras 3 horas. Válido de 10:00 AM a 8:00 PM. Recuerde validar su ticket en las tiendas participantes para obtener beneficios adicionales.
+                    </div>
+                    
+                    <!-- Solo trash y toggle -->
+                    <div class="schedule-actions">
+                        <!-- Trash a la izquierda -->
+                        <button class="btn-delete-icon" title="Eliminar">
+                            <span>🗑️</span>
+                        </button>
+                        
+                        <!-- Solo toggle a la derecha -->
+                        <div class="action-buttons">
+                            <div class="toggle-switch active" data-schedule-id="5">
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Modal para evento del calendario -->
+    <div class="calendar-event-modal" id="eventModal">
+        <div class="modal-header">
+            <h3 class="modal-title">Detalle del Evento</h3>
+            <button class="modal-close" id="modalClose">×</button>
+        </div>
+        <div id="modalContent">
+            <!-- El contenido se llenará dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Toggle switches
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const scheduleItem = this.closest('.schedule-item');
+                scheduleItem.classList.toggle('disabled', !this.classList.contains('active'));
+                
+                // Animación
+                const slider = this.querySelector('.toggle-slider');
+                slider.style.transform = this.classList.contains('active') 
+                    ? 'translateX(20px)' 
+                    : 'translateX(0)';
+            });
+        });
+
+        // Edit buttons
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const title = this.closest('.schedule-item').querySelector('.schedule-title').textContent;
+                alert(`Editar programación: ${title}\n(Modal por implementar)`);
+            });
+        });
+
+        // Nueva programación
+        document.querySelector('.btn-new-schedule').addEventListener('click', function() {
+            alert('Modal de nueva programación (por implementar)');
+        });
+
+        // Navegación del calendario
+        const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        let currentMonth = 10; // Noviembre
+        let currentYear = 2024;
+
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendarHeader();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendarHeader();
+        });
+
+        document.getElementById('todayBtn').addEventListener('click', function() {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            updateCalendarHeader();
+        });
+
+        function updateCalendarHeader() {
+            document.getElementById('currentMonth').textContent = `${months[currentMonth]} ${currentYear}`;
+        }
+
+        // Filtro por categoría
+        // Función para filtrar
+        function filterByCategory(category) {
+            const scheduleItems = document.querySelectorAll('.schedule-item');
+            
+            scheduleItems.forEach(item => {
+                if (category === '') {
+                    item.style.display = 'block';
+                } else {
+                    // Buscar el badge de categoría
+                    const badge = item.querySelector('.category-badge');
+                    if (badge) {
+                        const itemCategory = badge.textContent.toLowerCase();
+                        
+                        if (itemCategory === category) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    }
+                }
+            });
+        }
+
+        // Sincronizar ambos filtros
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            const selectedCategory = this.value;
+            // Sincronizar con el otro filtro
+            document.getElementById('categoryFilterBottom').value = selectedCategory;
+            filterByCategory(selectedCategory);
+        });
+
+        document.getElementById('categoryFilterBottom').addEventListener('change', function() {
+            const selectedCategory = this.value;
+            // Sincronizar con el otro filtro
+            document.getElementById('categoryFilter').value = selectedCategory;
+            filterByCategory(selectedCategory);
+        });
+
+        // Click en días del calendario
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            day.addEventListener('click', function() {
+                if (!this.classList.contains('other-month')) {
+                    const dayNumber = this.querySelector('.calendar-day-number').textContent;
+                    console.log(`Día seleccionado: ${dayNumber}`);
+                    // Aquí podrías mostrar los eventos del día
+                }
+            });
+        });
+
+        // Nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Botón Radio
+        document.querySelectorAll('.btn-radio').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('¿Quieres enviar este mensaje a la radio?')) {
+                    // Animación de confirmación
+                    this.style.background = '#10b981';
+                    this.style.color = 'white';
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span>✓</span><span>Enviado</span>';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.background = '';
+                        this.style.color = '';
+                    }, 2000);
+                }
+            });
+        });
+
+        // Botón Delete
+        document.querySelectorAll('.btn-delete-icon').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('¿Eliminar esta programación?')) {
+                    const item = this.closest('.schedule-item');
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        item.remove();
+                    }, 300);
+                }
+            });
+        });
+
+        // Click en eventos del calendario
+        document.querySelectorAll('.calendar-event').forEach(event => {
+            event.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const eventTitle = this.textContent;
+                const eventCategory = this.className.split(' ')[1].replace('event-', '');
+                
+                // Crear contenido del modal
+                const modalContent = `
+                    <div class="schedule-item" style="border: none; padding: 0;">
+                        <div class="schedule-item-header">
+                            <div class="schedule-title">${eventTitle}</div>
+                            <span class="category-badge badge-${eventCategory}">${eventCategory.charAt(0).toUpperCase() + eventCategory.slice(1)}</span>
+                        </div>
+                        
+                        <div class="schedule-message">
+                            Texto completo del mensaje programado para este evento. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        </div>
+                        
+                        <div class="schedule-details">
+                            <div class="schedule-detail">
+                                <span>📅</span>
+                                <span>Programado para hoy</span>
+                            </div>
+                            <div class="schedule-detail">
+                                <span>🕐</span>
+                                <span>14:00</span>
+                            </div>
+                            <div class="schedule-detail">
+                                <span>🎙️</span>
+                                <span>Voz: Fernanda</span>
+                            </div>
+                        </div>
+                        
+                        <div class="schedule-actions">
+                            <div class="toggle-switch active">
+                                <div class="toggle-slider"></div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn-radio">
+                                    <span>📡</span>
+                                    <span>Radio</span>
+                                </button>
+                                <button class="btn-edit">
+                                    <span>✏️</span>
+                                    <span>Editar</span>
+                                </button>
+                                <button class="btn-delete-icon">
+                                    <span>🗑️</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Mostrar modal
+                document.getElementById('modalContent').innerHTML = modalContent;
+                document.getElementById('modalOverlay').style.display = 'block';
+                document.getElementById('eventModal').style.display = 'block';
+                
+                // Re-attach event listeners para los botones del modal
+                attachModalEventListeners();
+            });
+        });
+
+        // Cerrar modal
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('eventModal').style.display = 'none';
+        }
+
+        function attachModalEventListeners() {
+            // Re-attach listeners para elementos dentro del modal
+            const modal = document.getElementById('eventModal');
+            
+            modal.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.onclick = function() {
+                    this.classList.toggle('active');
+                };
+            });
+            
+            modal.querySelectorAll('.btn-radio').forEach(btn => {
+                btn.onclick = function() {
+                    if (confirm('¿Quieres enviar este mensaje a la radio?')) {
+                        alert('Mensaje enviado a la radio');
+                        closeModal();
+                    }
+                };
+            });
+        }
+    </script>
+</body>
+</html>

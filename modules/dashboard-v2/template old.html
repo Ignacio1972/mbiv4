@@ -1,0 +1,484 @@
+<style>
+        /* Grid principal de 3 filas separadas */
+        .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+}
+
+/* Cada fila ocupa todo el ancho */
+.create-message,
+.controls-section,
+.recent-messages {
+    grid-column: 1;
+}
+
+/* Contenedor para controles y chart JUNTOS */
+.controls-chart-container {
+    display: flex;
+    gap: var(--space-xl);
+    padding: var(--space-lg);
+    align-items: flex-start;
+}
+
+/* Controles ocupan más espacio */
+.controls-area {
+    flex: 2;
+}
+
+/* Chart alineado a la derecha */
+.chart-area {
+    flex: 1;
+    min-width: 200px;
+    padding: var(--space-lg);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+        
+        .recent-messages {
+            grid-column: 1;
+            grid-row: 3;  /* Fila 3 para mensajes */
+        }
+
+        .controls-section {
+            grid-row: 2;  /* Fila 2 para controles */
+        }
+
+        .create-message {
+            grid-row: 1;  /* Fila 1 para generador */
+        }
+        
+        .message-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-md);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        /* Ajustes para hacer los controles más compactos */
+        .controls-grid {
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+        }
+        
+        /* Hacer el formulario más limpio */
+        .message-form {
+            gap: var(--space-lg);
+        }
+        
+        .form-actions {
+            justify-content: center;
+            border-top: none;
+            padding-top: 0;
+        }
+        
+        .btn-primary {
+            padding: var(--space-md) var(--space-2xl);
+            font-size: 1rem;
+        }
+        
+        /* Hover personalizado para botones de acción */
+        .btn-save:hover {
+            background: #10b981 !important;
+            color: white !important;
+            border-color: #10b981 !important;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+        }
+
+        /* Opcional: transición más suave */
+        .btn-save, .btn-delete {
+            transition: all 0.2s ease;
+        }
+
+        .control-value {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Dropdown de categorías */
+        .category-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            min-width: 140px;
+            margin-top: var(--space-xs);
+            display: none;
+        }
+
+        .category-dropdown.active {
+            display: block;
+        }
+
+        .category-option {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .category-option:last-child {
+            border-bottom: none;
+        }
+
+        .category-option:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .message-badge {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        /* Toggle */
+        .toggle-controls-container {
+            padding: var(--space-md);
+            text-align: right;
+            /* Sin border-top ni background - completamente limpio */
+        }
+
+        .btn-toggle-controls {
+            background: transparent;
+            border: 1px dashed var(--border-color);
+            padding: var(--space-sm) var(--space-lg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .btn-toggle-controls:hover {
+            background: var(--bg-tertiary);
+            border-style: solid;
+            color: var(--text-primary);
+        }
+
+        /* Colores por categoría */
+        .badge-ofertas { background: #10b981; color: white; }
+        .badge-eventos { background: #8b5cf6; color: white; }
+        .badge-informacion { background: #0891b2; color: white; }
+        .badge-servicios { background: #f59e0b; color: white; }
+        .badge-horarios { background: #6366f1; color: white; }
+        .badge-emergencias { background: #dc2626; color: white; }
+        .badge-sin-categoria { background: var(--gray-500); color: white; }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .voice-controls {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            
+            .create-message {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            .recent-messages {
+                grid-column: 1;
+                grid-row: 3;
+            }
+            
+            .message-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link active">Generador</a>
+                <a href="#" class="nav-link">Biblioteca</a>
+                <a href="#" class="nav-link">Calendario</a>
+                <a href="#" class="nav-link">Radio</a>
+                <a href="#" class="nav-link">Reportes</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- FILA 1: Generador de Texto -->
+            <div class="card create-message">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🎙️</span>
+                        Generador de Mensajes
+                    </h2>
+                </div>
+                <form class="message-form">
+                    <div class="form-group">
+                        <textarea class="form-textarea" 
+                                  placeholder="Escriba aquí el mensaje que será convertido a voz..."
+                                  rows="6"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-select">
+                            <option>Juan Carlos</option>
+                            <option>Test Voice</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary">
+                            <span>🎙️</span>
+                            Generar Audio
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- TOGGLE AL FINAL DEL CARD -->
+                <div class="toggle-controls-container">
+                    <button class="btn-toggle-controls" id="toggleControls">
+                        <span>⚙️ Controles Avanzados ▲</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- FILA 2: Card único con Controles + Pie Chart juntos -->
+            <div class="controls-section" id="controlsSection" style="display: none;">
+                <div class="card controls-with-chart">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">🎛️</span>
+                            Controles de Voz y Consumo
+                        </h2>
+                    </div>
+                    
+                    <!-- Contenedor flex para controles y chart lado a lado -->
+                    <div class="controls-chart-container">
+                        
+                        <!-- LADO IZQUIERDO: Controles -->
+                        <div class="controls-area">
+                            <div class="controls-grid">
+                                <div class="control-item">
+                                    <label class="control-label">
+                                        Estilo
+                                        <span class="control-value">50%</span>
+                                    </label>
+                                    <div class="slider-container">
+                                        <input type="range" class="slider" min="0" max="100" value="50" id="style-slider">
+                                        <div class="slider-track" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div class="control-item">
+                                    <label class="control-label">
+                                        Estabilidad
+                                        <span class="control-value">75%</span>
+                                    </label>
+                                    <div class="slider-container">
+                                        <input type="range" class="slider" min="0" max="100" value="75" id="stability-slider">
+                                        <div class="slider-track" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                                <div class="control-item">
+                                    <label class="control-label">
+                                        Claridad
+                                        <span class="control-value">80%</span>
+                                    </label>
+                                    <div class="slider-container">
+                                        <input type="range" class="slider" min="0" max="100" value="80" id="clarity-slider">
+                                        <div class="slider-track" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- LADO DERECHO: Pie Chart -->
+                        <div class="chart-area">
+                            <h4 style="font-size: 0.875rem; margin-bottom: 1rem; color: var(--text-primary);">Consumo de Tokens</h4>
+                            
+                            <!-- Chart SVG -->
+                            <div style="position: relative; width: 120px; height: 120px; margin: 0 auto;">
+                                <svg width="120" height="120" viewBox="0 0 42 42">
+                                    <circle cx="21" cy="21" r="15.915" 
+                                            fill="transparent" 
+                                            stroke="#e5e7eb" 
+                                            stroke-width="3"></circle>
+                                    <circle cx="21" cy="21" r="15.915" 
+                                            fill="transparent" 
+                                            stroke="#6366f1" 
+                                            stroke-width="3" 
+                                            stroke-dasharray="45 100"
+                                            stroke-linecap="round"
+                                            style="transform: rotate(-90deg); transform-origin: center;"></circle>
+                                </svg>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-primary);">45%</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.7; color: var(--text-secondary);">usado</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats debajo del chart -->
+                            <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-secondary);">
+                                <div style="margin-bottom: 0.25rem;">✓ Usado: <span style="color: var(--text-primary); font-weight: 600;">45.3K</span> tokens</div>
+                                <div style="margin-bottom: 0.5rem;">○ Libre: <span style="color: var(--text-primary); font-weight: 600;">54.7K</span> tokens</div>
+                                <div style="opacity: 0.7; border-top: 1px solid var(--border-color); padding-top: 0.5rem;">Renueva en 7 días</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- FILA 3: Mensajes Recientes -->
+            <div class="card recent-messages">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">📝</span>
+                        Mensajes Recientes
+                    </h2>
+                    <button class="btn-icon">🔄</button>
+                </div>
+                <div class="message-list">
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-title">Oferta Black Friday</span>
+                            <span class="message-badge badge-ofertas">Ofertas</span>
+                        </div>
+                        <div class="message-preview">
+                            Atención visitantes, este viernes tenemos increíbles descuentos de hasta 50% en todas las tiendas participantes...
+                        </div>
+                        <div class="message-footer">
+                            <span class="message-time">Hace 5 minutos</span>
+                            <div class="message-actions">
+                                <button class="btn-icon" title="Reproducir">▶</button>
+                                <button class="btn-icon btn-save" title="Guardar">✓</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-title">Cambio de Horario</span>
+                            <span class="message-badge badge-info">Info</span>
+                        </div>
+                        <div class="message-preview">
+                            Informamos a nuestros visitantes que a partir del próximo lunes el mall abrirá a las 10:00 AM...
+                        </div>
+                        <div class="message-footer">
+                            <span class="message-time">Hace 1 hora</span>
+                            <div class="message-actions">
+                                <button class="btn-icon" title="Reproducir">▶</button>
+                                <button class="btn-icon btn-save" title="Guardar">✓</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-title">Evacuación Simulacro</span>
+                            <span class="message-badge badge-urgente">Urgente</span>
+                        </div>
+                        <div class="message-preview">
+                            Atención, en 15 minutos realizaremos un simulacro de evacuación. Por favor sigan las instrucciones...
+                        </div>
+                        <div class="message-footer">
+                            <span class="message-time">Hace 2 horas</span>
+                            <div class="message-actions">
+                                <button class="btn-icon" title="Reproducir">▶</button>
+                                <button class="btn-icon btn-save" title="Guardar">✓</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-title">Evento Musical</span>
+                            <span class="message-badge badge-info">Evento</span>
+                        </div>
+                        <div class="message-preview">
+                            Este sábado a las 6 PM presentamos música en vivo en la plaza central con la banda local...
+                        </div>
+                        <div class="message-footer">
+                            <span class="message-time">Hace 3 horas</span>
+                            <div class="message-actions">
+                                <button class="btn-icon" title="Reproducir">▶</button>
+                                <button class="btn-icon btn-save" title="Guardar">✓</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-title">Estacionamiento Gratuito</span>
+                            <span class="message-badge badge-ofertas">Ofertas</span>
+                        </div>
+                        <div class="message-preview">
+                            Hoy jueves disfrute de estacionamiento gratuito las primeras 3 horas en todos nuestros niveles...
+                        </div>
+                        <div class="message-footer">
+                            <span class="message-time">Hace 4 horas</span>
+                            <div class="message-actions">
+                                <button class="btn-icon" title="Reproducir">▶</button>
+                                <button class="btn-icon btn-save" title="Guardar">✓</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-title">WiFi Gratuito</span>
+                            <span class="message-badge badge-info">Info</span>
+                        </div>
+                        <div class="message-preview">
+                            Conéctate a nuestra red WiFi gratuita. Red: Mall_Guest, sin contraseña requerida...
+                        </div>
+                        <div class="message-footer">
+                            <span class="message-time">Hace 6 horas</span>
+                            <div class="message-actions">
+                                <button class="btn-icon" title="Reproducir">▶</button>
+                                <button class="btn-icon btn-save" title="Guardar">✓</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>

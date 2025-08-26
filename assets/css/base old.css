@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Base CSS - Reset, Variables y Utilities
+   Versión optimizada - Sin código muerto
+   ========================================================================== */
+
+/* Variables del tema */
+:root {
+    /* Colores principales */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    
+    /* Colores de UI */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    
+    /* Fondos */
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #1a1a26;
+    --bg-input: rgba(255, 255, 255, 0.08);
+    
+    /* Textos */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+    
+    /* Otros */
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-radius: 12px;
+    --transition: 200ms ease;
+}
+
+/* Reset básico */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.flex-grow { flex: 1; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-muted); }
+
+/* Forms base */
+input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}

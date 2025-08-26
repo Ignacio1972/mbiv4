@@ -1,0 +1,82 @@
+/* Palette: Dark Ocean Theme
+   Basado en: Eerie Black + Blue Crayola */
+
+:root, [data-theme="dark"] {
+    /* Colores Principales - Blue Crayola */
+    --primary: #387ade;        /* Blue Crayola 500 */
+    --primary-light: #6196e5;  /* Blue Crayola 600 */
+    --primary-dark: #1f60c1;   /* Blue Crayola 400 */
+    
+    /* Colores de Acento */
+    --secondary: #90adbb;      /* Cadet gray */
+    --success: #89b0ec;        /* Blue Crayola 700 (azul claro) */
+    --danger: #de3838;         /* Mantener rojo */
+    --warning: #de9f38;        /* Mantener naranja */
+    --info: #b0dcff;           /* Uranian Blue */
+    
+    /* Escala de Grises - Eerie Black + Davy's Gray */
+    --gray-900: #1c1b19;       /* Eerie black 500 */
+    --gray-800: #4c4943;       /* Eerie black 600 */
+    --gray-700: #4d5359;       /* Davy's gray 500 */
+    --gray-600: #6e767f;       /* Davy's gray 600 */
+    --gray-500: #9198a0;       /* Davy's gray 700 */
+    --gray-400: #90adbb;       /* Cadet gray 500 */
+    --gray-300: #a6bdc9;       /* Cadet gray 600 */
+    --gray-200: #bdced6;       /* Cadet gray 700 */
+    --gray-100: #d3dee4;       /* Cadet gray 800 */
+    --gray-50: #e9eff1;        /* Cadet gray 900 */
+    
+    /* Fondos Dark Mode */
+    --bg-primary: #1c1b19;     /* Eerie black - Fondo principal */
+    --bg-secondary: #2f3236;   /* Davy's gray 300 - Cards */
+    --bg-tertiary: #3f4348;    /* Davy's gray 400 - Inputs */
+    
+    /* Textos */
+    --text-primary: #e9eff1;   /* Cadet gray 900 - Texto principal */
+    --text-secondary: #a6bdc9; /* Cadet gray 600 - Texto secundario */
+    
+    /* Bordes */
+    --border-color: #4d5359;   /* Davy's gray 500 */
+}
+
+/* Ajustes específicos para elementos que necesitan más contraste */
+[data-theme="dark"] {
+    /* Badges con los nuevos colores */
+    .badge-ofertas { 
+        background: #387ade; 
+        color: white; 
+    }
+    .badge-info { 
+        background: #b0dcff; 
+        color: #1c1b19; 
+    }
+    .badge-urgente { 
+        background: #de3838; 
+        color: white; 
+    }
+    
+    /* Progress bar con gradiente azul */
+    .progress-fill {
+        background: linear-gradient(90deg, #387ade, #b0dcff);
+    }
+    
+    /* Hover states más visibles */
+    .btn-primary:hover {
+        background: #6196e5;
+    }
+    
+    .message-item:hover {
+        background: #3f4348;
+        border-color: #387ade;
+    }
+    
+    /* Sliders con el nuevo azul */
+    .slider::-webkit-slider-thumb,
+    .slider::-moz-range-thumb {
+        background: #387ade;
+    }
+    
+    .slider-track {
+        background: #387ade;
+    }
+}

@@ -1,0 +1,258 @@
+/* ==========================================================================
+   Radio Module - Estilos
+   Player de AzuraCast integrado
+   ========================================================================== */
+
+/* ==========================================================================
+   Status Indicator
+   ========================================================================== */
+.radio-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--gray-500);
+    transition: all var(--transition-fast);
+}
+
+.status-indicator--online {
+    background-color: var(--success);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    animation: pulse 2s infinite;
+}
+
+.status-indicator--loading {
+    background-color: var(--warning);
+    animation: pulse 1s infinite;
+}
+
+.status-indicator--offline {
+    background-color: var(--gray-500);
+}
+
+.status-indicator--error {
+    background-color: var(--danger);
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* ==========================================================================
+   Radio Player
+   ========================================================================== */
+.radio-player {
+    background: #1e2332;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+}
+
+/* Player Controls */
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.player-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: none;
+}
+
+.player-btn--primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+}
+
+.player-btn--primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.5);
+}
+
+.player-btn--primary:active {
+    transform: scale(0.95);
+}
+
+/* Volume Control */
+.volume-control {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 300px;
+}
+
+.volume-icon {
+    font-size: 1.5rem;
+}
+
+.volume-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--bg-input);
+    border-radius: 3px;
+    outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px solid var(--primary-light);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.2);
+}
+
+#volume-value {
+    min-width: 45px;
+    text-align: right;
+    color: var(--text-secondary);
+}
+
+/* Now Playing */
+.now-playing {
+    text-align: center;
+}
+
+.song-info {
+    margin-bottom: 1.5rem;
+}
+
+.song-info h4 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.song-info p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+}
+
+/* Progress Bar */
+.song-duration {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#elapsed-time,
+#duration {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    min-width: 45px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background-color: var(--bg-input);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   Station Info
+   ========================================================================== */
+.station-info {
+    background: #232937;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Audio element nativo oculto
+   ========================================================================== */
+#radio-audio {
+    display: none;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .player-controls {
+        flex-direction: column;
+    }
+    
+    .player-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+    }
+    
+    .volume-control {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .song-info h4 {
+        font-size: 1.25rem;
+    }
+}

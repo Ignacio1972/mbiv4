@@ -1,0 +1,55 @@
+# Configuración sensible
+api/config.php
+*.env
+
+# Logs
+*.log
+logs/
+api/logs/
+calendario/logs/
+
+# Archivos temporales
+api/temp/
+*.tmp
+.DS_Store
+
+# Archivos de audio generados
+biblioteca/*.mp3
+biblioteca/*.wav
+
+# Base de datos
+*.db
+*.sqlite
+calendario/api/db/*.db
+
+# Backups
+*.tar.gz
+*.zip
+backup*/
+*backup*/
+
+# IDE
+.vscode/
+.idea/
+
+# Node modules (si llegas a usar)
+node_modules/
+
+# Archivos del sistema
+Thumbs.db
+
+# Backup files
+*.backup
+*.backup-*
+*.backup_*
+.backup-*
+scheduler-cron.php.backup
+test_schedule_format.php
+
+# Directories
+musica/
+backups/
+
+# Temporary files
+*.tmp
+*.temp
