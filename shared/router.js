@@ -32,6 +32,7 @@ class Router {
         this.routes.set("/audio-library", "audio-library");
         this.routes.set('/historial', 'audio-history');
         this.routes.set('/radio', 'radio'); 
+        this.routes.set("/dashboard-v2", "dashboard-v2");
         
         // Escuchar cambios de hash
         window.addEventListener('hashchange', () => this.handleRoute());

@@ -34,6 +34,9 @@ export default class DashboardV2Module {
         // Intervalos para actualizaciones
         this.quotaInterval = null;
         this.messagesInterval = null;
+        
+        // Exponer para onclick handlers
+        window.dashboardV2 = this;
     }
     
     /**
@@ -451,7 +454,7 @@ export default class DashboardV2Module {
         }
         
         this.elements.messageList.innerHTML = this.state.recentMessages.map(msg => `
-            <div class="message-item">
+            <div class="message-item" data-id="${msg.id}">
                 <div class="message-header">
                     <span class="message-title">${this.truncateText(msg.title || msg.content || 'Audio', 30)}</span>
                     <span class="message-badge badge-${msg.category || 'sin-categoria'}">${this.getCategoryLabel(msg.category)}</span>
@@ -460,19 +463,60 @@ export default class DashboardV2Module {
                 <div class="message-footer">
                     <span class="message-time">${this.getRelativeTime(msg.createdAt || msg.saved_at)}</span>
                     <div class="message-actions">
-                        ${msg.filename ? `<button class="btn-icon" title="Reproducir" data-audio="/api/biblioteca.php?filename=${msg.filename}">▶</button>` : ''}
+                        ${msg.filename ? `<button class="btn-icon" title="Reproducir" onclick="window.dashboardV2.playMessageAudio('${msg.filename}')">▶</button>` : ''}
+                        <button class="btn-icon btn-save" title="Guardar" onclick="window.dashboardV2.saveToFavorites('${msg.id}', '${msg.filename || ''}', '${(msg.title || '').replace(/'/g, "\\'")}')">✓</button>
+                        <button class="btn-icon btn-delete" title="Eliminar" onclick="window.dashboardV2.removeMessage('${msg.id}')">🗑️</button>
                     </div>
                 </div>
             </div>
         `).join('');
-        
-        // Event listeners para reproducir
-        this.elements.messageList.querySelectorAll('.btn-icon').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const audioUrl = e.target.dataset.audio;
-                if (audioUrl) this.playAudio(audioUrl);
+    }
+    
+    // Método para reproducir audio
+    playMessageAudio(filename) {
+        if (!filename) {
+            this.showError('Audio no disponible');
+            return;
+        }
+        const audioUrl = `/api/biblioteca.php?filename=${filename}`;
+        this.playAudio(audioUrl);
+    }
+
+    // Método para guardar en favoritos
+    saveToFavorites(id, filename, title) {
+        if (confirm(`¿Guardar "${title}" en favoritos?`)) {
+            const btn = event.target;
+            btn.style.color = '#10b981';
+            btn.style.background = 'rgba(16, 185, 129, 0.1)';
+            btn.disabled = true;
+            btn.textContent = '✓';
+            
+            // Emitir evento para que otros módulos lo escuchen
+            this.eventBus.emit('message:saved:library', {
+                id: id,
+                filename: filename,
+                title: title,
+                savedAt: new Date().toISOString()
             });
-        });
+            
+            this.showSuccess('Guardado en favoritos');
+        }
+    }
+
+    // Método para eliminar mensaje
+    removeMessage(id) {
+        if (confirm('¿Eliminar este mensaje de la lista?')) {
+            const card = this.elements.messageList.querySelector(`[data-id="${id}"]`);
+            if (card) {
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    this.state.recentMessages = this.state.recentMessages.filter(m => m.id !== id);
+                    this.renderMessages();
+                }, 300);
+            }
+        }
     }
     
     /**
