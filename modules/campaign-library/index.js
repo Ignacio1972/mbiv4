@@ -141,6 +141,10 @@ render() {
                     <button class="btn btn-primary" id="create-new-btn">
                         ➕ Crear Mensaje
                     </button>
+                    
+                    <button class="btn btn-secondary" id="upload-audio-btn">
+                        🎵 Subir Audio
+                    </button>
                 </div>
             </div>
             
@@ -161,6 +165,9 @@ render() {
                     ➕ Crear mi primer mensaje
                 </button>
             </div>
+            
+            <!-- Input file oculto para upload -->
+            <input type="file" id="audio-file-input" accept=".mp3,.wav,.flac,.aac,.ogg,.m4a,.opus" style="display: none;">
         </div>
     `;
 }
@@ -196,6 +203,27 @@ render() {
                 window.location.hash = '#/configuracion';
             });
         }
+        
+        // NUEVO: Botón subir audio
+        this.container.querySelector('#upload-audio-btn').addEventListener('click', () => {
+            this.openFileSelector();
+        });
+        
+        // NUEVO: Input file change
+        this.container.querySelector('#audio-file-input').addEventListener('change', (e) => {
+            console.log('[CampaignLibrary] === EVENTO CHANGE DISPARADO ===');
+            console.log('[CampaignLibrary] Files length:', e.target.files ? e.target.files.length : 0);
+            
+            if (e.target.files && e.target.files[0]) {
+                console.log('[CampaignLibrary] Llamando handleFileSelected...');
+                this.handleFileSelected(e.target.files[0]);
+                
+                // IMPORTANTE: Limpiar el input para evitar disparos múltiples
+                e.target.value = '';
+            } else {
+                console.log('[CampaignLibrary] No hay archivos seleccionados');
+            }
+        });
         
         // Escuchar eventos de guardado
         eventBus.on('message:saved:library', (message) => {
@@ -839,6 +867,123 @@ render() {
         } catch (error) {
             console.error('[CampaignLibrary] Error en syncCategoryToSchedules:', error);
             // No mostrar error al usuario, es una función auxiliar
+        }
+    }
+    
+    /**
+     * NUEVO: Abrir selector de archivos
+     */
+    openFileSelector() {
+        console.log('[CampaignLibrary] === openFileSelector LLAMADO ===');
+        const fileInput = this.container.querySelector('#audio-file-input');
+        console.log('[CampaignLibrary] Input encontrado:', !!fileInput);
+        
+        if (fileInput) {
+            console.log('[CampaignLibrary] Haciendo clic en input file...');
+            fileInput.click();
+        } else {
+            console.error('[CampaignLibrary] ERROR: No se encontró el input file');
+        }
+    }
+    
+    /**
+     * NUEVO: Manejar archivo seleccionado
+     */
+    async handleFileSelected(file) {
+        console.log('[CampaignLibrary] === INICIO handleFileSelected ===');
+        console.log('[CampaignLibrary] Archivo seleccionado:', file.name);
+        console.log('[CampaignLibrary] Tamaño:', file.size, 'bytes');
+        console.log('[CampaignLibrary] Tamaño MB:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+        console.log('[CampaignLibrary] Tipo:', file.type);
+        
+        // Validación 1: Tamaño máximo 12MB
+        const maxSize = 12 * 1024 * 1024; // 12MB
+        console.log('[CampaignLibrary] Límite máximo:', (maxSize / 1024 / 1024), 'MB');
+        console.log('[CampaignLibrary] ¿Excede límite?', file.size > maxSize);
+        
+        if (file.size > maxSize) {
+            console.error('[CampaignLibrary] ERROR: Archivo excede límite');
+            this.showError(`El archivo excede el límite de 12MB (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+            return;
+        }
+        
+        // Validación 2: Formatos permitidos
+        const allowedTypes = [
+            'audio/mpeg',       // MP3
+            'audio/wav',        // WAV  
+            'audio/x-wav',      // WAV (alternate)
+            'audio/flac',       // FLAC
+            'audio/aac',        // AAC
+            'audio/ogg',        // Ogg Vorbis/Opus
+            'audio/mp4',        // M4A
+            'audio/x-m4a'       // M4A (alternate)
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+            this.showError('Formato no permitido. Use: MP3, WAV, FLAC, AAC, Ogg, M4A');
+            return;
+        }
+        
+        // Validación 3: Extensión
+        const fileName = file.name.toLowerCase();
+        const allowedExtensions = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'm4a', 'opus'];
+        const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith('.' + ext));
+        
+        if (!hasValidExtension) {
+            this.showError('Extensión no válida');
+            return;
+        }
+        
+        // Confirmar upload
+        const confirmMessage = `¿Subir "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) a la biblioteca?`;
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+        
+        // Proceder con upload
+        await this.uploadAudioFile(file);
+    }
+    
+    /**
+     * NUEVO: Subir archivo a servidor
+     */
+    async uploadAudioFile(file) {
+        try {
+            this.showNotification('Subiendo archivo...', 'info');
+            
+            // Preparar FormData
+            const formData = new FormData();
+            formData.append('action', 'upload_external');
+            formData.append('audio', file);
+            
+            console.log('[CampaignLibrary] Enviando archivo:', file.name);
+            
+            // Enviar request
+            const response = await fetch('api/biblioteca.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showSuccess('¡Archivo subido exitosamente!');
+                
+                // Recargar mensajes para mostrar el nuevo archivo
+                await this.loadMessages();
+                
+                console.log('[CampaignLibrary] Upload exitoso:', result);
+            } else {
+                throw new Error(result.error || 'Error desconocido');
+            }
+            
+        } catch (error) {
+            console.error('[CampaignLibrary] Error en upload:', error);
+            this.showError('Error al subir archivo: ' + error.message);
         }
     }
     

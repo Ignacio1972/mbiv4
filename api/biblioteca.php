@@ -102,6 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 header('Content-Type: application/json');
 
 try {
+    // Manejar uploads de archivos externos (multipart/form-data)
+    if (!empty($_FILES) && isset($_POST['action']) && $_POST['action'] === 'upload_external') {
+        uploadExternalFile();
+        exit;
+    }
+    
+    // Manejar requests JSON normales
     $input = json_decode(file_get_contents('php://input'), true);
     
     if (!$input) {
@@ -418,6 +425,133 @@ $syncCommand = 'sudo docker exec azuracast php /var/azuracast/www/backend/bin/co
     } catch (Exception $e) {
         logMessage("Error en renameLibraryFile: " . $e->getMessage());
         throw new Exception('Error al renombrar: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Subir archivo externo a AzuraCast
+ * NUEVO: Maneja archivos MP3, WAV, FLAC, AAC, Ogg Vorbis, M4A, Ogg Opus (máx 12MB)
+ */
+function uploadExternalFile() {
+    try {
+        // Validar que se recibió un archivo
+        if (empty($_FILES['audio'])) {
+            throw new Exception('No se recibió ningún archivo');
+        }
+        
+        $uploadedFile = $_FILES['audio'];
+        $originalFilename = $uploadedFile['name'];
+        
+        logMessage("Iniciando upload externo: $originalFilename");
+        
+        // Validación 1: Tamaño máximo 12MB
+        $maxSize = 12 * 1024 * 1024; // 12MB en bytes
+        if ($uploadedFile['size'] > $maxSize) {
+            throw new Exception('El archivo excede el límite de 12MB');
+        }
+        
+        // Validación 2: Formatos permitidos por AzuraCast
+        $allowedMimeTypes = [
+            'audio/mpeg',       // MP3
+            'audio/wav',        // WAV
+            'audio/x-wav',      // WAV (alternate)
+            'audio/flac',       // FLAC
+            'audio/aac',        // AAC
+            'audio/ogg',        // Ogg Vorbis/Opus
+            'audio/mp4',        // M4A
+            'audio/x-m4a'       // M4A (alternate)
+        ];
+        
+        if (!in_array($uploadedFile['type'], $allowedMimeTypes)) {
+            throw new Exception('Formato no permitido. Use: MP3, WAV, FLAC, AAC, Ogg, M4A');
+        }
+        
+        // Validación 3: Extensión del archivo
+        $fileExtension = strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
+        $allowedExtensions = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'm4a', 'opus'];
+        
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            throw new Exception('Extensión no válida');
+        }
+        
+        // Limpiar nombre de archivo (mantener original pero seguro)
+        $safeFilename = preg_replace('/[^a-zA-Z0-9._\-ñÑáéíóúÁÉÍÓÚ]/', '_', $originalFilename);
+        $azuracastPath = 'Grabaciones/' . $safeFilename;
+        
+        logMessage("Subiendo a AzuraCast: $azuracastPath");
+        
+        // Upload directo a AzuraCast usando su API
+        $url = AZURACAST_BASE_URL . '/api/station/' . AZURACAST_STATION_ID . '/files/upload';
+        
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => [
+                'file' => new CURLFile($uploadedFile['tmp_name'], $uploadedFile['type'], $safeFilename),
+                'path' => $azuracastPath
+            ],
+            CURLOPT_HTTPHEADER => [
+                'X-API-Key: ' . AZURACAST_API_KEY
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 60 // Timeout de 1 minuto
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        
+        if ($curlError) {
+            throw new Exception("Error de conexión: $curlError");
+        }
+        
+        if ($httpCode !== 200) {
+            logMessage("Error HTTP $httpCode: $response");
+            throw new Exception("Error del servidor de radio (HTTP $httpCode)");
+        }
+        
+        logMessage("Upload exitoso a AzuraCast: $safeFilename");
+        
+        // Guardar metadata en la base de datos (misma BD que calendar y saved-messages)
+        $db = new PDO("sqlite:" . __DIR__ . "/../calendario/api/db/calendar.db");
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $stmt = $db->prepare("
+            INSERT OR REPLACE INTO audio_metadata 
+            (filename, display_name, description, category, file_size, play_count, radio_sent_count, is_active, created_at, is_saved, saved_at, tags) 
+            VALUES (?, ?, ?, ?, ?, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, ?)
+        ");
+        
+        $stmt->execute([
+            $safeFilename,
+            pathinfo($originalFilename, PATHINFO_FILENAME), // Título sin extensión
+            'Archivo subido externamente',
+            'archivos_subidos', // Categoría fija como acordamos
+            $uploadedFile['size'],
+            'uploaded,external' // Tags para identificarlo
+        ]);
+        
+        logMessage("Metadata guardada en BD: $safeFilename");
+        
+        // Respuesta exitosa
+        echo json_encode([
+            'success' => true,
+            'message' => 'Archivo subido exitosamente',
+            'filename' => $safeFilename,
+            'original_name' => $originalFilename,
+            'size' => $uploadedFile['size'],
+            'category' => 'archivos_subidos'
+        ]);
+        
+    } catch (Exception $e) {
+        logMessage("Error en uploadExternalFile: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
     }
 }
 ?>
