@@ -2,13 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🎯 CONTEXTO PRINCIPAL: Asistente para Usuario Principiante
+## 🎯 CONTEXTO PRINCIPAL: Sistema Radio Automatizada MBI-v4
 
 **IMPORTANT**:
-PROCESO OBLIGATORIO ! :
-1. REVISAR → 2. TESTEAR → 3. PROPONER 4. ESPERAR APROBACIÓN → 5. IMPLEMENTAR
+PROCESO OBLIGATORIO:
+1. REVISAR → 2. TESTEAR → 3. PROPONER → 4. ESPERAR APROBACIÓN → 5. IMPLEMENTAR
 
-🚨 **REGLA FUNDAMENTAL NUEVA:**
+🚨 **REGLA FUNDAMENTAL:**
 **JAMÁS ESCRIBIR CÓDIGO SIN ANTES DAR UN PLAN DETALLADO Y ESPERAR APROBACIÓN**
 - PRIMERO: Analizar completamente el problema
 - SEGUNDO: Explicar qué archivos se van a modificar y por qué
@@ -16,53 +16,185 @@ PROCESO OBLIGATORIO ! :
 - CUARTO: ESPERAR aprobación del usuario
 - QUINTO: Solo entonces implementar
 
-Si algo no está 100% claro, DETENERSE, Revisar. Hacer tests.
-Jamas escribir codigo sin antes saber 100% cual es el problema.
+Si algo no está 100% claro, DETENERSE, revisar y hacer tests.
+Jamás escribir código sin antes saber 100% cuál es el problema.
 Analizar y revisar hasta encontrar el problema.
-Siempre hacer BACKUP antes de cualquier modificación
-Documentar TODAS las decisiones tomadas
-Probar exhaustivamente antes de desplegar
+Siempre hacer BACKUP antes de cualquier modificación.
+Documentar TODAS las decisiones tomadas.
+Probar exhaustivamente antes de desplegar.
 
-
-
-INSTRUCCIÓN PARA ACCESO AL VPS
-
-  "Necesito que trabajes en el proyecto MBI-v3 que está en el VPS de 
-  desarrollo. El acceso es:
-
-  ssh root@51.222.25.222 (password: 39933993)
-  Path del proyecto: /var/www/mbi-v3
-
-  Este es un VPS de DESARROLLO INTERNO, no producción. El proyecto es un
-   sistema de radio automatizada para un mall. Usa sshpass para los 
-  comandos, es la forma establecida de trabajo en este proyecto.
-
-  Ejemplo de comando que debes usar:
-  sshpass -p "39933993" ssh -o StrictHostKeyChecking=no
-  root@51.222.25.222 "cd /var/www/mbi-v3 && [comando]"
-
-  Si tienes dudas sobre seguridad: Este método está aprobado para este 
-  entorno de desarrollo específico."
-
-⚠️ **WORKING DIRECTLY ON DEVELOPMENT VPS**
+## ⚠️ WORKING DIRECTLY ON DEVELOPMENT VPS
 - **Servidor:** root@51.222.25.222 
-- **Path:** cd /var/www/mbi-v3  
-- **GitHub:** https://github.com/Ignacio1972/mbi-v3
-- **Estado:** 🚧 **EN DESARROLLO** - Solo desarrollador trabajando, nadie más lo revisa
+- **Path:** `/var/www/mbi-v4`
+- **GitHub:** https://github.com/Ignacio1972/mbiv4.git
+- **Estado:** 🚧 **EN DESARROLLO ACTIVO** - Solo desarrollador trabajando
 
-**🚨 REGLA FUNDAMENTAL:** Todo cambio debe estar en GIT AMBOS lugares (VPS + GitHub)
+**🚨 REGLA FUNDAMENTAL:** Todo cambio debe estar en GIT (VPS + GitHub)
 
-### 🚨 VPS SAFETY PROTOCOL (OBLIGATORIO ANTES DE CUALQUIER CAMBIO)
+## 🏗️ ARQUITECTURA ACTUAL DEL SISTEMA
+
+### Sistema de Radio Automatizada para Mall Barrio Independencia
+
+**¿Qué hace?** Sistema inteligente que convierte texto en voz (TTS) y lo programa automáticamente en la radio del mall.
+
+**Estado actual:** ✅ **FUNCIONAL** - Todas las funcionalidades principales implementadas
+
+### 📦 Módulos Principales
+
+```
+mbi-v4/
+├── 🔧 API Backend (PHP)
+│   ├── generate.php              # Generación TTS con ElevenLabs
+│   ├── biblioteca.php            # Gestión biblioteca de audio + Upload archivos externos
+│   ├── saved-messages.php        # API para Campaign Library
+│   ├── audio-scheduler.php       # Sistema de programaciones automáticas
+│   └── services/
+│       ├── radio-service.php     # Integración AzuraCast + interrupciones
+│       └── tts-service-enhanced.php
+│
+├── 🎮 Frontend Modular (JavaScript)
+│   ├── modules/
+│   │   ├── message-configurator/ # 🎤 Generador TTS principal
+│   │   ├── campaign-library/     # 📚 Mensajes guardados + programación
+│   │   ├── calendar/             # 📅 Visualización programaciones
+│   │   ├── audio-library/        # 🎵 Historial completo archivos
+│   │   ├── radio/                # 📻 Player de radio en vivo
+│   │   └── dashboard-v2/         # 📊 Dashboard principal
+│   │
+│   └── shared/                   # 🔗 Infraestructura compartida
+│       ├── event-bus.js          # Comunicación entre módulos
+│       ├── module-loader.js      # Carga dinámica módulos
+│       ├── api-client.js         # Cliente HTTP centralizado
+│       ├── router.js             # Navegación SPA
+│       └── storage-manager.js    # Gestión localStorage
+│
+├── 🗄️ Base de Datos
+│   └── calendario/api/db/calendar.db  # SQLite principal
+│
+├── 🐳 Integración Externa
+│   ├── AzuraCast (Docker)        # Sistema de radio streaming
+│   └── ElevenLabs API            # Servicio TTS
+│
+└── 📚 Documentación Técnica
+    ├── docs/AUDIO_SYSTEM_ARCHITECTURE.md  # Arquitectura completa
+    └── new Docs/                 # Auditorías técnicas
+```
+
+## 🔄 FLUJO DE DATOS CRÍTICO
+
+### 1. Generación TTS
+```
+Texto → generate.php → ElevenLabs → MP3 → AzuraCast Docker → BD calendar.db
+```
+
+### 2. Upload Archivos Externos (✅ NUEVO - Funcional)
+```
+Usuario → Campaign Library → biblioteca.php → AzuraCast /files/upload → BD calendar.db
+```
+
+### 3. Programación Automática
+```
+Calendar → audio-scheduler.php (cron) → radio-service.php → Liquidsoap → Interrupción Radio
+```
+
+### 4. Campaign Library (Centro del Sistema)
+```
+saved-messages.php → BD (is_saved=1) → UI Campaign Library → Modal Programación → Calendar
+```
+
+## 🗄️ BASE DE DATOS UNIFICADA
+
+**Ubicación Principal:** `/var/www/mbi-v4/calendario/api/db/calendar.db`
+
+### Tablas Críticas:
+```sql
+-- Todos los archivos de audio (TTS + externos)
+audio_metadata {
+    filename, display_name, category, is_saved, 
+    file_size, created_at, tags, notes
+}
+
+-- Programaciones activas
+audio_schedule {
+    filename, schedule_type, schedule_time, 
+    schedule_days, is_active, priority
+}
+
+-- Historial ejecuciones
+audio_schedule_log {
+    schedule_id, executed_at, status, error_message
+}
+```
+
+### ⚠️ Base de Datos Legacy (NO USAR)
+`/var/www/mbi-v4/api/db/calendar.db` - Solo para compatibilidad
+
+## 🔧 CONFIGURACIONES CRÍTICAS
+
+### AzuraCast Integration
+```php
+// /api/config.php
+AZURACAST_BASE_URL = 'http://51.222.25.222'
+AZURACAST_STATION_ID = 1
+PLAYLIST_ID_GRABACIONES = 3
+
+// Carpeta Docker: /var/azuracast/stations/test/media/Grabaciones/
+// Playlist: "grabaciones" (minúscula)
+```
+
+### ElevenLabs TTS
+```php
+ELEVENLABS_API_KEY = 'sk_...'
+ELEVENLABS_BASE_URL = 'https://api.elevenlabs.io/v1'
+```
+
+## 🎯 FUNCIONALIDADES IMPLEMENTADAS (Estado Actual)
+
+### ✅ COMPLETAMENTE FUNCIONAL
+- 🎤 **Generación TTS**: ElevenLabs → AzuraCast
+- 📻 **Interrupción Radio**: Inmediata via Liquidsoap
+- 📚 **Campaign Library**: Gestión mensajes guardados
+- 📅 **Programación**: Interval, Specific, Once
+- 🎵 **Upload Externos**: MP3/WAV/FLAC → AzuraCast (12MB máx)
+- 🔄 **Scheduler Automático**: Cron cada minuto
+- 📊 **Dashboard**: Vista general sistema
+
+### 🚧 EN DESARROLLO/MEJORAS
+- 🎵 Reproducción archivos externos (carpeta AzuraCast)
+- 📱 Responsive design completo
+- 🔍 Búsqueda avanzada en bibliotecas
+
+## 📁 ARCHIVOS CRÍTICOS - NO ROMPER
+
+### Backend PHP (APIs)
+- `/api/generate.php` - **CRÍTICO**: Generación TTS
+- `/api/biblioteca.php` - **CRÍTICO**: Biblioteca + Upload externos
+- `/api/services/radio-service.php` - **CRÍTICO**: Interrupciones radio
+- `/api/audio-scheduler.php` - **CRÍTICO**: Cron scheduler
+- `/api/saved-messages.php` - **CRÍTICO**: Campaign Library API
+
+### Frontend Core
+- `/shared/event-bus.js` - **CRÍTICO**: Comunicación módulos
+- `/shared/module-loader.js` - **CRÍTICO**: Carga dinámica
+- `/shared/api-client.js` - **CRÍTICO**: HTTP cliente
+- `/modules/campaign-library/index.js` - **CRÍTICO**: Centro funcional
+- `/modules/message-configurator/index.js` - **CRÍTICO**: Generador principal
+
+### Base de Datos
+- `/calendario/api/db/calendar.db` - **CRÍTICO**: BD principal
+
+## 🔄 COMANDOS DESARROLLO VPS
+
+### Backup Obligatorio antes de cambios
 ```bash
-# 1. CONECTAR Y POSICIONARSE
-ssh root@51.222.25.222
-cd /var/www/mbi-v3
+# 1. POSICIONARSE
+cd /var/www/mbi-v4
 
-# 2. VERIFICAR ESTADO ACTUAL
+# 2. VERIFICAR ESTADO
 git status
 git pull origin main
 
-# 3. HACER BACKUP DEL ARCHIVO
+# 3. BACKUP ARCHIVO
 cp archivo.js archivo.js.backup-$(date +%Y%m%d_%H%M%S)
 
 # 4. COMMIT PREVENTIVO
@@ -71,283 +203,120 @@ git commit -m "backup before changes"
 git push origin main
 ```
 
-### 🔄 **ESTRATEGIA MULTI-INTENTO PARA VPS**
-
-**IMPORTANT:** Los AI assistants son no-determinísticos. Para cambios importantes:
-
-1. **Proactively** generar 2-3 enfoques diferentes
-2. **Ultra-think** evaluar cada opción por simplicidad y riesgo
-3. Implementar la solución más simple primero
-4. Probar inmediatamente en el VPS
-5. Hacer rollback si algo falla
-
-### 🌳 **GIT WORKTREES PARA DESARROLLO SEGURO**
-
-Solo para cambios grandes en MBI-v3:
-
+### Health Check Sistema
 ```bash
-# Crear worktree para nueva feature
-cd /var/www/mbi-v3
-git worktree add ../mbi-v3-feature-nueva feature/nueva-funcionalidad
-
-# Trabajar de forma segura
-cd ../mbi-v3-feature-nueva
-# Hacer cambios aquí sin afectar la versión principal
-
-# Cuando esté listo, mergear
-cd /var/www/mbi-v3
-git merge feature/nueva-funcionalidad
-
-# Limpiar worktree
-git worktree remove ../mbi-v3-feature-nueva
-```
-
-## 🎯 **REGLA DE ORO: KEEP IT SIMPLE**
-
-**Antes de proponer cualquier solución, pregúntate:**
-- ¿Es la forma MÁS SIMPLE de hacerlo?
-- ¿Sigue los patrones existentes del proyecto?
-- ¿Respeta la regla "1 archivo = 1 función"?
-- ¿Evita crear archivos monolíticos?
-
-**Si la respuesta a cualquiera es NO, busca una alternativa más simple.**
-
-### 📦 Principios de Arquitectura Simple:
-- **1 archivo = 1 responsabilidad** (no mezclar funciones)
-- **Módulos independientes** (radio no depende de calendario)
-- **Patrones consistentes** (todos los módulos se estructuran igual)
-- **Sin reinventar la rueda** (usar lo que ya existe)
-- **Fail Fast** (detectar errores temprano)
-
-## 🏗️ **CONTEXT ENGINEERING SETUP**
-
-### Estructura Requerida para MBI-v3:
-```
-mbi-v3/
-├── .claude/                    # ← Context para Claude Code
-│   ├── commands/              # Comandos personalizados
-│   │   ├── backup-and-modify.md
-│   │   ├── vps-deploy.md
-│   │   ├── module-check.md
-│   │   └── health-check.md
-│   └── settings.local.json    # Permisos de Claude
-├── examples/                  # ← CRÍTICO para patrones
-│   ├── module-patterns/       # Estructura de módulos
-│   ├── api-calls/            # Patrones de API calls
-│   ├── vps-workflows/        # Flujos de trabajo VPS
-│   └── backup-scripts/       # Scripts de backup
-├── CLAUDE.md                  # ← Este archivo
-├── INITIAL.md                 # ← Template para features
-└── docs/                      # Documentación existente
-```
-
-### 🎯 Power Keywords para MBI-v3:
-- **IMPORTANT:** Cambios críticos en VPS de desarrollo
-- **Proactively:** Sugerir mejoras de arquitectura y patrones
-- **Ultra-think:** Análisis profundo de impacto en el sistema
-
-## 📋 System Overview
-
-**TTS Mall v3** - Sistema de Radio y Anuncios Automatizados para Mall Barrio Independencia (EN DESARROLLO)
-
-### ¿Qué es en términos simples?
-Imagina una **radio inteligente del centro comercial** que puede:
-- 🎤 Convertir texto escrito en voz natural (como Siri pero para el mall)
-- 📻 Interrumpir la música que suena en Azuracast para dar anuncios importantes
-- 📅 Programar mensajes automáticos (ej: "El mall cierra en 30 minutos")
-- 📚 Guardar una biblioteca de anuncios para reutilizar
-
-**Estado actual:** 🚧 Desarrollo activo - funcionalidades básicas implementadas
-
-### Arquitectura Técnica Real:
-[text](../../../../../../../../../../../../Users/hrm/Documents/MBI3/mbi-v3/ARQUITECTURA.md)
-
-
-## 🔗 **ENLACES RAW PARA CONSULTA RÁPIDA. PODRIAN ESTAR DESACTUALIZADOS. CHEQUEAR CON ARCHIVO ORIGINAL EN VPS SI HAY DUDAS**
-
-### 📋 Para Claude Code - Acceso Directo a Archivos:
-
-**🎯 Core System (Siempre consultar primero):**
-- Event Bus: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/shared/event-bus.js
-- Module Loader: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/shared/module-loader.js
-- Router: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/shared/router.js
-- API Client: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/shared/api-client.js
-- Data Schemas: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/shared/data-schemas.js
-
-**📦 Módulos Principales:**
-- Radio: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/modules/radio/index.js
-- Message Configurator: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/modules/message-configurator/index.js
-- Campaign Library: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/modules/campaign-library/index.js
-- Calendar: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/modules/calendar/index.js
-
-**🔧 Backend API:**
-- Generate: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/api/generate.php
-- Biblioteca: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/api/biblioteca.php
-- Library Metadata: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/api/library-metadata.php
-
-**📚 Documentación Completa:**
-- Technical Docs: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/docs/TECHNICAL_DOCUMENTATION.md
-- Developer Protocol: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/docs/DEVELOPER_PROTOCOL.md
-- GitHub Links: https://raw.githubusercontent.com/Ignacio1972/mbi-v3/main/docs/GITHUB_LINKS.md
-
-**🧭 Explorar estructura completa:**
-- Raíz: https://api.github.com/repos/Ignacio1972/mbi-v3/contents
-- Modules: https://api.github.com/repos/Ignacio1972/mbi-v3/contents/modules
-- API: https://api.github.com/repos/Ignacio1972/mbi-v3/contents/api
-- Docs: https://api.github.com/repos/Ignacio1972/mbi-v3/contents/docs
-
-## 🔧 **COMANDOS PERSONALIZADOS MBI-v3**
-
-### `/backup-and-modify [archivo]`
-```bash
-# Backup con timestamp
-cp $ARGUMENTS $ARGUMENTS.backup-$(date +%Y%m%d_%H%M%S)
-
-# Verificar estado git
-git status
-
-# [Aquí realizar la modificación específica]
-
-# Commit y push
-git add $ARGUMENTS
-git commit -m "Update: $(basename $ARGUMENTS) - [descripción del cambio]"
-git push origin main
-```
-
-### `/vps-health-check`
-```bash
-# Verificar servicios críticos del sistema
-echo "🔍 Verificando estado del sistema MBI-v3..."
-
-# 1. Verificar acceso web
-curl -I http://51.222.25.222/mbi-v3/
-echo "✅ Frontend accesible"
-
-# 2. Verificar sintaxis PHP
-php -l /var/www/mbi-v3/api/generate.php
-echo "✅ API generate.php válida"
-
-# 3. Verificar conexión radio
-php /var/www/mbi-v3/api/test-azuracast.php
-echo "✅ Conexión AzuraCast verificada"
-
-# 4. Verificar git status
-cd /var/www/mbi-v3
-git status
-echo "✅ Estado git verificado"
-```
-
-### `/module-analyze [modulo]`
-```bash
-echo "🔍 Analizando módulo: $ARGUMENTS"
-
-# Contar líneas de código
-find modules/$ARGUMENTS -name "*.js" -exec wc -l {} +
-
-# Verificar estructura estándar
-ls -la modules/$ARGUMENTS/
-
-# Buscar patrones consistentes
-grep -r "export default class" modules/$ARGUMENTS/
-echo "✅ Análisis del módulo completado"
-```
-
-### `/deploy-safe [descripcion]`
-```bash
-echo "🚀 Desplegando cambios de forma segura: $ARGUMENTS"
-
-# 1. Backup preventivo
-git add .
-git commit -m "BACKUP: antes de $ARGUMENTS"
-git push origin main
-
-# 2. Verificar que todo funciona
-/vps-health-check
-
-# 3. Commit final
-git add .
-git commit -m "DEPLOY: $ARGUMENTS"
-git push origin main
-
-echo "✅ Despliegue completado y verificado"
-```
-
-## 🚀 Development Commands (Con Explicaciones)
-
-### Iniciar el Sistema Localmente (Desarrollo)
-
-```bash
-# EXPLICACIÓN: Esto es como "prender" el sistema en tu computadora para pruebas
-php -S localhost:8000
-
-# Lo que verás: "Development server started at http://localhost:8000"
-# Abre tu navegador y ve a esa dirección
-```
-
-### Comandos de Verificación en VPS
-
-```bash
-# VER SI HAY ERRORES PHP
-# Como revisar si hay problemas en el sistema
+# Verificar sintaxis PHP
 php -l api/generate.php
-# Verás: "No syntax errors detected"
+php -l api/biblioteca.php
 
-# VER LOGS DEL SISTEMA (si existen)
-# Como ver el historial de lo que ha pasado
-tail -f calendario/logs/scheduler/$(date +%Y-%m-%d).log
-# Verás los eventos del día actual
+# Test APIs principales
+curl -X POST -H "Content-Type: application/json" \\
+  -d '{"action":"list"}' \\
+  http://localhost:3001/api/saved-messages.php
 
-# PROBAR CONEXIÓN CON RADIO
-php api/test-azuracast.php
-# Verás: "✅ Conexión exitosa" o un error explicativo
+# Verificar BD principal
+sqlite3 calendario/api/db/calendar.db \\
+  "SELECT COUNT(*) FROM audio_metadata WHERE is_saved=1;"
 
-# VERIFICAR QUE EL SITIO FUNCIONA
-curl -I http://51.222.25.222/mbi-v3/
-# Verás: "HTTP/1.1 200 OK"
+# Ver logs recientes
+tail -f api/logs/biblioteca-$(date +%Y-%m-%d).log
 ```
 
-## 🔧 Configuration Explained
+### Deploy Seguro
+```bash
+# Después de cambios aprobados
+git add .
+git commit -m "feat: [descripción detallada]"
+git push origin main
 
-### Archivo: `api/config.php`
+# Verificar que funciona
+curl -I http://localhost:3001/
+```
 
+## 🚨 PATRONES DE SEGURIDAD
+
+### Validaciones Implementadas
 ```php
-// CLAVE DE ELEVENLABS (Servicio de Voz)
-// Como: La llave para que el sistema pueda hablar
-define('ELEVENLABS_API_KEY', 'tu_clave_aqui');
+// Archivos TTS: tts{timestamp}[_descripcion].mp3
+'/^tts\\d{14}(_[a-zA-Z0-9_\\-ñÑáéíóúÁÉÍÓÚ]+)?\\.mp3$/'
 
-// CONEXIÓN CON LA RADIO
-// Como: El número de teléfono de la radio del sistema
-define('AZURACAST_BASE_URL', 'http://51.222.25.222');
-define('AZURACAST_API_KEY', 'tu_clave_de_radio');
-
-// CARPETA DE ARCHIVOS TEMPORALES
-// Como: El escritorio donde se guardan los borradores
-define('UPLOAD_DIR', __DIR__ . '/temp/');
+// Upload externos: Sanitización + validación MIME
+$allowedMimeTypes = ['audio/mpeg', 'audio/wav', 'audio/flac']
+$maxSize = 12 * 1024 * 1024; // 12MB
 ```
 
+### Rutas de API
+```javascript
+// ✅ CORRECTO con apiClient
+apiClient.post('/generate.php', data)
 
-## 🔧 **Claude Code - Protocolo de Trabajo Específico**
+// ❌ INCORRECTO - causa duplicación /apiapi/
+apiClient.post('api/generate.php', data)
+```
+
+## 🎯 DESARROLLO GUIDELINES
 
 ### Antes de cualquier respuesta técnica:
-
-1. **Consultar archivos RAW** relevantes del proyecto usando web_fetch
-2. **Verificar patrones existentes** antes de proponer nuevos
-3. **Confirmar que entendiste** el contexto de VPS de desarrollo
-4. **Proponer la solución MÁS SIMPLE** que funcione
-5. **Incluir comandos de backup** en cada sugerencia
-6. **Ultra-think** para cambios que afecten múltiples módulos
+1. **Consultar docs** `docs/AUDIO_SYSTEM_ARCHITECTURE.md`
+2. **Verificar patrones existentes** en código
+3. **Confirmar contexto VPS** de desarrollo
+4. **Proponer solución MÁS SIMPLE**
+5. **Incluir comandos backup** obligatorios
 
 ### Estructura de respuesta ideal:
-
 1. **Contexto del desarrollo** (por qué es importante)
-2. **Análisis del código existente** (enlaces RAW consultados)
+2. **Análisis del código existente** (archivos consultados)
 3. **Solución paso a paso** (con comandos VPS)
 4. **Plan de backup/rollback** (seguridad primero)
 5. **Verificación de éxito** (cómo confirmar que funciona)
 
-### **IMPORTANT:** Recordar siempre:
-- **Proactively** sugerir mejoras cuando veas oportunidades
-- **Ultra-think** el impacto antes de proponer cambios grandes
-- Mantener el enfoque en simplicidad y patrones consistentes
+### Principios de Arquitectura:
+- **1 archivo = 1 responsabilidad**
+- **Módulos independientes** (loose coupling)
+- **Patrones consistentes** (seguir existentes)
+- **Event-driven** (usar event-bus.js)
+- **Fail fast** (detectar errores temprano)
+
+## 📊 MÉTRICAS SISTEMA ACTUAL
+
+- **Módulos Frontend**: 6 principales + shared
+- **APIs Backend**: 5 principales + services
+- **Base de datos**: SQLite unificada
+- **Integraciones**: AzuraCast + ElevenLabs
+- **Archivos audio soportados**: 800+ (sin degradación)
+- **Upload máximo**: 12MB
+- **Formatos**: MP3, WAV, FLAC, AAC, Ogg, M4A, Opus
+
+## 🔮 ROADMAP FUTURO
+
+### Corto Plazo (Próximas versiones)
+- 🎵 Resolver reproducción archivos externos
+- 🔄 Migrar audio-scheduler.php a BD principal
+- 📱 Mejorar responsive design
+
+### Mediano Plazo
+- 🔍 Búsqueda avanzada y filtros
+- 👥 Sistema de usuarios y permisos
+- 📊 Analytics y estadísticas uso
+
+### Largo Plazo
+- ☁️ Backup automático cloud
+- 🌐 API REST completa
+- 📱 App móvil complementaria
 
 ---
+
+## 🚨 REMEMBER: DEVELOPMENT VPS ACTIVE
+
+Este sistema está en desarrollo activo con usuarios reales del mall. Cualquier cambio debe ser:
+1. **Testeado exhaustivamente**
+2. **Con backup completo**
+3. **Documentado apropiadamente**
+4. **Committed inmediatamente**
+
+**El usuario principal es NO-técnico** - todas las explicaciones deben ser simples y claras.
+
+---
+
+*Documentación actualizada: 29 de Agosto, 2025*  
+*Sistema MBI-v4 - Radio Automatizada Mall Barrio Independencia*
