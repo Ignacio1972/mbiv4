@@ -321,7 +321,7 @@ export class CalendarView {
     
     async loadAudioSchedules() {
         try {
-            const response = await fetch('/api/audio-scheduler.php', {
+            const response = await fetch('http://localhost/mbi-v3/api/audio-scheduler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'list' })

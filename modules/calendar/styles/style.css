@@ -254,3 +254,12 @@
         justify-content: center;
     }
 }
+/* Sobrescribir con colores de mbi-v4 */
+:root {
+    --bg-input: #334155 !important;
+    --bg-card: #1e293b !important;
+    --text-primary: #f1f5f9 !important;
+    --text-secondary: #94a3b8 !important;
+    --border-color: #334155 !important;
+    --primary: #3b82f6 !important;
+}

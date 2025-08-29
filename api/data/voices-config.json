@@ -29,7 +29,7 @@
             "id": "pXOYlNbO024q13bfqrw0",
             "label": "jefry",
             "gender": "M",
-            "active": false,
+            "active": true,
             "category": "custom",
             "added_date": "2025-08-24 04:57:42"
         },
@@ -37,14 +37,14 @@
             "id": "9bDwPIakVNJ6w1nZOeRD",
             "label": "cristi",
             "gender": "F",
-            "active": true,
+            "active": false,
             "category": "custom",
             "added_date": "2025-08-26 04:15:43"
         }
     },
     "settings": {
         "default_voice": "juan_carlos",
-        "last_updated": "2025-08-26T04:41:18+00:00",
+        "last_updated": "2025-08-28T14:50:13+00:00",
         "version": "2.0"
     }
 }

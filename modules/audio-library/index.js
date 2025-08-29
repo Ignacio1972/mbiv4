@@ -1,6 +1,7 @@
 /**
  * Audio Library Module - Biblioteca de Archivos de Audio
  * VERSIÓN CON BASE DE DATOS - Reemplaza localStorage
+ * Historial de todos los archivos generados
  * @module AudioLibraryModule
  */
 

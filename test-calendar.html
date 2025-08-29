@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI - Calendario</title>
+    <link rel="stylesheet" href="/styles/core/design-tokens.css">
+    <style>
+        .calendar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .calendar-day {
+            background: var(--bg-secondary);
+            min-height: 100px;
+            padding: var(--space-sm);
+            position: relative;
+        }
+        
+        .calendar-day-header {
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: var(--space-md);
+            background: var(--bg-tertiary);
+        }
+        
+        .calendar-day-number {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .calendar-event {
+            font-size: 0.75rem;
+            padding: 2px 4px;
+            margin-bottom: 2px;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        
+        /* Colores de categorías */
+        .event-ofertas { background: #10b981; color: white; }
+        .event-eventos { background: #8b5cf6; color: white; }
+        .event-informacion { background: #0891b2; color: white; }
+        .event-servicios { background: #f59e0b; color: white; }
+        .event-horarios { background: #6366f1; color: white; }
+        .event-emergencias { background: #dc2626; color: white; }
+        
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+        
+        .month-nav {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+        
+        .btn-nav {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        
+        .btn-nav:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .current-month {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">📅</span>
+                Calendario de Mensajes
+            </h1>
+        </div>
+        
+        <div class="calendar-controls">
+            <div class="month-nav">
+                <button class="btn-nav" onclick="previousMonth()">◀</button>
+                <span class="current-month" id="currentMonth">Diciembre 2024</span>
+                <button class="btn-nav" onclick="nextMonth()">▶</button>
+            </div>
+            <div>
+                <select id="categoryFilter" class="filter-select" style="padding: var(--space-sm) var(--space-md); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                    <option value="all">Todas las categorías</option>
+                    <option value="ofertas">Ofertas</option>
+                    <option value="eventos">Eventos</option>
+                    <option value="informacion">Información</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="horarios">Horarios</option>
+                    <option value="emergencias">Emergencias</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="calendar-grid">
+            <!-- Headers -->
+            <div class="calendar-day-header">Dom</div>
+            <div class="calendar-day-header">Lun</div>
+            <div class="calendar-day-header">Mar</div>
+            <div class="calendar-day-header">Mié</div>
+            <div class="calendar-day-header">Jue</div>
+            <div class="calendar-day-header">Vie</div>
+            <div class="calendar-day-header">Sáb</div>
+            
+            <!-- Calendar days will be generated here -->
+            <div id="calendarDays"></div>
+        </div>
+    </div>
+    
+    <script>
+        let currentDate = new Date();
+        let schedules = [];
+        
+        async function loadSchedules() {
+            try {
+                const response = await fetch('/calendario/api/audio-scheduler.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'list' })
+                });
+                
+                const result = await response.json();
+                if (result.success && result.schedules) {
+                    schedules = result.schedules;
+                    renderCalendar();
+                }
+            } catch (error) {
+                console.error('Error loading schedules:', error);
+                // Render calendar anyway with no events
+                renderCalendar();
+            }
+        }
+        
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month display
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Generate calendar HTML
+            let calendarHTML = '';
+            
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<div class="calendar-day" style="background: var(--bg-tertiary);"></div>';
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const events = getEventsForDay(year, month, day);
+                let eventsHTML = events.map(e => 
+                    `<div class="calendar-event event-${e.category}">${e.time} ${e.title}</div>`
+                ).join('');
+                
+                calendarHTML += `
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">${day}</div>
+                        ${eventsHTML}
+                    </div>
+                `;
+            }
+            
+            // Replace the days
+            const grid = document.querySelector('.calendar-grid');
+            const headers = grid.querySelectorAll('.calendar-day-header');
+            grid.innerHTML = '';
+            headers.forEach(h => grid.appendChild(h));
+            
+            const daysContainer = document.createElement('div');
+            daysContainer.style.display = 'contents';
+            daysContainer.innerHTML = calendarHTML;
+            grid.appendChild(daysContainer);
+        }
+        
+        function getEventsForDay(year, month, day) {
+            // Example events - replace with actual schedule data
+            const exampleEvents = [
+                { day: 15, time: '10:00', title: 'Oferta Flash', category: 'ofertas' },
+                { day: 20, time: '14:00', title: 'Evento Musical', category: 'eventos' },
+                { day: 25, time: '09:00', title: 'Horario Navidad', category: 'horarios' }
+            ];
+            
+            return exampleEvents.filter(e => e.day === day);
+        }
+        
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+        
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+        
+        // Load on start
+        loadSchedules();
+    </script>
+</body>
+</html>

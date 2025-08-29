@@ -176,3 +176,35 @@
         padding: var(--space-md);
     }
 }
+/* Agregar al final del archivo */
+.form-label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+#categorySelect {
+    margin-top: 0;
+}
+
+/* Indicador visual de categoría seleccionada */
+#categorySelect:has(option[value="ofertas"]:checked) {
+    border-left: 3px solid #10b981;
+}
+#categorySelect:has(option[value="eventos"]:checked) {
+    border-left: 3px solid #8b5cf6;
+}
+#categorySelect:has(option[value="informacion"]:checked) {
+    border-left: 3px solid #0891b2;
+}
+#categorySelect:has(option[value="servicios"]:checked) {
+    border-left: 3px solid #f59e0b;
+}
+#categorySelect:has(option[value="horarios"]:checked) {
+    border-left: 3px solid #6366f1;
+}
+#categorySelect:has(option[value="emergencias"]:checked) {
+    border-left: 3px solid #dc2626;
+}

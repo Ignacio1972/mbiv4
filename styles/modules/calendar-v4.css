@@ -1,0 +1,174 @@
+/* 
+ * Calendar V4 Visual Update
+ * Este archivo sobrescribe estilos sin modificar el código existente
+ * Para revertir: simplemente eliminar este archivo
+ */
+
+@import url('../core/variables.css');
+
+/* ========================================
+   SOBRESCRIBIR COLORES DE FULLCALENDAR
+   ======================================== */
+
+/* Header del calendario */
+.fc-header-toolbar {
+    background: transparent !important;
+    padding: 1rem 0 !important;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+}
+
+/* Botones de navegación */
+.fc-button {
+    background: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+}
+
+.fc-button:hover {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: white !important;
+}
+
+.fc-button-active {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: white !important;
+}
+
+/* Celdas del calendario */
+.fc-daygrid-day {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.fc-day-today {
+    background: rgba(56, 122, 222, 0.1) !important;
+}
+
+.fc-col-header-cell {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+}
+
+/* Eventos del calendario */
+.fc-event {
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 0.75rem !important;
+    padding: 2px 4px !important;
+}
+
+/* ========================================
+   ESTILO PARA TABLA DE SCHEDULES
+   ======================================== */
+
+.schedules-table-container {
+    background: var(--bg-tertiary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.schedules-table {
+    background: var(--bg-secondary) !important;
+}
+
+.schedules-table th {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+.schedules-table td {
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* ========================================
+   AJUSTES GENERALES
+   ======================================== */
+
+.calendar-module {
+    background: transparent !important;
+}
+
+.message-section {
+    background: var(--bg-secondary) !important;
+    border-radius: 0.5rem !important;
+    padding: 1.5rem !important;
+    border: 1px solid var(--border-color) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.schedules-list-section {
+    background: var(--bg-secondary) !important;
+    border-radius: 0.5rem !important;
+    padding: 1.5rem !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.result-header h3 {
+    color: var(--text-primary) !important;
+    font-size: 1.125rem !important;
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-secondary:hover {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: white !important;
+}
+
+/* Loading states */
+.loading-state {
+    color: var(--text-secondary) !important;
+}
+
+.loading-spinner {
+    border-color: var(--border-color) !important;
+    border-top-color: var(--primary) !important;
+}
+
+/* ========================================
+   SCHEDULE CARDS (como calendario9.html)
+   ======================================== */
+
+.schedule-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.schedule-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
+}
+
+.schedule-card:hover {
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.schedule-card.disabled {
+    opacity: 0.5;
+}
+
+/* Resto de estilos ya definidos arriba... */

@@ -183,17 +183,20 @@ try {
             $stmt = $db->prepare("
                 INSERT INTO audio_metadata 
                 (filename, display_name, description, category, is_saved, saved_at, created_at) 
-                VALUES (?, ?, ?, ?, 1, datetime('now'), datetime('now'))
+                VALUES (?, ?, ?, ?, 0, datetime('now'), datetime('now'))
+
             ");
             
             // Usar el texto procesado del resultado
             $textUsed = $result['processed_text'] ?? $input['text'] ?? 'Mensaje generado';
-            $displayName = substr($textUsed, 0, 100); // Primeros 100 caracteres
+            $words = explode(' ', $textUsed);
+            $displayName = implode(' ', array_slice($words, 0, 5));
+            if (count($words) > 5) $displayName .= '...'; // Primeros 100 caracteres
             $stmt->execute([
                 $actualFilename,
                 $displayName,
                 $textUsed,
-                'general'
+                $input['category'] ?? 'sin_categoria'
             ]);
             
             logMessage("Metadata guardada en BD para: $filename");

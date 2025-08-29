@@ -1,0 +1,129 @@
+/* Estilos para las cards de schedules como en calendario9.html */
+
+.schedule-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.schedule-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
+}
+
+.schedule-card:hover {
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.schedule-info {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.schedule-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.schedule-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.category-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.badge-ofertas { background: #10b981; color: white; }
+.badge-eventos { background: #8b5cf6; color: white; }
+.badge-informacion { background: #0891b2; color: white; }
+.badge-servicios { background: #f59e0b; color: white; }
+.badge-horarios { background: #6366f1; color: white; }
+
+.schedule-message {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 0.25rem;
+    border-left: 3px solid var(--primary);
+}
+
+.schedule-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-delete-icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--gray-500);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.toggle-switch.active {
+    background: var(--success);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(20px);
+}
+
+@media (max-width: 768px) {
+    .schedule-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

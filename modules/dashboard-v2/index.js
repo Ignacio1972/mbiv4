@@ -18,6 +18,7 @@ export default class DashboardV2Module {
             controlsVisible: false,
             voices: [],
             selectedVoice: 'juan_carlos',
+            selectedCategory: localStorage.getItem('mbi_selectedCategory') || 'sin_categoria',
             voiceSettings: {
                 style: 0.5,
                 stability: 0.75,
@@ -129,6 +130,7 @@ export default class DashboardV2Module {
             // Generador
             messageText: document.getElementById('messageText'),
             voiceSelect: document.getElementById('voiceSelect'),
+            categorySelect: document.getElementById('categorySelect'),
             generateBtn: document.getElementById('generateBtn'),
             messageForm: document.getElementById('messageForm'),
             
@@ -228,6 +230,17 @@ export default class DashboardV2Module {
             this.state.selectedVoice = e.target.value;
         });
         
+        // Selector de categoría
+        if (this.elements.categorySelect) {
+            this.elements.categorySelect.addEventListener('change', (e) => {
+                this.state.selectedCategory = e.target.value;
+                localStorage.setItem('mbi_selectedCategory', e.target.value);
+            });
+            
+            // Establecer valor inicial del dropdown
+            this.elements.categorySelect.value = this.state.selectedCategory;
+        }
+        
         // Refrescar mensajes
         this.elements.refreshMessages.addEventListener('click', () => this.loadRecentMessages());
         
@@ -271,6 +284,7 @@ export default class DashboardV2Module {
             const voice = this.state.voices.find(v => v.key === this.state.selectedVoice);
             console.log('Voz seleccionada:', this.state.selectedVoice);
             console.log('Voz encontrada:', voice);
+            console.log('Categoría seleccionada:', this.state.selectedCategory);
             
             if (!voice) {
                 this.showError('No se encontró la voz seleccionada');
@@ -281,6 +295,7 @@ export default class DashboardV2Module {
                 action: 'generate_audio',
                 text: text,
                 voice: voice.id,
+                category: this.state.selectedCategory,
                 voice_settings: {
                     style: this.state.voiceSettings.style,
                     stability: this.state.voiceSettings.stability,
@@ -295,8 +310,11 @@ export default class DashboardV2Module {
                 this.playAudio(audioUrl);
                 this.showSuccess('Audio generado exitosamente');
                 
-                // Actualizar quota después de generar
-                await this.updateQuotaChart();
+                // Actualizar quota y mensajes recientes
+                await Promise.all([
+                    this.updateQuotaChart(),
+                    this.loadRecentMessages()
+                ]);
             } else {
                 throw new Error(response.error || 'Error al generar audio');
             }
@@ -420,16 +438,11 @@ export default class DashboardV2Module {
      */
     async loadRecentMessages() {
         try {
-            const response = await this.apiClient.post('/api/saved-messages.php', {
-                action: 'list',
-                limit: 6,
-                orderBy: 'created_at',
-                order: 'DESC'
-            });
+            const response = await fetch('/api/recent-messages.php');
+            const data = await response.json();
             
-            // La API devuelve "messages", no "data"
-            if (response.success && (response.data || response.messages)) {
-                this.state.recentMessages = response.data || response.messages;
+            if (data.success) {
+                this.state.recentMessages = data.messages || [];
                 this.renderMessages();
             }
             
@@ -483,38 +496,81 @@ export default class DashboardV2Module {
     }
 
     // Método para guardar en favoritos
-    saveToFavorites(id, filename, title) {
-        if (confirm(`¿Guardar "${title}" en favoritos?`)) {
-            const btn = event.target;
-            btn.style.color = '#10b981';
-            btn.style.background = 'rgba(16, 185, 129, 0.1)';
-            btn.disabled = true;
-            btn.textContent = '✓';
-            
-            // Emitir evento para que otros módulos lo escuchen
-            this.eventBus.emit('message:saved:library', {
-                id: id,
-                filename: filename,
-                title: title,
-                savedAt: new Date().toISOString()
-            });
-            
-            this.showSuccess('Guardado en favoritos');
+    async saveToFavorites(id, filename, title) {
+        if (confirm(`¿Guardar "${title}" en mensajes guardados?`)) {
+            try {
+                // Llamar API para marcar como guardado CON CATEGORÍA
+                const response = await this.apiClient.post('/api/saved-messages.php', {
+                    action: 'mark_as_saved',
+                    id: id,
+                    filename: filename,
+                    category: this.state.selectedCategory, // AGREGAR ESTA LÍNEA
+                    title: title // AGREGAR TAMBIÉN EL TÍTULO
+                });
+                
+                if (response.success) {
+                    // Emitir evento para Campaign Library
+                    this.eventBus.emit('message:saved:library', {
+                        id: response.data.id,
+                        filename: response.data.filename,
+                        title: response.data.display_name || title,
+                        category: response.data.category,
+                        type: 'audio',
+                        savedAt: response.data.saved_at
+                    });
+                    
+                    // NO usar event.target, buscar el botón por ID
+                    const messageCard = this.container.querySelector(`[data-id="${id}"]`);
+                    if (messageCard) {
+                        const btn = messageCard.querySelector('.btn-save');
+                        if (btn) {
+                            btn.style.color = '#10b981';
+                            btn.style.background = 'rgba(16, 185, 129, 0.1)';
+                            btn.disabled = true;
+                            btn.textContent = '✓';
+                        }
+                    }
+                    
+                    // Recargar lista después de un momento
+                    setTimeout(() => {
+                        this.loadRecentMessages();
+                    }, 500);
+                    
+                    this.showSuccess('Guardado en mensajes favoritos');
+                }
+            } catch (error) {
+                console.error('Error guardando mensaje:', error);
+                this.showError('Error al guardar el mensaje');
+            }
         }
     }
 
-    // Método para eliminar mensaje
-    removeMessage(id) {
-        if (confirm('¿Eliminar este mensaje de la lista?')) {
-            const card = this.elements.messageList.querySelector(`[data-id="${id}"]`);
-            if (card) {
-                card.style.transition = 'all 0.3s ease';
-                card.style.opacity = '0';
-                card.style.transform = 'translateX(-20px)';
-                setTimeout(() => {
-                    this.state.recentMessages = this.state.recentMessages.filter(m => m.id !== id);
-                    this.renderMessages();
-                }, 300);
+    // Método para eliminar mensaje (soft delete)
+    async removeMessage(id) {
+        if (confirm('¿Archivar este mensaje?')) {
+            try {
+                // Llamar API para soft delete
+                const response = await this.apiClient.post('/api/saved-messages.php', {
+                    action: 'soft_delete',
+                    id: id
+                });
+                
+                if (response.success) {
+                    // Animar y remover de UI
+                    const card = this.elements.messageList.querySelector(`[data-id="${id}"]`);
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            this.loadRecentMessages(); // Recargar lista
+                        }, 300);
+                    }
+                    this.showSuccess('Mensaje archivado');
+                }
+            } catch (error) {
+                console.error('Error archivando mensaje:', error);
+                this.showError('Error al archivar el mensaje');
             }
         }
     }
@@ -524,9 +580,9 @@ export default class DashboardV2Module {
      */
     renderExampleMessages() {
         const examples = [
-            { title: 'Oferta Black Friday', text: 'Atención visitantes, este viernes...', category: 'ofertas', created_at: new Date() },
-            { title: 'Cambio de Horario', text: 'Informamos a nuestros visitantes...', category: 'informacion', created_at: new Date(Date.now() - 3600000) },
-            { title: 'Evento Musical', text: 'Este sábado presentamos música en vivo...', category: 'eventos', created_at: new Date(Date.now() - 7200000) }
+            { id: 'example_1', title: 'Oferta Black Friday', content: 'Atención visitantes, este viernes...', category: 'ofertas', created_at: new Date() },
+            { id: 'example_2', title: 'Cambio de Horario', content: 'Informamos a nuestros visitantes...', category: 'informacion', created_at: new Date(Date.now() - 3600000) },
+            { id: 'example_3', title: 'Evento Musical', content: 'Este sábado presentamos música en vivo...', category: 'eventos', created_at: new Date(Date.now() - 7200000) }
         ];
         
         this.state.recentMessages = examples;
@@ -605,7 +661,8 @@ export default class DashboardV2Module {
             'informacion': 'Info',
             'servicios': 'Servicios',
             'horarios': 'Horarios',
-            'emergencias': 'Urgente'
+            'emergencias': 'Urgente',
+            'sin_categoria': 'Sin Cat.'
         };
         return labels[category] || 'Sin Cat.';
     }

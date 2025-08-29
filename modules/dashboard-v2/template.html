@@ -12,7 +12,7 @@
         <div class="card-header">
             <h2 class="card-title">
                 <span class="card-icon">🎙️</span>
-                Generador de Mensajes
+                Generador de Mensajes Buenos
             </h2>
         </div>
         <form class="message-form" id="messageForm">
@@ -28,6 +28,19 @@
                     <!-- Se llenará dinámicamente -->
                 </select>
             </div>
+            <!-- AGREGAR DESPUÉS DE LÍNEA 29 -->
+<div class="form-group">
+    <label class="form-label" for="categorySelect">Categoría del mensaje</label>
+    <select id="categorySelect" class="form-select">
+        <option value="sin_categoria">📋 Sin categoría</option>
+        <option value="ofertas">🏷️ Ofertas</option>
+        <option value="eventos">🎉 Eventos</option>
+        <option value="informacion">ℹ️ Información</option>
+        <option value="servicios">🛠️ Servicios</option>
+        <option value="horarios">🕐 Horarios</option>
+        <option value="emergencias">🚨 Emergencias</option>
+    </select>
+</div>
             <div class="form-actions">
                 <button type="button" id="generateBtn" class="btn btn-primary">
                     <span>🎙️</span>

@@ -1,5 +1,14 @@
 /**
- * Campaign Library Module - Biblioteca de Mensajes
+ * MENSAJES SELECCIONADOS - Campañas y mensajes para reutilizar
+ * 
+ * Esta sección contiene los mensajes TTS que han sido seleccionados 
+ * y guardados intencionalmente para su reutilización, como:
+ * - Campañas publicitarias recurrentes
+ * - Anuncios de temporada 
+ * - Plantillas de mensajes frecuentes
+ * - Mensajes institucionales importantes
+ * 
+ * Nombre técnico del módulo: campaign-library
  * @module CampaignLibraryModule
  */
 
