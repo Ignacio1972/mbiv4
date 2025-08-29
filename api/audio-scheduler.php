@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 date_default_timezone_set('America/Santiago');
 
 // Configuración
-$dbPath = __DIR__ . '/../calendario/api/db/calendar.db';
+$dbPath = __DIR__ . '/db/calendar.db';
 
 // Funciones principales
 function getDBConnection() {
@@ -370,6 +370,40 @@ function getLastExecution($schedule_id) {
 }
 
 /**
+ * Actualizar categoría de schedules por filename
+ * NUEVO: Para sincronizar cuando se cambia categoría desde Campaign Library
+ */
+function updateCategoryByFilename($input) {
+    $db = getDBConnection();
+    $filename = $input['filename'] ?? '';
+    $newCategory = $input['category'] ?? '';
+    
+    if (empty($filename) || empty($newCategory)) {
+        return [
+            'success' => false,
+            'error' => 'Filename y categoría son requeridos'
+        ];
+    }
+    
+    $stmt = $db->prepare("
+        UPDATE audio_schedule 
+        SET category = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE filename = ?
+    ");
+    $stmt->execute([$newCategory, $filename]);
+    
+    $updatedRows = $stmt->rowCount();
+    
+    error_log("[AudioScheduler] Actualizada categoría: $filename → $newCategory ($updatedRows schedules)");
+    
+    return [
+        'success' => true,
+        'message' => "Categoría actualizada en $updatedRows schedule(s)",
+        'updated_schedules' => $updatedRows
+    ];
+}
+
+/**
  * Registrar ejecución
  */
 function logExecution($schedule_id, $status = 'success', $message = '') {
@@ -384,8 +418,14 @@ function logExecution($schedule_id, $status = 'success', $message = '') {
 
 // Procesar request
 try {
-    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $rawInput = file_get_contents('php://input');
+    error_log("[AudioScheduler] Raw input: " . $rawInput);
+    
+    $input = json_decode($rawInput, true) ?? [];
     $action = $input['action'] ?? $_GET['action'] ?? '';
+    
+    error_log("[AudioScheduler] Parsed action: " . $action);
+    error_log("[AudioScheduler] Full input: " . json_encode($input));
     
     switch ($action) {
         case 'create':
@@ -415,6 +455,10 @@ try {
                 $input['message'] ?? ''
             );
             echo json_encode(['success' => true]);
+            break;
+            
+        case 'update_category_by_filename':
+            echo json_encode(updateCategoryByFilename($input));
             break;
             
         default:

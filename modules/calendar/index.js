@@ -107,7 +107,7 @@ export default class CalendarModule {
     async loadAvailableFiles() {
         try {
             // Usar la API existente de biblioteca
-            const response = await apiClient.post('/biblioteca.php', {
+            const response = await apiClient.post('api/biblioteca.php', {
                 action: 'list_library'
             });
             
@@ -176,7 +176,7 @@ export default class CalendarModule {
             // Mostrar loading
             container.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Cargando programaciones...</p></div>';
             
-            const response = await fetch('http://localhost/mbi-v3/api/audio-scheduler.php'
+            const response = await fetch('api/audio-scheduler.php'
 , {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -374,7 +374,7 @@ export default class CalendarModule {
      */
     viewScheduleFromList(scheduleId) {
         // Buscar el schedule en los datos
-        fetch('http://localhost/mbi-v3/api/audio-scheduler.php', {
+        fetch('api/audio-scheduler.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'list' })
@@ -451,6 +451,14 @@ export default class CalendarModule {
         
         eventBus.on('schedule:deleted', () => {
             console.log('[Calendar] Schedule deleted, refreshing calendar...');
+            this.loadCalendarEvents();
+            this.loadSchedulesList();
+        });
+        
+        // NUEVO: Escuchar cambios de categoría desde Campaign Library
+        eventBus.on('schedule:category:updated', (data) => {
+            console.log('[Calendar] Category updated for:', data.filename, '→', data.category);
+            console.log('[Calendar] Refreshing calendar and schedules list...');
             this.loadCalendarEvents();
             this.loadSchedulesList();
         });
@@ -612,7 +620,7 @@ export default class CalendarModule {
         const title = scheduleData.title || filename || 'Sin título';
         
         // URL del audio
-        const audioUrl = `http://localhost/mbi-v3/api/biblioteca.php?filename=${filename}`;
+        const audioUrl = `api/biblioteca.php?filename=${filename}`;
         
         // Formatear fecha de creación
         const createdDate = createdAt ? new Date(createdAt).toLocaleString('es-CL') : 'Fecha desconocida';
@@ -687,7 +695,7 @@ export default class CalendarModule {
         try {
             console.log('[Calendar] Deleting schedule:', scheduleId);
             
-            const response = await fetch('http://localhost/mbi-v3/api/audio-scheduler.php', {
+            const response = await fetch('api/audio-scheduler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

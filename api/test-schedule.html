@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Schedule Modal</title>
+</head>
+<body>
+    <h1>Test Audio Scheduler API</h1>
+    
+    <button onclick="testList()">Test List Schedules</button>
+    <button onclick="testCreate()">Test Create Schedule</button>
+    
+    <div id="results" style="margin-top: 20px; background: #f5f5f5; padding: 10px;"></div>
+    
+    <script>
+    function log(message) {
+        const results = document.getElementById('results');
+        results.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+    }
+    
+    async function testList() {
+        log('Testing list schedules...');
+        try {
+            const response = await fetch('audio-scheduler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'list', active_only: true })
+            });
+            
+            log('Response status: ' + response.status);
+            
+            if (!response.ok) {
+                const text = await response.text();
+                log('Error response: ' + text);
+                return;
+            }
+            
+            const result = await response.json();
+            log('Success: ' + JSON.stringify(result, null, 2));
+            
+        } catch (error) {
+            log('ERROR: ' + error.message);
+        }
+    }
+    
+    async function testCreate() {
+        log('Testing create schedule...');
+        try {
+            const data = {
+                action: 'create',
+                filename: 'test-audio.mp3',
+                title: 'Test Schedule',
+                category: 'ofertas',
+                schedule_type: 'interval',
+                interval_hours: 1,
+                interval_minutes: 0
+            };
+            
+            log('Sending data: ' + JSON.stringify(data));
+            
+            const response = await fetch('audio-scheduler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            log('Response status: ' + response.status);
+            
+            if (!response.ok) {
+                const text = await response.text();
+                log('Error response: ' + text);
+                return;
+            }
+            
+            const result = await response.json();
+            log('Success: ' + JSON.stringify(result, null, 2));
+            
+        } catch (error) {
+            log('ERROR: ' + error.message);
+        }
+    }
+    </script>
+</body>
+</html>

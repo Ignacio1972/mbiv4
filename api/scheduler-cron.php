@@ -1,15 +1,21 @@
 #!/usr/bin/php
 <?php
 /**
- * Script cron para ejecutar programaciones automáticas
- * Ejecutar cada minuto: * * * * * /usr/bin/php /var/www/mbi-v3/api/scheduler-cron.php
+ * Script cron para ejecutar programaciones automáticas MBI-v4
+ * Ejecutar cada minuto: * * * * * /usr/bin/php /var/www/mbi-v4/api/scheduler-cron.php
  */
 // Configurar zona horaria de Chile
 date_default_timezone_set('America/Santiago');
 
+// Crear directorio de logs si no existe
+$logDir = __DIR__ . '/logs/scheduler/';
+if (!is_dir($logDir)) {
+    mkdir($logDir, 0755, true);
+}
+
 // Configuración
-$dbPath = __DIR__ . '/../calendario/api/db/calendar.db';
-$logFile = __DIR__ . '/logs/scheduler-' . date('Y-m-d') . '.log';
+$dbPath = __DIR__ . '/db/calendar.db';
+$logFile = $logDir . date('Y-m-d') . '.log';
 
 // Función para log
 function logMessage($message) {
@@ -22,11 +28,11 @@ function logMessage($message) {
 function sendToRadio($filename) {
     logMessage("Enviando a radio: $filename");
     
-    // Usar el mismo endpoint que funciona en generate.php
-    $ch = curl_init('http://localhost:3000/api/generate.php');
+    // Usar el endpoint de biblioteca para enviar archivos guardados
+    $ch = curl_init('http://localhost/api/biblioteca.php');
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-        'action' => 'send_to_radio',
+        'action' => 'send_library_to_radio',
         'filename' => $filename
     ]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -67,7 +73,7 @@ try {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Obtener programaciones a ejecutar
-    $ch = curl_init('http://localhost:3000/api/audio-scheduler.php');
+    $ch = curl_init('http://localhost/api/audio-scheduler.php');
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['action' => 'check_execute']));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -102,7 +108,7 @@ try {
             $success = sendToRadio($filename);
             
             // Registrar ejecución
-            $ch = curl_init('http://localhost:3000/api/audio-scheduler.php');
+            $ch = curl_init('http://localhost/api/audio-scheduler.php');
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
                 'action' => 'log_execution',

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test API Routes</title></head>
+<body>
+<h1>Test API Accessibility</h1>
+<div id="log"></div>
+
+<script>
+function log(msg) {
+    document.getElementById('log').innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + msg + '</div>';
+}
+
+async function testRoutes() {
+    const routes = [
+        'api/audio-scheduler.php',
+        'api/biblioteca.php',
+        '/api/audio-scheduler.php',
+        '/api/biblioteca.php'
+    ];
+    
+    for (const route of routes) {
+        try {
+            log('Testing: ' + route);
+            const response = await fetch(route, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({action: 'list'})
+            });
+            
+            log('✅ ' + route + ' - Status: ' + response.status);
+        } catch (error) {
+            log('❌ ' + route + ' - Error: ' + error.message);
+        }
+    }
+}
+
+// Auto-run test
+testRoutes();
+</script>
+</body>
+</html>

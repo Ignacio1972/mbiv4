@@ -353,7 +353,7 @@ export class ScheduleModal {
         }
         
         try {
-            const response = await fetch('/api/audio-scheduler.php', {
+            const response = await fetch('api/audio-scheduler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
