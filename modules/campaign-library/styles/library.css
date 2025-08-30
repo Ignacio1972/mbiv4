@@ -66,6 +66,111 @@
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
+/* Search Container - Estilo Apple */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: relative;
+}
+
+.search-toggle-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.search-toggle-btn:hover {
+    background: var(--bg-input);
+    border-color: var(--primary-light);
+    color: var(--text-primary);
+}
+
+/* Contenedor del input y botón X */
+.search-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-input.collapsed {
+    width: 0;
+    opacity: 0;
+    padding: 0;
+    border: none;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.search-input.expanded {
+    width: 200px;
+    opacity: 1;
+    padding: var(--space-sm) 32px var(--space-sm) var(--space-md); /* Espacio a la derecha para el botón X */
+    border: 1px solid var(--border-color);
+    border-left: none;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    margin-left: -1px;
+}
+
+.search-input.expanded:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Botón X para limpiar */
+.search-clear-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    opacity: 0;
+}
+
+.search-clear-btn.collapsed {
+    display: none;
+}
+
+.search-clear-btn.expanded {
+    display: flex;
+}
+
+.search-clear-btn:hover {
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+/* Cuando search está expandido, redondear solo el lado izquierdo del botón */
+.search-container:has(.search-input.expanded) .search-toggle-btn {
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
 /* Controls */
 .library-controls {
     background: var(--bg-secondary);
@@ -80,25 +185,13 @@
 /* Actions Bar */
 .library-actions {
     display: flex;
+    justify-content: flex-end;  /* Alinear a la derecha */
     gap: 1rem;
     align-items: center;
+    margin-bottom: var(--space-lg);
 }
 
-.search-input {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-size: 1rem;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
+/* Estilos base para search-input movidos a .search-input.expanded arriba */
 
 .sort-select {
     padding: 0.75rem 1rem;

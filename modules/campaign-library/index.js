@@ -114,23 +114,28 @@ render() {
                     <select id="library-sort" class="filter-select">
                         <option value="date_desc">Más recientes</option>
                         <option value="date_asc">Más antiguos</option>
-                        <option value="play_count">Más reproducidos</option>
-                        <option value="title_asc">Alfabético</option>
                     </select>
+                    
+                    <!-- Search expandible estilo Apple -->
+                    <div class="search-container">
+                        <button id="search-toggle" class="search-toggle-btn" title="Buscar">
+                            🔍
+                        </button>
+                        <div class="search-input-container">
+                            <input type="text" 
+                                   id="library-search" 
+                                   class="search-input collapsed" 
+                                   placeholder="Buscar mensajes...">
+                            <button id="search-clear" class="search-clear-btn" title="Limpiar búsqueda">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Barra de acciones secundarias -->
             <div class="library-actions">
-                <input type="text" 
-                       id="library-search" 
-                       class="search-input" 
-                       placeholder="🔍 Buscar mensajes...">
-                
-                <button class="btn btn-primary" id="create-new-btn">
-                    ➕ Crear Mensaje
-                </button>
-                
                 <button class="btn btn-secondary" id="upload-audio-btn">
                     🎵 Subir Audio
                 </button>
@@ -169,13 +174,66 @@ render() {
             });
         }
         
-        // Búsqueda
+        // Búsqueda expandible
+        const searchToggle = this.container.querySelector('#search-toggle');
         const searchInput = this.container.querySelector('#library-search');
-        if (searchInput) {
+        const searchClear = this.container.querySelector('#search-clear');
+        const searchContainer = this.container.querySelector('.search-container');
+        
+        if (searchToggle && searchInput && searchClear) {
+            searchToggle.addEventListener('click', () => {
+                const isCollapsed = searchInput.classList.contains('collapsed');
+                
+                if (isCollapsed) {
+                    // Expandir
+                    searchInput.classList.remove('collapsed');
+                    searchInput.classList.add('expanded');
+                    searchClear.classList.remove('collapsed');
+                    searchClear.classList.add('expanded');
+                    searchInput.focus();
+                } else {
+                    // Colapsar solo si está vacío
+                    if (searchInput.value.trim() === '') {
+                        this.collapseSearch();
+                    }
+                }
+            });
+            
+            // Botón X para limpiar
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                this.searchMessages('');
+                this.collapseSearch();
+            });
+            
+            // Búsqueda en tiempo real
             searchInput.addEventListener('input', (e) => {
                 this.searchMessages(e.target.value);
+                
+                // Mostrar/ocultar botón X según si hay texto
+                if (e.target.value.trim() === '') {
+                    searchClear.style.opacity = '0';
+                } else {
+                    searchClear.style.opacity = '1';
+                }
             });
         }
+        
+        // Click fuera para colapsar search
+        document.addEventListener('click', (e) => {
+            if (searchContainer && !searchContainer.contains(e.target)) {
+                if (searchInput && searchInput.classList.contains('expanded') && searchInput.value.trim() === '') {
+                    this.collapseSearch();
+                }
+            }
+            
+            // También cerrar dropdowns de categorías al hacer click fuera
+            if (!e.target.closest('.category-badge-container')) {
+                document.querySelectorAll('.category-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
         
         // Ordenamiento
         const sortSelect = this.container.querySelector('#library-sort');
@@ -185,10 +243,16 @@ render() {
             });
         }
         
-        // Crear nuevo
-        this.container.querySelector('#create-new-btn').addEventListener('click', () => {
-            window.location.hash = '#/configuracion';
-        });
+        // Botón de subir audio
+        const uploadBtn = this.container.querySelector('#upload-audio-btn');
+        if (uploadBtn) {
+            uploadBtn.addEventListener('click', () => {
+                const fileInput = this.container.querySelector('#audio-file-input');
+                if (fileInput) {
+                    fileInput.click();
+                }
+            });
+        }
         
         // Cerrar dropdowns al hacer click fuera
         document.addEventListener('click', (e) => {
@@ -205,11 +269,6 @@ render() {
                 window.location.hash = '#/configuracion';
             });
         }
-        
-        // NUEVO: Botón subir audio
-        this.container.querySelector('#upload-audio-btn').addEventListener('click', () => {
-            this.openFileSelector();
-        });
         
         // NUEVO: Input file change
         this.container.querySelector('#audio-file-input').addEventListener('change', (e) => {
@@ -467,8 +526,24 @@ render() {
     }
     
     setSorting(sort) {
+        console.log('[CampaignLibrary] Cambiando ordenamiento a:', sort);
         this.currentSort = sort;
         this.displayMessages();
+    }
+    
+    collapseSearch() {
+        const searchInput = this.container.querySelector('#library-search');
+        const searchClear = this.container.querySelector('#search-clear');
+        
+        if (searchInput) {
+            searchInput.classList.remove('expanded');
+            searchInput.classList.add('collapsed');
+        }
+        
+        if (searchClear) {
+            searchClear.classList.remove('expanded');
+            searchClear.classList.add('collapsed');
+        }
     }
     
     applyFiltersAndSort() {
@@ -497,13 +572,15 @@ render() {
         this.filteredMessages.sort((a, b) => {
             switch (this.currentSort) {
                 case 'date_desc':
-                    return (b.savedAt || 0) - (a.savedAt || 0);
+                    // Usar múltiples campos de fecha como fallback
+                    const dateA = new Date(a.savedAt || a.createdAt || a.timestamp || 0).getTime();
+                    const dateB = new Date(b.savedAt || b.createdAt || b.timestamp || 0).getTime();
+                    return dateB - dateA;
                 case 'date_asc':
-                    return (a.savedAt || 0) - (b.savedAt || 0);
-                case 'title_asc':
-                    return a.title.localeCompare(b.title);
-                case 'title_desc':
-                    return b.title.localeCompare(a.title);
+                    // Usar múltiples campos de fecha como fallback
+                    const dateAsc_A = new Date(a.savedAt || a.createdAt || a.timestamp || 0).getTime();
+                    const dateAsc_B = new Date(b.savedAt || b.createdAt || b.timestamp || 0).getTime();
+                    return dateAsc_A - dateAsc_B;
                 default:
                     return 0;
             }
