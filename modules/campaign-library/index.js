@@ -161,6 +161,39 @@ render() {
             
             <!-- Input file oculto para upload -->
             <input type="file" id="audio-file-input" accept=".mp3,.wav,.flac,.aac,.ogg,.m4a,.opus" style="display: none;">
+            
+            <!-- Progress indicator modal -->
+            <div id="upload-progress-modal" class="progress-modal" style="display: none;">
+                <div class="progress-content">
+                    <div class="progress-header">
+                        <h3 class="progress-title">Subiendo archivo...</h3>
+                        <button class="progress-close" id="progress-close-btn">✕</button>
+                    </div>
+                    
+                    <div class="progress-info">
+                        <div class="file-info">
+                            <span class="file-icon">🎵</span>
+                            <div class="file-details">
+                                <div class="file-name" id="upload-file-name">archivo.mp3</div>
+                                <div class="file-size" id="upload-file-size">2.5 MB</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-stats">
+                            <span class="progress-speed" id="upload-speed">0 KB/s</span>
+                            <span class="progress-percentage" id="upload-percentage">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="upload-progress-fill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-status" id="upload-status">Preparando...</div>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -469,20 +502,6 @@ render() {
                 </div>
                 
                 <div class="message-meta">
-                    <div class="message-info">
-                        <div class="message-info-item">
-                            <span>🎙️</span>
-                            <span>${voiceInfo}</span>
-                        </div>
-                        <div class="message-info-item">
-                            <span>📅</span>
-                            <span>${dateInfo}</span>
-                        </div>
-                        <div class="message-info-item">
-                            <span>▶</span>
-                            <span>${playCount} veces</span>
-                        </div>
-                    </div>
                     <div class="message-actions">
                         <button class="btn-icon" onclick="window.campaignLibrary.playMessage('${message.id}')" title="Preview">▶</button>
                         <button class="btn-icon" onclick="window.campaignLibrary.editMessage('${message.id}')" title="Cambiar Título">✏️</button>
@@ -1133,43 +1152,165 @@ render() {
      * NUEVO: Subir archivo a servidor
      */
     async uploadAudioFile(file) {
-        try {
-            this.showNotification('Subiendo archivo...', 'info');
-            
-            // Preparar FormData
+        // Mostrar modal de progreso
+        this.showUploadProgress(file);
+        
+        return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('action', 'upload_external');
             formData.append('audio', file);
             
-            console.log('[CampaignLibrary] Enviando archivo:', file.name);
+            const xhr = new XMLHttpRequest();
+            let startTime = Date.now();
             
-            // Enviar request
-            const response = await fetch('api/biblioteca.php', {
-                method: 'POST',
-                body: formData
+            // Event listener para progreso de upload
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    const currentTime = Date.now();
+                    const elapsedTime = (currentTime - startTime) / 1000; // en segundos
+                    const speed = e.loaded / elapsedTime; // bytes por segundo
+                    
+                    this.updateUploadProgress(percentComplete, speed);
+                }
             });
             
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
+            // Event listener cuando se completa la subida
+            xhr.addEventListener('load', () => {
+                if (xhr.status === 200) {
+                    try {
+                        const result = JSON.parse(xhr.responseText);
+                        
+                        if (result.success) {
+                            this.updateUploadStatus('Procesando archivo...', 'processing');
+                            
+                            // Simular tiempo de procesamiento
+                            setTimeout(async () => {
+                                this.updateUploadStatus('¡Archivo subido exitosamente!', 'success');
+                                
+                                // Recargar mensajes después de 2 segundos
+                                setTimeout(async () => {
+                                    await this.loadMessages();
+                                    this.hideUploadProgress();
+                                }, 2000);
+                            }, 1000);
+                            
+                            resolve(result);
+                        } else {
+                            throw new Error(result.error || 'Error desconocido');
+                        }
+                    } catch (error) {
+                        this.updateUploadStatus('Error procesando respuesta', 'error');
+                        reject(error);
+                    }
+                } else {
+                    this.updateUploadStatus('Error del servidor', 'error');
+                    reject(new Error(`Error HTTP: ${xhr.status}`));
+                }
+            });
             
-            const result = await response.json();
+            // Event listener para errores
+            xhr.addEventListener('error', () => {
+                this.updateUploadStatus('Error de conexión', 'error');
+                reject(new Error('Error de conexión'));
+            });
             
-            if (result.success) {
-                this.showSuccess('¡Archivo subido exitosamente!');
-                
-                // Recargar mensajes para mostrar el nuevo archivo
-                await this.loadMessages();
-                
-                console.log('[CampaignLibrary] Upload exitoso:', result);
-            } else {
-                throw new Error(result.error || 'Error desconocido');
-            }
-            
-        } catch (error) {
-            console.error('[CampaignLibrary] Error en upload:', error);
-            this.showError('Error al subir archivo: ' + error.message);
+            // Iniciar upload
+            xhr.open('POST', 'api/biblioteca.php');
+            xhr.send(formData);
+        });
+    }
+    
+    showUploadProgress(file) {
+        const modal = this.container.querySelector('#upload-progress-modal');
+        const fileName = this.container.querySelector('#upload-file-name');
+        const fileSize = this.container.querySelector('#upload-file-size');
+        const progressFill = this.container.querySelector('#upload-progress-fill');
+        const percentage = this.container.querySelector('#upload-percentage');
+        const speed = this.container.querySelector('#upload-speed');
+        const status = this.container.querySelector('#upload-status');
+        
+        // Actualizar información del archivo
+        fileName.textContent = file.name;
+        fileSize.textContent = this.formatFileSize(file.size);
+        
+        // Resetear progreso
+        progressFill.style.width = '0%';
+        percentage.textContent = '0%';
+        speed.textContent = '0 KB/s';
+        status.textContent = 'Iniciando upload...';
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+        
+        // Event listener para cerrar modal
+        const closeBtn = this.container.querySelector('#progress-close-btn');
+        closeBtn.onclick = () => {
+            this.hideUploadProgress();
+        };
+    }
+    
+    updateUploadProgress(percentage, speed) {
+        const progressFill = this.container.querySelector('#upload-progress-fill');
+        const percentageSpan = this.container.querySelector('#upload-percentage');
+        const speedSpan = this.container.querySelector('#upload-speed');
+        const status = this.container.querySelector('#upload-status');
+        
+        // Actualizar barra de progreso
+        progressFill.style.width = `${percentage}%`;
+        percentageSpan.textContent = `${Math.round(percentage)}%`;
+        
+        // Actualizar velocidad
+        speedSpan.textContent = this.formatSpeed(speed);
+        
+        // Actualizar status
+        if (percentage < 100) {
+            status.textContent = 'Subiendo archivo...';
         }
+    }
+    
+    updateUploadStatus(message, type = 'info') {
+        const status = this.container.querySelector('#upload-status');
+        const modal = this.container.querySelector('#upload-progress-modal');
+        
+        status.textContent = message;
+        
+        // Cambiar color según el tipo
+        status.className = 'progress-status';
+        if (type === 'success') {
+            status.classList.add('success');
+        } else if (type === 'error') {
+            status.classList.add('error');
+        } else if (type === 'processing') {
+            status.classList.add('processing');
+        }
+    }
+    
+    hideUploadProgress() {
+        const modal = this.container.querySelector('#upload-progress-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+    
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+    
+    formatSpeed(bytesPerSecond) {
+        if (bytesPerSecond === 0) return '0 KB/s';
+        
+        const k = 1024;
+        const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+        const i = Math.floor(Math.log(bytesPerSecond) / Math.log(k));
+        
+        return parseFloat((bytesPerSecond / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
     
     showSuccess(message) {
