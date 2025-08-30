@@ -15,6 +15,7 @@
 import { eventBus } from '../../shared/event-bus.js';
 import { storageManager } from '../../shared/storage-manager.js';
 import { apiClient } from '../../shared/api-client.js';
+import { FileUploadManager } from './services/file-upload-manager.js';
 
 export default class CampaignLibraryModule {
     constructor() {
@@ -26,6 +27,7 @@ export default class CampaignLibraryModule {
         this.currentSort = 'date_desc';
         this.searchQuery = '';
         this.isLoading = false;
+        this.fileUploadManager = null; // Se inicializa en load()
     }
     
     getName() {
@@ -39,6 +41,9 @@ export default class CampaignLibraryModule {
         try {
             // Renderizar estructura inicial
             this.render();
+            
+            // Inicializar FileUploadManager
+            this.fileUploadManager = new FileUploadManager(this);
             
             // Cargar estilos
             await this.loadStyles();
@@ -310,7 +315,7 @@ render() {
             
             if (e.target.files && e.target.files[0]) {
                 console.log('[CampaignLibrary] Llamando handleFileSelected...');
-                this.handleFileSelected(e.target.files[0]);
+                this.fileUploadManager.handleFileSelected(e.target.files[0]);
                 
                 // IMPORTANTE: Limpiar el input para evitar disparos múltiples
                 e.target.value = '';
@@ -1038,279 +1043,6 @@ render() {
             console.error('Error actualizando categoría:', error);
             this.showError('Error al actualizar categoría');
         }
-    }
-    
-    /**
-     * NUEVO: Sincronizar cambio de categoría con schedules del calendario
-     */
-    async syncCategoryToSchedules(filename, newCategory) {
-        if (!filename) return;
-        
-        try {
-            console.log('[CampaignLibrary] Sincronizando categoría:', filename, '→', newCategory);
-            
-            const response = await apiClient.post('api/audio-scheduler.php', {
-                action: 'update_category_by_filename',
-                filename: filename,
-                category: newCategory
-            });
-            
-            if (response.success) {
-                console.log(`[CampaignLibrary] Sincronizada categoría en ${response.updated_schedules} schedule(s)`);
-                
-                // Emitir evento para que calendario se refresque
-                eventBus.emit('schedule:category:updated', {
-                    filename: filename,
-                    category: newCategory,
-                    schedules_updated: response.updated_schedules
-                });
-            } else {
-                console.warn('[CampaignLibrary] Error sincronizando categoría:', response.error);
-            }
-            
-        } catch (error) {
-            console.error('[CampaignLibrary] Error en syncCategoryToSchedules:', error);
-            // No mostrar error al usuario, es una función auxiliar
-        }
-    }
-    
-    /**
-     * NUEVO: Abrir selector de archivos
-     */
-    openFileSelector() {
-        console.log('[CampaignLibrary] === openFileSelector LLAMADO ===');
-        const fileInput = this.container.querySelector('#audio-file-input');
-        console.log('[CampaignLibrary] Input encontrado:', !!fileInput);
-        
-        if (fileInput) {
-            console.log('[CampaignLibrary] Haciendo clic en input file...');
-            fileInput.click();
-        } else {
-            console.error('[CampaignLibrary] ERROR: No se encontró el input file');
-        }
-    }
-    
-    /**
-     * NUEVO: Manejar archivo seleccionado
-     */
-    async handleFileSelected(file) {
-        console.log('[CampaignLibrary] === INICIO handleFileSelected ===');
-        console.log('[CampaignLibrary] Archivo seleccionado:', file.name);
-        console.log('[CampaignLibrary] Tamaño:', file.size, 'bytes');
-        console.log('[CampaignLibrary] Tamaño MB:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-        console.log('[CampaignLibrary] Tipo:', file.type);
-        
-        // Validación 1: Tamaño máximo 12MB
-        const maxSize = 12 * 1024 * 1024; // 12MB
-        console.log('[CampaignLibrary] Límite máximo:', (maxSize / 1024 / 1024), 'MB');
-        console.log('[CampaignLibrary] ¿Excede límite?', file.size > maxSize);
-        
-        if (file.size > maxSize) {
-            console.error('[CampaignLibrary] ERROR: Archivo excede límite');
-            this.showError(`El archivo excede el límite de 12MB (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-            return;
-        }
-        
-        // Validación 2: Formatos permitidos
-        const allowedTypes = [
-            'audio/mpeg',       // MP3
-            'audio/wav',        // WAV  
-            'audio/x-wav',      // WAV (alternate)
-            'audio/flac',       // FLAC
-            'audio/aac',        // AAC
-            'audio/ogg',        // Ogg Vorbis/Opus
-            'audio/mp4',        // M4A
-            'audio/x-m4a'       // M4A (alternate)
-        ];
-        
-        if (!allowedTypes.includes(file.type)) {
-            this.showError('Formato no permitido. Use: MP3, WAV, FLAC, AAC, Ogg, M4A');
-            return;
-        }
-        
-        // Validación 3: Extensión
-        const fileName = file.name.toLowerCase();
-        const allowedExtensions = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'm4a', 'opus'];
-        const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith('.' + ext));
-        
-        if (!hasValidExtension) {
-            this.showError('Extensión no válida');
-            return;
-        }
-        
-        // Confirmar upload
-        const confirmMessage = `¿Subir "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) a la biblioteca?`;
-        if (!confirm(confirmMessage)) {
-            return;
-        }
-        
-        // Proceder con upload
-        await this.uploadAudioFile(file);
-    }
-    
-    /**
-     * NUEVO: Subir archivo a servidor
-     */
-    async uploadAudioFile(file) {
-        // Mostrar modal de progreso
-        this.showUploadProgress(file);
-        
-        return new Promise((resolve, reject) => {
-            const formData = new FormData();
-            formData.append('action', 'upload_external');
-            formData.append('audio', file);
-            
-            const xhr = new XMLHttpRequest();
-            let startTime = Date.now();
-            
-            // Event listener para progreso de upload
-            xhr.upload.addEventListener('progress', (e) => {
-                if (e.lengthComputable) {
-                    const percentComplete = (e.loaded / e.total) * 100;
-                    const currentTime = Date.now();
-                    const elapsedTime = (currentTime - startTime) / 1000; // en segundos
-                    const speed = e.loaded / elapsedTime; // bytes por segundo
-                    
-                    this.updateUploadProgress(percentComplete, speed);
-                }
-            });
-            
-            // Event listener cuando se completa la subida
-            xhr.addEventListener('load', () => {
-                if (xhr.status === 200) {
-                    try {
-                        const result = JSON.parse(xhr.responseText);
-                        
-                        if (result.success) {
-                            this.updateUploadStatus('Procesando archivo...', 'processing');
-                            
-                            // Simular tiempo de procesamiento
-                            setTimeout(async () => {
-                                this.updateUploadStatus('¡Archivo subido exitosamente!', 'success');
-                                
-                                // Recargar mensajes después de 2 segundos
-                                setTimeout(async () => {
-                                    await this.loadMessages();
-                                    this.hideUploadProgress();
-                                }, 2000);
-                            }, 1000);
-                            
-                            resolve(result);
-                        } else {
-                            throw new Error(result.error || 'Error desconocido');
-                        }
-                    } catch (error) {
-                        this.updateUploadStatus('Error procesando respuesta', 'error');
-                        reject(error);
-                    }
-                } else {
-                    this.updateUploadStatus('Error del servidor', 'error');
-                    reject(new Error(`Error HTTP: ${xhr.status}`));
-                }
-            });
-            
-            // Event listener para errores
-            xhr.addEventListener('error', () => {
-                this.updateUploadStatus('Error de conexión', 'error');
-                reject(new Error('Error de conexión'));
-            });
-            
-            // Iniciar upload
-            xhr.open('POST', 'api/biblioteca.php');
-            xhr.send(formData);
-        });
-    }
-    
-    showUploadProgress(file) {
-        const modal = this.container.querySelector('#upload-progress-modal');
-        const fileName = this.container.querySelector('#upload-file-name');
-        const fileSize = this.container.querySelector('#upload-file-size');
-        const progressFill = this.container.querySelector('#upload-progress-fill');
-        const percentage = this.container.querySelector('#upload-percentage');
-        const speed = this.container.querySelector('#upload-speed');
-        const status = this.container.querySelector('#upload-status');
-        
-        // Actualizar información del archivo
-        fileName.textContent = file.name;
-        fileSize.textContent = this.formatFileSize(file.size);
-        
-        // Resetear progreso
-        progressFill.style.width = '0%';
-        percentage.textContent = '0%';
-        speed.textContent = '0 KB/s';
-        status.textContent = 'Iniciando upload...';
-        
-        // Mostrar modal
-        modal.style.display = 'flex';
-        
-        // Event listener para cerrar modal
-        const closeBtn = this.container.querySelector('#progress-close-btn');
-        closeBtn.onclick = () => {
-            this.hideUploadProgress();
-        };
-    }
-    
-    updateUploadProgress(percentage, speed) {
-        const progressFill = this.container.querySelector('#upload-progress-fill');
-        const percentageSpan = this.container.querySelector('#upload-percentage');
-        const speedSpan = this.container.querySelector('#upload-speed');
-        const status = this.container.querySelector('#upload-status');
-        
-        // Actualizar barra de progreso
-        progressFill.style.width = `${percentage}%`;
-        percentageSpan.textContent = `${Math.round(percentage)}%`;
-        
-        // Actualizar velocidad
-        speedSpan.textContent = this.formatSpeed(speed);
-        
-        // Actualizar status
-        if (percentage < 100) {
-            status.textContent = 'Subiendo archivo...';
-        }
-    }
-    
-    updateUploadStatus(message, type = 'info') {
-        const status = this.container.querySelector('#upload-status');
-        const modal = this.container.querySelector('#upload-progress-modal');
-        
-        status.textContent = message;
-        
-        // Cambiar color según el tipo
-        status.className = 'progress-status';
-        if (type === 'success') {
-            status.classList.add('success');
-        } else if (type === 'error') {
-            status.classList.add('error');
-        } else if (type === 'processing') {
-            status.classList.add('processing');
-        }
-    }
-    
-    hideUploadProgress() {
-        const modal = this.container.querySelector('#upload-progress-modal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-    
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-    }
-    
-    formatSpeed(bytesPerSecond) {
-        if (bytesPerSecond === 0) return '0 KB/s';
-        
-        const k = 1024;
-        const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
-        const i = Math.floor(Math.log(bytesPerSecond) / Math.log(k));
-        
-        return parseFloat((bytesPerSecond / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
     
     showSuccess(message) {
