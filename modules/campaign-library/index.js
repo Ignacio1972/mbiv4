@@ -398,7 +398,7 @@ render() {
                     <button class="btn-icon" onclick="window.campaignLibrary.sendToRadio('${message.id}')" title="Enviar a radio">
                         📻
                     </button>
-                    ${isAudio ? `<button class="btn-icon" onclick="window.campaignLibrary.scheduleMessage('${message.id}', '${message.title}')" title="Programar">
+                    ${isAudio ? `<button class="btn-icon" onclick="window.campaignLibrary.scheduleMessage('${message.id}', '${(message.title || '').replace(/'/g, "\\'").replace(/"/g, '\\"')}')" title="Programar">
                         🕐
                     </button>` : ''}
                     <button class="btn-icon btn-danger" onclick="window.campaignLibrary.deleteMessage('${message.id}')" title="Eliminar">

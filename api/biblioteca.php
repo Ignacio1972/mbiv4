@@ -43,17 +43,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
     
-    // Validar filename - ACTUALIZADO PARA PERMITIR DESCRIPCIONES
-    if (!preg_match('/^tts\d+(_[a-zA-Z0-9_\-ñÑáéíóúÁÉÍÓÚ]+)?\.mp3$/', $filename)) {
+    // Validar filename - ACTUALIZADO PARA PERMITIR TTS Y ARCHIVOS EXTERNOS
+    $isTTSFile = preg_match('/^tts\d+(_[a-zA-Z0-9_\-ñÑáéíóúÁÉÍÓÚ]+)?\.mp3$/', $filename);
+    $isExternalFile = preg_match('/^[a-zA-Z0-9._\-ñÑáéíóúÁÉÍÓÚ]+\.(mp3|wav|flac|aac|ogg|m4a|opus)$/i', $filename);
+    
+    if (!$isTTSFile && !$isExternalFile) {
         header('Content-Type: application/json');
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Archivo inválido']);
         exit;
     }
     
-    // Obtener archivo desde Docker
+    // Buscar archivo: primero en Grabaciones (TTS y externos nuevos), luego en raíz (externos antiguos)
     $dockerPath = '/var/azuracast/stations/test/media/Grabaciones/' . $filename;
     $tempFile = UPLOAD_DIR . 'temp_' . $filename;
+    
+    // Verificar si existe en Grabaciones
+    $checkCommand = sprintf(
+        'sudo docker exec azuracast test -f %s && echo "EXISTS" || echo "NOT_FOUND" 2>&1',
+        escapeshellarg($dockerPath)
+    );
+    $exists = trim(shell_exec($checkCommand));
+    
+    if ($exists !== 'EXISTS') {
+        // Si no está en Grabaciones, buscar en raíz (archivos externos antiguos)
+        $dockerPath = '/var/azuracast/stations/test/media/' . $filename;
+        logMessage("Archivo no encontrado en Grabaciones, buscando en raíz: $dockerPath");
+    }
     
     // Copiar archivo desde Docker a temporal
     $copyCommand = sprintf(
@@ -62,20 +78,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         escapeshellarg($tempFile)
     );
     
-    
-    logMessage("UPLOAD_DIR: " . UPLOAD_DIR);
-    logMessage("tempFile path: " . $tempFile);
-    logMessage("dockerPath: " . $dockerPath);
+    logMessage("dockerPath final: " . $dockerPath);
     logMessage("copyCommand: " . $copyCommand);
     $copyResult = shell_exec($copyCommand);
     
-    
     logMessage("copyResult: " . $copyResult);
-    logMessage("File exists check: " . (file_exists($tempFile) ? "YES" : "NO"));
     if (!file_exists($tempFile)) {
         header('Content-Type: application/json');
         http_response_code(404);
-        echo json_encode(['success' => false, 'error' => 'Archivo no encontrado']);
+        echo json_encode(['success' => false, 'error' => 'Archivo no encontrado en Grabaciones ni en raíz']);
         exit;
     }
     
@@ -429,8 +440,51 @@ $syncCommand = 'sudo docker exec azuracast php /var/azuracast/www/backend/bin/co
 }
 
 /**
+ * Asigna archivo a playlist "grabaciones" (ID 3)
+ * Replicado de radio-service.php
+ */
+function assignToPlaylist($fileId) {
+    try {
+        $url = AZURACAST_BASE_URL . '/api/station/' . AZURACAST_STATION_ID . '/file/' . $fileId;
+        
+        $data = [
+            'playlists' => [
+                ['id' => PLAYLIST_ID_GRABACIONES]  // ID 3 definido en config.php
+            ]
+        ];
+        
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'X-API-Key: ' . AZURACAST_API_KEY
+            ],
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_TIMEOUT => 30
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode === 200) {
+            return true;
+        } else {
+            logMessage("Error asignando archivo $fileId a playlist: HTTP $httpCode, Respuesta: " . substr($response, 0, 100));
+            return false;
+        }
+    } catch (Exception $e) {
+        logMessage("Exception en assignToPlaylist: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
  * Subir archivo externo a AzuraCast
- * NUEVO: Maneja archivos MP3, WAV, FLAC, AAC, Ogg Vorbis, M4A, Ogg Opus (máx 12MB)
+ * NUEVO: Maneja archivos MP3, WAV, FLAC, AAC, Ogg Vorbis, M4A, Ogg Opus (máx 25MB)
  */
 function uploadExternalFile() {
     try {
@@ -444,10 +498,10 @@ function uploadExternalFile() {
         
         logMessage("Iniciando upload externo: $originalFilename");
         
-        // Validación 1: Tamaño máximo 12MB
-        $maxSize = 12 * 1024 * 1024; // 12MB en bytes
+        // Validación 1: Tamaño máximo 25MB 
+        $maxSize = 25 * 1024 * 1024; // 25MB en bytes
         if ($uploadedFile['size'] > $maxSize) {
-            throw new Exception('El archivo excede el límite de 12MB');
+            throw new Exception('El archivo excede el límite de 25MB');
         }
         
         // Validación 2: Formatos permitidos por AzuraCast
@@ -480,20 +534,27 @@ function uploadExternalFile() {
         
         logMessage("Subiendo a AzuraCast: $azuracastPath");
         
-        // Upload directo a AzuraCast usando su API
-        $url = AZURACAST_BASE_URL . '/api/station/' . AZURACAST_STATION_ID . '/files/upload';
+        // Leer archivo y convertir a base64 (como radio-service.php)
+        $fileContent = file_get_contents($uploadedFile['tmp_name']);
+        $base64Content = base64_encode($fileContent);
+        
+        // Upload directo a AzuraCast usando endpoint /files (NO /files/upload)
+        $url = AZURACAST_BASE_URL . '/api/station/' . AZURACAST_STATION_ID . '/files';
+        
+        $data = [
+            'path' => $azuracastPath,
+            'file' => $base64Content
+        ];
         
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => [
-                'file' => new CURLFile($uploadedFile['tmp_name'], $uploadedFile['type'], $safeFilename),
-                'path' => $azuracastPath
-            ],
             CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
                 'X-API-Key: ' . AZURACAST_API_KEY
             ],
+            CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 60 // Timeout de 1 minuto
         ]);
@@ -513,6 +574,22 @@ function uploadExternalFile() {
         }
         
         logMessage("Upload exitoso a AzuraCast: $safeFilename");
+        
+        // Obtener ID del archivo de la respuesta para asignación a playlist
+        $responseData = json_decode($response, true);
+        $fileId = $responseData['id'] ?? null;
+        
+        if ($fileId) {
+            logMessage("Asignando archivo $fileId al playlist grabaciones (ID: " . PLAYLIST_ID_GRABACIONES . ")");
+            $playlistResult = assignToPlaylist($fileId);
+            if ($playlistResult) {
+                logMessage("Archivo $fileId asignado exitosamente al playlist");
+            } else {
+                logMessage("Warning: No se pudo asignar archivo $fileId al playlist");
+            }
+        } else {
+            logMessage("Warning: No se obtuvo ID del archivo para asignar a playlist");
+        }
         
         // Guardar metadata en la base de datos (misma BD que calendar y saved-messages)
         $db = new PDO("sqlite:" . __DIR__ . "/../calendario/api/db/calendar.db");
