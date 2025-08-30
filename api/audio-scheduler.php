@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 date_default_timezone_set('America/Santiago');
 
 // Configuración
-$dbPath = __DIR__ . '/db/calendar.db';
+$dbPath = __DIR__ . '/../calendario/api/db/calendar.db';
 
 // Funciones principales
 function getDBConnection() {
