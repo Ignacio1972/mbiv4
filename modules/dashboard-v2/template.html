@@ -51,98 +51,92 @@
             </div>
         </form>
         
-        <!-- TOGGLE AL FINAL DEL CARD -->
-        <div class="toggle-controls-container">
-            <button class="btn-toggle-controls" id="toggleControls">
-                <span>⚙️ Controles Avanzados ▼</span>
-            </button>
-        </div>
     </div>
     
-    <!-- FILA 2: Card único con Controles + Pie Chart juntos -->
-    <div class="controls-section" id="controlsSection" style="display: none;">
-        <div class="card controls-with-chart">
-            <div class="card-header">
-                <h2 class="card-title">
-                    <span class="card-icon">🎛️</span>
-                    Controles de Voz y Consumo
-                </h2>
+    <!-- FILA 2: DOS CARDS LADO A LADO - CONTROLES Y QUOTA -->
+    <div class="card controls-section" id="controlsSection">
+        <div class="card-header">
+            <h2 class="card-title">
+                <span class="card-icon">🎛️</span>
+                Controles de Voz
+            </h2>
+        </div>
+        
+        <!-- CONTROLES DE VOZ REALES -->
+        <div class="controls-content">
+            <div class="control-item">
+                <label class="control-label">
+                    Estilo
+                    <span class="control-value" id="styleValue">50%</span>
+                </label>
+                <div class="slider-container">
+                    <input type="range" class="slider" min="0" max="100" value="50" id="styleSlider">
+                    <div class="slider-track" id="styleTrack" style="width: 50%"></div>
+                </div>
             </div>
             
-            <!-- Contenedor flex para controles y chart lado a lado -->
-            <div class="controls-chart-container">
-                
-                <!-- LADO IZQUIERDO: Controles (SIN PRESETS) -->
-                <div class="controls-area">
-                    <div class="controls-grid">
-                        <div class="control-item">
-                            <label class="control-label">
-                                Estilo
-                                <span class="control-value" id="styleValue">50%</span>
-                            </label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" min="0" max="100" value="50" id="styleSlider">
-                                <div class="slider-track" id="styleTrack" style="width: 50%"></div>
-                            </div>
-                        </div>
-                        <div class="control-item">
-                            <label class="control-label">
-                                Estabilidad
-                                <span class="control-value" id="stabilityValue">75%</span>
-                            </label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" min="0" max="100" value="75" id="stabilitySlider">
-                                <div class="slider-track" id="stabilityTrack" style="width: 75%"></div>
-                            </div>
-                        </div>
-                        <div class="control-item">
-                            <label class="control-label">
-                                Claridad
-                                <span class="control-value" id="clarityValue">80%</span>
-                            </label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" min="0" max="100" value="80" id="claritySlider">
-                                <div class="slider-track" id="clarityTrack" style="width: 80%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ELIMINADOS LOS 6 BOTONES DE PRESETS -->
+            <div class="control-item">
+                <label class="control-label">
+                    Estabilidad
+                    <span class="control-value" id="stabilityValue">75%</span>
+                </label>
+                <div class="slider-container">
+                    <input type="range" class="slider" min="0" max="100" value="75" id="stabilitySlider">
+                    <div class="slider-track" id="stabilityTrack" style="width: 75%"></div>
                 </div>
-                
-                <!-- LADO DERECHO: Pie Chart -->
-                <div class="chart-area">
-                    <h4 style="font-size: 0.875rem; margin-bottom: 1rem; color: var(--text-primary);">Consumo de Tokens</h4>
-                    
-                    <!-- Chart SVG -->
-                    <div style="position: relative; width: 120px; height: 120px; margin: 0 auto;">
-                        <svg width="120" height="120" viewBox="0 0 42 42">
-                            <circle cx="21" cy="21" r="15.915" 
-                                    fill="transparent" 
-                                    stroke="#e5e7eb" 
-                                    stroke-width="3"></circle>
-                            <circle cx="21" cy="21" r="15.915" 
-                                    fill="transparent" 
-                                    stroke="#6366f1" 
-                                    stroke-width="3" 
-                                    stroke-dasharray="45 100"
-                                    stroke-linecap="round"
-                                    id="quotaProgressCircle"
-                                    style="transform: rotate(-90deg); transform-origin: center;"></circle>
-                        </svg>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                            <div id="quotaPercentage" style="font-size: 1.5rem; font-weight: bold; color: var(--text-primary);">0%</div>
-                            <div style="font-size: 0.75rem; opacity: 0.7; color: var(--text-secondary);">usado</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Stats debajo del chart -->
-                    <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-secondary);">
-                        <div style="margin-bottom: 0.25rem;">✓ Usado: <span id="quotaUsed" style="color: var(--text-primary); font-weight: 600;">0</span> tokens</div>
-                        <div style="margin-bottom: 0.5rem;">○ Libre: <span id="quotaRemaining" style="color: var(--text-primary); font-weight: 600;">0</span> tokens</div>
-                        <div id="quotaResetDate" style="opacity: 0.7; border-top: 1px solid var(--border-color); padding-top: 0.5rem;">Cargando...</div>
-                    </div>
+            </div>
+            
+            <div class="control-item">
+                <label class="control-label">
+                    Claridad
+                    <span class="control-value" id="clarityValue">80%</span>
+                </label>
+                <div class="slider-container">
+                    <input type="range" class="slider" min="0" max="100" value="80" id="claritySlider">
+                    <div class="slider-track" id="clarityTrack" style="width: 80%"></div>
                 </div>
-                
+            </div>
+        </div>
+    </div>
+
+    <!-- FILA 2: SEGUNDO CARD PARA QUOTA Y TOKENS -->
+    <div class="card quota-section" id="quotaSection">
+        <div class="card-header">
+            <h2 class="card-title">
+                <span class="card-icon">📊</span>
+                Consumo de Tokens
+            </h2>
+        </div>
+        
+        <!-- PIE CHART Y CONTADOR DE TOKENS REALES -->
+        <div class="quota-content">
+            <!-- Chart SVG -->
+            <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 1rem auto;">
+                <svg width="120" height="120" viewBox="0 0 42 42">
+                    <circle cx="21" cy="21" r="15.915" 
+                            fill="transparent" 
+                            stroke="#e5e7eb" 
+                            stroke-width="3"></circle>
+                    <circle cx="21" cy="21" r="15.915" 
+                            fill="transparent" 
+                            stroke="#6366f1" 
+                            stroke-width="3" 
+                            stroke-dasharray="45 100"
+                            stroke-linecap="round"
+                            id="quotaProgressCircle"
+                            style="transform: rotate(-90deg); transform-origin: center;"></circle>
+                </svg>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <div id="quotaPercentage" style="font-size: 1.5rem; font-weight: bold; color: var(--text-primary);">0%</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7; color: var(--text-secondary);">usado</div>
+                </div>
+            </div>
+            
+            <!-- Stats debajo del chart -->
+            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
+                <div style="margin-bottom: 0.25rem;">✓ Usado: <span id="quotaUsed" style="color: var(--text-primary); font-weight: 600;">0</span> tokens</div>
+                <div style="margin-bottom: 0.5rem;">○ Libre: <span id="quotaRemaining" style="color: var(--text-primary); font-weight: 600;">0</span> tokens</div>
+                <div id="quotaResetDate" style="opacity: 0.7; border-top: 1px solid var(--border-color); padding-top: 0.5rem;">Cargando...</div>
             </div>
         </div>
     </div>

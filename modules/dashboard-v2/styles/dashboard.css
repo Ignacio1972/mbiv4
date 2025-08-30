@@ -30,15 +30,18 @@
    GRID PRINCIPAL
    ======================================== */
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: var(--space-lg);
+/* Grid de 2 columnas limpio */
+.dashboard-grid,
+div.dashboard-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* Forzar exactamente 2 columnas iguales */
+    grid-template-rows: auto auto !important;
+    gap: var(--space-lg) !important;
     margin-top: var(--space-xl);
+    max-width: 100% !important;
 }
 
-/* Columna izquierda: Generador y Controles */
+/* Layout de 4 cards */
 .create-message {
     grid-column: 1;
     grid-row: 1;
@@ -51,18 +54,25 @@
     width: 100%;
 }
 
-/* Asegurar que los cards internos usen todo el ancho */
-.create-message .card,
-.controls-section .card,
-.controls-with-chart {
+.quota-section {
+    grid-column: 2;
+    grid-row: 2;
     width: 100%;
-    box-sizing: border-box;
 }
 
-/* Columna derecha: Mensajes recientes (ocupan toda la altura) */
+/* Asegurar que los cards usen todo el ancho disponible */
+.dashboard-grid .card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--space-lg);
+    margin: 0;
+}
+
+/* Columna derecha: Mensajes recientes (solo fila 1) */
 .recent-messages {
     grid-column: 2;
-    grid-row: 1 / -1; /* Ocupa todas las filas disponibles */
+    grid-row: 1; /* Solo fila 1, no todas las filas */
+    width: 100%;
 }
 
 /* ========================================
@@ -71,20 +81,21 @@
 
 .controls-chart-container {
     display: flex;
-    gap: var(--space-2xl);
-    padding: var(--space-lg);
+    gap: var(--space-lg);
+    padding: 0;
     align-items: flex-start;
     width: 100%;
     box-sizing: border-box;
 }
 
 .controls-area {
-    flex: 3; /* Aumentado de 2 a 3 para más espacio */
+    flex: 3;
 }
 
 .chart-area {
     flex: 2; /* Aumentado de 1 a 2 para equilibrar */
     min-width: 200px;
+}
     padding: var(--space-lg);
     background: var(--bg-tertiary);
     border-radius: var(--radius-lg);
@@ -118,34 +129,6 @@
     overflow-y: auto;
 }
 
-/* ========================================
-   TOGGLE CONTROLES
-   ======================================== */
-
-.toggle-controls-container {
-    padding: var(--space-md);
-    text-align: right;
-}
-
-.btn-toggle-controls {
-    background: transparent;
-    border: 1px dashed var(--border-color);
-    padding: var(--space-sm) var(--space-lg);
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-radius: var(--radius-md);
-    transition: all 0.2s;
-    font-size: 0.875rem;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-}
-
-.btn-toggle-controls:hover {
-    background: var(--bg-tertiary);
-    border-style: solid;
-    color: var(--text-primary);
-}
 
 /* ========================================
    BADGES DE CATEGORÍAS

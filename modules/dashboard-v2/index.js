@@ -135,9 +135,9 @@ export default class DashboardV2Module {
             generateBtn: document.getElementById('generateBtn'),
             messageForm: document.getElementById('messageForm'),
             
-            // Controles avanzados
-            toggleControls: document.getElementById('toggleControls'),
+            // Controles avanzados (siempre visibles)
             controlsSection: document.getElementById('controlsSection'),
+            // Controles de voz reactivados
             styleSlider: document.getElementById('styleSlider'),
             styleValue: document.getElementById('styleValue'),
             styleTrack: document.getElementById('styleTrack'),
@@ -148,7 +148,7 @@ export default class DashboardV2Module {
             clarityValue: document.getElementById('clarityValue'),
             clarityTrack: document.getElementById('clarityTrack'),
             
-            // Quota chart
+            // Quota chart reactivado
             quotaProgressCircle: document.getElementById('quotaProgressCircle'),
             quotaPercentage: document.getElementById('quotaPercentage'),
             quotaUsed: document.getElementById('quotaUsed'),
@@ -218,8 +218,7 @@ export default class DashboardV2Module {
         // Botón generar
         this.elements.generateBtn.addEventListener('click', () => this.handleGenerate());
         
-        // Toggle controles avanzados
-        this.elements.toggleControls.addEventListener('click', () => this.toggleAdvancedControls());
+        // Controles de voz reactivados
         
         // Sliders
         this.setupSlider('style', 'Style', value => this.state.voiceSettings.style = value / 100);
@@ -341,7 +340,7 @@ export default class DashboardV2Module {
                     </button>
                 </div>
             `;
-            this.elements.messageForm.parentNode.insertBefore(playerContainer, this.elements.toggleControls.parentNode);
+            this.elements.messageForm.parentNode.appendChild(playerContainer);
         }
         
         const audio = playerContainer.querySelector('#audioPlayer');
@@ -374,22 +373,8 @@ export default class DashboardV2Module {
     }
     
     /**
-     * Toggle de controles avanzados
+     * Controles avanzados siempre visibles - método eliminado
      */
-    toggleAdvancedControls() {
-        this.state.controlsVisible = !this.state.controlsVisible;
-        
-        if (this.state.controlsVisible) {
-            this.elements.controlsSection.style.display = 'block';
-            this.elements.toggleControls.innerHTML = '<span>⚙️ Controles Avanzados ▲</span>';
-        } else {
-            this.elements.controlsSection.style.display = 'none';
-            this.elements.toggleControls.innerHTML = '<span>⚙️ Controles Avanzados ▼</span>';
-        }
-        
-        // Guardar preferencia
-        localStorage.setItem('mbi_controlsVisible', this.state.controlsVisible);
-    }
     
     /**
      * Actualiza el chart de quota
@@ -586,11 +571,7 @@ export default class DashboardV2Module {
      * Carga datos iniciales
      */
     async loadInitialData() {
-        // Cargar preferencias guardadas
-        const controlsVisible = localStorage.getItem('mbi_controlsVisible') === 'true';
-        if (controlsVisible) {
-            this.toggleAdvancedControls();
-        }
+        // Controles avanzados siempre visibles - no necesita localStorage
         
         // Cargar quota y mensajes
         await Promise.all([
