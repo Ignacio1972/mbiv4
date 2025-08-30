@@ -308,13 +308,12 @@ apiClient.post('api/generate.php', data)
 
 ## 🚨 REMEMBER: DEVELOPMENT VPS ACTIVE
 
-Este sistema está en desarrollo activo con usuarios reales del mall. Cualquier cambio debe ser:
+Este sistema está en desarrollo. Cualquier cambio debe ser:
 1. **Testeado exhaustivamente**
 2. **Con backup completo**
 3. **Documentado apropiadamente**
 4. **Committed inmediatamente**
 
-**El usuario principal es NO-técnico** - todas las explicaciones deben ser simples y claras.
 
 ---
 
