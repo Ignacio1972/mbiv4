@@ -32,28 +32,37 @@
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
     gap: var(--space-lg);
     margin-top: var(--space-xl);
 }
 
-.create-message,
-.controls-section,
-.recent-messages {
-    grid-column: 1;
-}
-
+/* Columna izquierda: Generador y Controles */
 .create-message {
+    grid-column: 1;
     grid-row: 1;
+    width: 100%;
 }
 
 .controls-section {
+    grid-column: 1;
     grid-row: 2;
+    width: 100%;
 }
 
+/* Asegurar que los cards internos usen todo el ancho */
+.create-message .card,
+.controls-section .card,
+.controls-with-chart {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Columna derecha: Mensajes recientes (ocupan toda la altura) */
 .recent-messages {
-    grid-row: 3;
+    grid-column: 2;
+    grid-row: 1 / -1; /* Ocupa todas las filas disponibles */
 }
 
 /* ========================================
@@ -62,17 +71,19 @@
 
 .controls-chart-container {
     display: flex;
-    gap: var(--space-xl);
+    gap: var(--space-2xl);
     padding: var(--space-lg);
     align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .controls-area {
-    flex: 2;
+    flex: 3; /* Aumentado de 2 a 3 para más espacio */
 }
 
 .chart-area {
-    flex: 1;
+    flex: 2; /* Aumentado de 1 a 2 para equilibrar */
     min-width: 200px;
     padding: var(--space-lg);
     background: var(--bg-tertiary);
@@ -188,8 +199,26 @@
 }
 
 @media (max-width: 768px) {
+    /* Cambiar a una sola columna en móviles */
     .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
         gap: var(--space-md);
+    }
+    
+    .create-message {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    
+    .controls-section {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    
+    .recent-messages {
+        grid-column: 1;
+        grid-row: 3;
     }
     
     .controls-chart-container {
