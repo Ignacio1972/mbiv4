@@ -31,6 +31,7 @@ class Router {
         this.routes.set('/campanas', 'campaign-library');
         this.routes.set("/audio-library", "audio-library");
         this.routes.set('/historial', 'audio-history');
+        this.routes.set('/archivo', 'audio-archive');
         this.routes.set('/radio', 'radio'); 
         this.routes.set("/dashboard-v2", "dashboard-v2");
         
