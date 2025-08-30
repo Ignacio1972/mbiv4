@@ -73,13 +73,7 @@ export class FileUploadManager {
             return;
         }
         
-        // Confirmar upload
-        const confirmMessage = `¿Subir "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) a la biblioteca?`;
-        if (!confirm(confirmMessage)) {
-            return;
-        }
-        
-        // Proceder con upload
+        // Proceder con upload directo
         await this.uploadAudioFile(file);
     }
 
