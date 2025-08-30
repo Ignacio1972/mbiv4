@@ -7,6 +7,26 @@
 @import url('/assets/styles/core/variables.css');
 
 /* ========================================
+   HEADER CON DROPDOWN DE CATEGORÍA
+   ======================================== */
+
+.create-message .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.create-message .card-title {
+    margin: 0;
+    flex: 1;
+}
+
+.create-message .category-badge-container {
+    position: relative;
+}
+
+/* ========================================
    GRID PRINCIPAL
    ======================================== */
 

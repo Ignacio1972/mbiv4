@@ -4,6 +4,8 @@
  * Integra generación TTS, controles de voz, quota chart y mensajes recientes
  */
 
+import { getCategoryShortLabel } from '../campaign-library/utils/formatters.js';
+
 export default class DashboardV2Module {
     constructor() {
         this.name = 'dashboard-v2';
@@ -130,7 +132,6 @@ export default class DashboardV2Module {
             // Generador
             messageText: document.getElementById('messageText'),
             voiceSelect: document.getElementById('voiceSelect'),
-            categorySelect: document.getElementById('categorySelect'),
             generateBtn: document.getElementById('generateBtn'),
             messageForm: document.getElementById('messageForm'),
             
@@ -230,16 +231,8 @@ export default class DashboardV2Module {
             this.state.selectedVoice = e.target.value;
         });
         
-        // Selector de categoría
-        if (this.elements.categorySelect) {
-            this.elements.categorySelect.addEventListener('change', (e) => {
-                this.state.selectedCategory = e.target.value;
-                localStorage.setItem('mbi_selectedCategory', e.target.value);
-            });
-            
-            // Establecer valor inicial del dropdown
-            this.elements.categorySelect.value = this.state.selectedCategory;
-        }
+        // Inicializar categoría moderna
+        this.initializeCategory();
         
         // Refrescar mensajes
         this.elements.refreshMessages.addEventListener('click', () => this.loadRecentMessages());
@@ -689,5 +682,61 @@ export default class DashboardV2Module {
         // Aquí podrías implementar un toast notification
         console.error('[Dashboard v2] Error:', message);
         alert(message); // Temporal
+    }
+    
+    /**
+     * Maneja el dropdown de categorías
+     */
+    toggleCategoryDropdown(event) {
+        event.stopPropagation();
+        
+        const dropdown = document.getElementById('categoryDropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('active');
+        }
+        
+        // Cerrar dropdown al hacer clic fuera
+        if (!this.clickOutsideHandler) {
+            this.clickOutsideHandler = (e) => {
+                if (!e.target.closest('.category-badge-container')) {
+                    dropdown.classList.remove('active');
+                }
+            };
+            document.addEventListener('click', this.clickOutsideHandler);
+        }
+    }
+    
+    /**
+     * Actualiza la categoría seleccionada
+     */
+    updateCategory(category) {
+        // Actualizar estado
+        this.state.selectedCategory = category;
+        localStorage.setItem('mbi_selectedCategory', category);
+        
+        // Actualizar UI del badge
+        const badge = document.getElementById('categoryBadge');
+        const dropdown = document.getElementById('categoryDropdown');
+        
+        if (badge) {
+            badge.textContent = getCategoryShortLabel(category);
+            badge.className = `message-badge badge-${category}`;
+            badge.setAttribute('data-category', category);
+        }
+        
+        // Cerrar dropdown
+        if (dropdown) {
+            dropdown.classList.remove('active');
+        }
+        
+        console.log('[Dashboard v2] Categoría actualizada a:', category);
+    }
+    
+    /**
+     * Inicializa la categoría desde localStorage
+     */
+    initializeCategory() {
+        const savedCategory = this.state.selectedCategory;
+        this.updateCategory(savedCategory);
     }
 }
