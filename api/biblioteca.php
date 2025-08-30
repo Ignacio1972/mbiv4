@@ -498,10 +498,10 @@ function uploadExternalFile() {
         
         logMessage("Iniciando upload externo: $originalFilename");
         
-        // Validación 1: Tamaño máximo 25MB 
-        $maxSize = 25 * 1024 * 1024; // 25MB en bytes
+        // Validación 1: Tamaño máximo 50MB 
+        $maxSize = 50 * 1024 * 1024; // 50MB en bytes
         if ($uploadedFile['size'] > $maxSize) {
-            throw new Exception('El archivo excede el límite de 25MB');
+            throw new Exception('El archivo excede el límite de 50MB');
         }
         
         // Validación 2: Formatos permitidos por AzuraCast

@@ -298,6 +298,11 @@ render() {
             if (!e.target.closest('.category-badge-container')) {
                 document.querySelectorAll('.category-dropdown').forEach(d => {
                     d.classList.remove('active');
+                    // Remover clase del card padre
+                    const parentCard = d.closest('.message-card');
+                    if (parentCard) {
+                        parentCard.classList.remove('dropdown-active');
+                    }
                 });
             }
         });
@@ -861,17 +866,32 @@ render() {
     toggleCategoryDropdown(event, messageId) {
         event.stopPropagation();
         
-        // Cerrar otros dropdowns
+        // Cerrar otros dropdowns y remover clase dropdown-active
         document.querySelectorAll('.category-dropdown').forEach(dropdown => {
             if (dropdown.id !== `dropdown-${messageId}`) {
                 dropdown.classList.remove('active');
+                // Encontrar y remover clase del card padre
+                const parentCard = dropdown.closest('.message-card');
+                if (parentCard) {
+                    parentCard.classList.remove('dropdown-active');
+                }
             }
         });
         
         // Toggle el dropdown actual
         const dropdown = document.getElementById(`dropdown-${messageId}`);
-        if (dropdown) {
+        const currentCard = document.querySelector(`[data-id="${messageId}"]`);
+        
+        if (dropdown && currentCard) {
+            const wasActive = dropdown.classList.contains('active');
             dropdown.classList.toggle('active');
+            
+            // Agregar/quitar clase al card para z-index
+            if (wasActive) {
+                currentCard.classList.remove('dropdown-active');
+            } else {
+                currentCard.classList.add('dropdown-active');
+            }
         }
     }
     
@@ -906,7 +926,14 @@ render() {
         }
         
         // Cerrar dropdown
-        document.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('active'));
+        document.querySelectorAll('.category-dropdown').forEach(d => {
+            d.classList.remove('active');
+            // Remover clase del card padre
+            const parentCard = d.closest('.message-card');
+            if (parentCard) {
+                parentCard.classList.remove('dropdown-active');
+            }
+        });
         
         // Actualizar UI
         this.updateFilterCounts();

@@ -35,14 +35,14 @@ export class FileUploadManager {
         console.log('[FileUploadManager] Tamaño MB:', (file.size / 1024 / 1024).toFixed(2), 'MB');
         console.log('[FileUploadManager] Tipo:', file.type);
         
-        // Validación 1: Tamaño máximo 12MB
-        const maxSize = 12 * 1024 * 1024; // 12MB
+        // Validación 1: Tamaño máximo 50MB
+        const maxSize = 50 * 1024 * 1024; // 50MB
         console.log('[FileUploadManager] Límite máximo:', (maxSize / 1024 / 1024), 'MB');
         console.log('[FileUploadManager] ¿Excede límite?', file.size > maxSize);
         
         if (file.size > maxSize) {
             console.error('[FileUploadManager] ERROR: Archivo excede límite');
-            this.parent.showError(`El archivo excede el límite de 12MB (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+            this.parent.showError(`El archivo excede el límite de 50MB (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
             return;
         }
         

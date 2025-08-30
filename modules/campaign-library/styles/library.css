@@ -377,7 +377,7 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-lg);
-    z-index: 100;
+    z-index: 9999;
     min-width: 140px;
     margin-top: var(--space-xs);
     display: none;
@@ -386,6 +386,13 @@
 .category-dropdown.active {
     display: block;
     animation: fadeIn 0.2s ease;
+}
+
+/* Elevar z-index del card cuando tiene dropdown activo */
+.message-card:has(.category-dropdown.active),
+.message-card.dropdown-active {
+    z-index: 9998;
+    position: relative;
 }
 
 .category-option {
