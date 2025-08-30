@@ -197,6 +197,15 @@ render() {
             window.location.hash = '#/configuracion';
         });
         
+        // Cerrar dropdowns al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.category-badge-container')) {
+                document.querySelectorAll('.category-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
+        
         const createFirstBtn = this.container.querySelector('#create-first-btn');
         if (createFirstBtn) {
             createFirstBtn.addEventListener('click', () => {
@@ -357,53 +366,69 @@ render() {
         grid.innerHTML = this.filteredMessages.map(message => {
             // Diferenciar entre mensajes de texto y archivos de audio
             const isAudio = message.type === 'audio';
-            const excerpt = isAudio 
-                ? `🎵 ${message.filename || 'Archivo de audio'}` 
-                : this.escapeHtml(message.excerpt || message.text?.substring(0, 100) + '...' || '');
+            const content = isAudio 
+                ? `🎵 Archivo de audio: ${message.filename || 'Sin nombre'}` 
+                : this.escapeHtml(message.text || message.excerpt || 'Sin contenido');
             
-            const metaInfo = isAudio
-                ? `<span class="message-type">🎵 Audio</span>
-                   ${message.playCount ? `<span>▶️ ${message.playCount}</span>` : ''}
-                   ${message.radioCount ? `<span>📻 ${message.radioCount}</span>` : ''}`
-                : `<span class="message-voice">🎤 ${message.voice || 'Sin voz'}</span>`;
+            // Determinar voz según el tipo
+            const voiceInfo = isAudio ? 'Audio' : (message.voice || 'Sin voz');
+            
+            // Formatear fecha relativa
+            const dateInfo = this.formatDate(message.savedAt || message.createdAt);
+            
+            // Contador de reproducciones
+            const playCount = message.playCount || 0;
+            
+            // Obtener etiqueta y clase de categoría
+            const categoryClass = `badge-${message.category || 'sin-categoria'}`;
+            const categoryLabel = this.getCategoryShortLabel(message.category);
             
             return `
             <div class="message-card ${isAudio ? 'audio-card' : ''}" data-id="${message.id}">
-                <div class="message-card-header">
+                <div class="message-header">
                     <h3 class="message-title">${this.escapeHtml(message.title)}</h3>
-                    <span class="message-category ${message.category || 'sin-categoria'}">
-                        ${this.getCategoryLabel(message.category)}
-                    </span>
+                    <div class="category-badge-container">
+                        <span class="message-badge ${categoryClass}" data-category="${message.category || 'sin-categoria'}" onclick="window.campaignLibrary.toggleCategoryDropdown(event, '${message.id}')">
+                            ${categoryLabel}
+                        </span>
+                        <div class="category-dropdown" id="dropdown-${message.id}">
+                            <div class="category-option" data-category="ofertas" onclick="window.campaignLibrary.updateCategory('${message.id}', 'ofertas')">✅ Ofertas</div>
+                            <div class="category-option" data-category="eventos" onclick="window.campaignLibrary.updateCategory('${message.id}', 'eventos')">🎉 Eventos</div>
+                            <div class="category-option" data-category="informacion" onclick="window.campaignLibrary.updateCategory('${message.id}', 'informacion')">ℹ️ Información</div>
+                            <div class="category-option" data-category="servicios" onclick="window.campaignLibrary.updateCategory('${message.id}', 'servicios')">🛠️ Servicios</div>
+                            <div class="category-option" data-category="horarios" onclick="window.campaignLibrary.updateCategory('${message.id}', 'horarios')">🕐 Horarios</div>
+                            <div class="category-option" data-category="emergencias" onclick="window.campaignLibrary.updateCategory('${message.id}', 'emergencias')">🚨 Emergencias</div>
+                            <div class="category-option" data-category="sin-categoria" onclick="window.campaignLibrary.updateCategory('${message.id}', 'sin-categoria')">📋 Sin Categoría</div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="message-excerpt">
-                    ${excerpt}
+                <div class="message-content">
+                    ${content}
                 </div>
                 
                 <div class="message-meta">
-                    ${metaInfo}
-                    <span class="message-date">📅 ${this.formatDate(message.savedAt || message.createdAt)}</span>
-                </div>
-                
-                <div class="message-actions">
-                    <button class="btn-icon" onclick="window.campaignLibrary.playMessage('${message.id}')" title="Reproducir">
-                        ▶️
-                    </button>
-                    <button class="btn-icon" onclick="window.campaignLibrary.editMessage('${message.id}')" title="Editar título">
-                        ✏️
-                    </button>
-                    <button class="btn-icon" onclick="window.campaignLibrary.changeCategory('${message.id}')" title="Cambiar categoría">
-                        🏷️
-                    </button>
-                    <button class="btn-icon" onclick="window.campaignLibrary.sendToRadio('${message.id}')" title="Enviar a radio">
-                        📻
-                    </button>
-                    ${isAudio ? `<button class="btn-icon" onclick="window.campaignLibrary.scheduleMessage('${message.id}', '${(message.title || '').replace(/'/g, "\\'").replace(/"/g, '\\"')}')" title="Programar">
-                        🕐
-                    </button>` : ''}
-                    <button class="btn-icon btn-danger" onclick="window.campaignLibrary.deleteMessage('${message.id}')" title="Eliminar">
-                        🗑️
-                    </button>
+                    <div class="message-info">
+                        <div class="message-info-item">
+                            <span>🎙️</span>
+                            <span>${voiceInfo}</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>📅</span>
+                            <span>${dateInfo}</span>
+                        </div>
+                        <div class="message-info-item">
+                            <span>▶</span>
+                            <span>${playCount} veces</span>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-icon" onclick="window.campaignLibrary.playMessage('${message.id}')" title="Preview">▶</button>
+                        <button class="btn-icon" onclick="window.campaignLibrary.editMessage('${message.id}')" title="Cambiar Título">✏️</button>
+                        ${isAudio ? `<button class="btn-icon btn-schedule" onclick="window.campaignLibrary.scheduleMessage('${message.id}', '${(message.title || '').replace(/'/g, "\\'").replace(/"/g, '\\"')}')" title="Programar">📅</button>` : ''}
+                        <button class="btn-icon btn-radio" onclick="window.campaignLibrary.sendToRadio('${message.id}')" title="Enviar a Radio">📡</button>
+                        <button class="btn-icon btn-delete" onclick="window.campaignLibrary.deleteMessage('${message.id}')" title="Eliminar">🗑️</button>
+                    </div>
                 </div>
             </div>
             `;
@@ -416,7 +441,9 @@ render() {
             sendToRadio: (id) => this.sendToRadio(id),
             deleteMessage: (id) => this.deleteMessage(id),
             changeCategory: (id) => this.changeCategory(id),
-            scheduleMessage: (id, title) => this.scheduleMessage(id, title)
+            scheduleMessage: (id, title) => this.scheduleMessage(id, title),
+            toggleCategoryDropdown: (event, id) => this.toggleCategoryDropdown(event, id),
+            updateCategory: (id, category) => this.updateCategory(id, category)
         };
     }
     
@@ -736,6 +763,84 @@ render() {
         };
         
         return labels[category] || labels['sin-categoria'];
+    }
+    
+    getCategoryShortLabel(category) {
+        const labels = {
+            'ofertas': 'Ofertas',
+            'eventos': 'Eventos',
+            'informacion': 'Info',
+            'emergencias': 'Urgente',
+            'servicios': 'Servicios',
+            'horarios': 'Horarios',
+            'sin-categoria': 'Sin Cat.'
+        };
+        
+        return labels[category] || labels['sin-categoria'];
+    }
+    
+    toggleCategoryDropdown(event, messageId) {
+        event.stopPropagation();
+        
+        // Cerrar otros dropdowns
+        document.querySelectorAll('.category-dropdown').forEach(dropdown => {
+            if (dropdown.id !== `dropdown-${messageId}`) {
+                dropdown.classList.remove('active');
+            }
+        });
+        
+        // Toggle el dropdown actual
+        const dropdown = document.getElementById(`dropdown-${messageId}`);
+        if (dropdown) {
+            dropdown.classList.toggle('active');
+        }
+    }
+    
+    async updateCategory(messageId, newCategory) {
+        const message = this.messages.find(m => m.id === messageId);
+        if (!message) return;
+        
+        const oldCategory = message.category;
+        message.category = newCategory;
+        
+        // Si es un archivo de audio, actualizar en BD
+        if (message.type === 'audio') {
+            try {
+                const response = await apiClient.post('/saved-messages.php', {
+                    action: 'update_category',
+                    id: message.id,
+                    category: newCategory
+                });
+                
+                if (!response.success) {
+                    message.category = oldCategory; // Revertir si falla
+                    throw new Error(response.error || 'Error actualizando categoría');
+                }
+            } catch (error) {
+                console.error('Error actualizando categoría:', error);
+                this.showError('Error al actualizar categoría');
+                return;
+            }
+        } else {
+            // Para mensajes de texto, guardar localmente
+            storageManager.save(`library_message_${message.id}`, message);
+        }
+        
+        // Cerrar dropdown
+        document.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('active'));
+        
+        // Actualizar UI
+        this.updateFilterCounts();
+        this.displayMessages();
+        
+        // Animación de confirmación
+        const badge = document.querySelector(`[data-id="${messageId}"] .message-badge`);
+        if (badge) {
+            badge.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                badge.style.transform = 'scale(1)';
+            }, 200);
+        }
     }
     
     formatDate(timestamp) {
