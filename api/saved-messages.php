@@ -35,6 +35,7 @@ function getSavedMessages() {
            SELECT 
                filename,
                display_name,
+               description,
                category,
                saved_at,
                play_count,
@@ -53,7 +54,8 @@ function getSavedMessages() {
                'id' => 'audio_' . str_replace('.mp3', '', $file['filename']),
                'type' => 'audio',
                'title' => $file['display_name'] ?? $file['filename'],
-               'content' => 'Archivo de audio',
+               'content' => $file['description'] ?? 'Archivo de audio',
+               'description' => $file['description'] ?? '',
                'category' => $file['category'] ?? 'sin_categoria',
                'filename' => $file['filename'],
                'createdAt' => $file['saved_at'],

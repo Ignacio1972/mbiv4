@@ -94,58 +94,46 @@ export default class CampaignLibraryModule {
 render() {
     this.container.innerHTML = `
         <div class="campaign-library-module">
-            <!-- Controles -->
-            <div class="library-controls">
-                <!-- Filtros -->
-                <div class="library-filters">
-                    <button class="filter-btn active" data-filter="all">
-                        Todos <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="ofertas">
-                        🛒 Ofertas <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="eventos">
-                        🎉 Eventos <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="informacion">
-                        ℹ️ Información <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="emergencias">
-                        🚨 Emergencias <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="servicios">
-                        🛎️ Servicios <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="horarios">
-                        🕐 Horarios <span class="filter-count">(0)</span>
-                    </button>
-                    <button class="filter-btn" data-filter="sin-categoria">
-                        📁 Sin categoría <span class="filter-count">(0)</span>
-                    </button>
-                </div>
-                
-                <!-- Búsqueda y ordenamiento -->
-                <div class="library-actions">
-                    <input type="text" 
-                           id="library-search" 
-                           class="search-input" 
-                           placeholder="🔍 Buscar mensajes...">
-                    
-                    <select id="library-sort" class="sort-select">
+            <!-- Page Header con título y filtros -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="page-title-icon">💾</span>
+                    Mensajes Guardados
+                </h1>
+                <div class="filter-bar">
+                    <select id="library-filter" class="filter-select">
+                        <option value="all">Todas las categorías</option>
+                        <option value="ofertas">Ofertas</option>
+                        <option value="eventos">Eventos</option>
+                        <option value="informacion">Información</option>
+                        <option value="servicios">Servicios</option>
+                        <option value="horarios">Horarios</option>
+                        <option value="emergencias">Emergencias</option>
+                        <option value="sin-categoria">Sin Categoría</option>
+                    </select>
+                    <select id="library-sort" class="filter-select">
                         <option value="date_desc">Más recientes</option>
                         <option value="date_asc">Más antiguos</option>
-                        <option value="title_asc">Título A-Z</option>
-                        <option value="title_desc">Título Z-A</option>
+                        <option value="play_count">Más reproducidos</option>
+                        <option value="title_asc">Alfabético</option>
                     </select>
-                    
-                    <button class="btn btn-primary" id="create-new-btn">
-                        ➕ Crear Mensaje
-                    </button>
-                    
-                    <button class="btn btn-secondary" id="upload-audio-btn">
-                        🎵 Subir Audio
-                    </button>
                 </div>
+            </div>
+            
+            <!-- Barra de acciones secundarias -->
+            <div class="library-actions">
+                <input type="text" 
+                       id="library-search" 
+                       class="search-input" 
+                       placeholder="🔍 Buscar mensajes...">
+                
+                <button class="btn btn-primary" id="create-new-btn">
+                    ➕ Crear Mensaje
+                </button>
+                
+                <button class="btn btn-secondary" id="upload-audio-btn">
+                    🎵 Subir Audio
+                </button>
             </div>
             
             <!-- Grid de mensajes -->
@@ -173,24 +161,29 @@ render() {
 }
     
     attachEvents() {
-        // Filtros
-        this.container.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.setFilter(e.target.dataset.filter);
+        // Filtro de categorías (dropdown)
+        const filterSelect = this.container.querySelector('#library-filter');
+        if (filterSelect) {
+            filterSelect.addEventListener('change', (e) => {
+                this.setFilter(e.target.value);
             });
-        });
+        }
         
         // Búsqueda
         const searchInput = this.container.querySelector('#library-search');
-        searchInput.addEventListener('input', (e) => {
-            this.searchMessages(e.target.value);
-        });
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.searchMessages(e.target.value);
+            });
+        }
         
         // Ordenamiento
         const sortSelect = this.container.querySelector('#library-sort');
-        sortSelect.addEventListener('change', (e) => {
-            this.setSorting(e.target.value);
-        });
+        if (sortSelect) {
+            sortSelect.addEventListener('change', (e) => {
+                this.setSorting(e.target.value);
+            });
+        }
         
         // Crear nuevo
         this.container.querySelector('#create-new-btn').addEventListener('click', () => {
@@ -308,6 +301,7 @@ render() {
                     id: msg.id,
                     title: msg.title || msg.filename,
                     content: msg.content || 'Archivo de audio',
+                    description: msg.description || msg.content || '',
                     category: msg.category || 'sin_categoria',
                     type: msg.type || 'audio',
                     filename: msg.filename,
@@ -366,9 +360,17 @@ render() {
         grid.innerHTML = this.filteredMessages.map(message => {
             // Diferenciar entre mensajes de texto y archivos de audio
             const isAudio = message.type === 'audio';
-            const content = isAudio 
-                ? `🎵 Archivo de audio: ${message.filename || 'Sin nombre'}` 
-                : this.escapeHtml(message.text || message.excerpt || 'Sin contenido');
+            
+            // Para archivos de audio, usar description (texto completo) o content como fallback
+            // Para mensajes de texto, usar el texto completo
+            let content = '';
+            if (isAudio) {
+                content = message.description || message.content || `🎵 Archivo de audio: ${message.filename || 'Sin nombre'}`;
+            } else {
+                content = message.text || message.content || 'Sin contenido';
+            }
+            // Limpiar y escapar el contenido
+            content = this.escapeHtml(content.trim());
             
             // Determinar voz según el tipo
             const voiceInfo = isAudio ? 'Audio' : (message.voice || 'Sin voz');
@@ -450,10 +452,11 @@ render() {
     setFilter(filter) {
         this.currentFilter = filter;
         
-        // Actualizar botones activos
-        this.container.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.filter === filter);
-        });
+        // Actualizar select activo
+        const filterSelect = this.container.querySelector('#library-filter');
+        if (filterSelect) {
+            filterSelect.value = filter;
+        }
         
         this.displayMessages();
     }
