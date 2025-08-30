@@ -16,6 +16,7 @@ import { eventBus } from '../../shared/event-bus.js';
 import { storageManager } from '../../shared/storage-manager.js';
 import { apiClient } from '../../shared/api-client.js';
 import { FileUploadManager } from './services/file-upload-manager.js';
+import { formatDate, escapeHtml, getCategoryLabel, getCategoryShortLabel } from './utils/formatters.js';
 
 export default class CampaignLibraryModule {
     constructor() {
@@ -467,25 +468,25 @@ render() {
                 content = message.text || message.content || 'Sin contenido';
             }
             // Limpiar y escapar el contenido
-            content = this.escapeHtml(content.trim());
+            content = escapeHtml(content.trim());
             
             // Determinar voz según el tipo
             const voiceInfo = isAudio ? 'Audio' : (message.voice || 'Sin voz');
             
             // Formatear fecha relativa
-            const dateInfo = this.formatDate(message.savedAt || message.createdAt);
+            const dateInfo = formatDate(message.savedAt || message.createdAt);
             
             // Contador de reproducciones
             const playCount = message.playCount || 0;
             
             // Obtener etiqueta y clase de categoría
             const categoryClass = `badge-${message.category || 'sin-categoria'}`;
-            const categoryLabel = this.getCategoryShortLabel(message.category);
+            const categoryLabel = getCategoryShortLabel(message.category);
             
             return `
             <div class="message-card ${isAudio ? 'audio-card' : ''}" data-id="${message.id}">
                 <div class="message-header">
-                    <h3 class="message-title">${this.escapeHtml(message.title)}</h3>
+                    <h3 class="message-title">${escapeHtml(message.title)}</h3>
                     <div class="category-badge-container">
                         <span class="message-badge ${categoryClass}" data-category="${message.category || 'sin-categoria'}" onclick="window.campaignLibrary.toggleCategoryDropdown(event, '${message.id}')">
                             ${categoryLabel}
@@ -666,7 +667,7 @@ render() {
         player.className = 'floating-player';
         player.innerHTML = `
             <div class="player-header">
-                <span>🎵 ${this.escapeHtml(message.title)}</span>
+                <span>🎵 ${escapeHtml(message.title)}</span>
                 <button onclick="this.parentElement.parentElement.remove()">✕</button>
             </div>
             <audio controls autoplay>
@@ -855,33 +856,7 @@ render() {
         this.displayMessages();
     }
     
-    getCategoryLabel(category) {
-        const labels = {
-            'ofertas': '🛒 Ofertas',
-            'eventos': '🎉 Eventos',
-            'informacion': 'ℹ️ Información',
-            'emergencias': '🚨 Emergencias',
-            'servicios': '🛎️ Servicios',
-            'horarios': '🕐 Horarios',
-            'sin-categoria': '📁 Sin categoría'
-        };
-        
-        return labels[category] || labels['sin-categoria'];
-    }
-    
-    getCategoryShortLabel(category) {
-        const labels = {
-            'ofertas': 'Ofertas',
-            'eventos': 'Eventos',
-            'informacion': 'Info',
-            'emergencias': 'Urgente',
-            'servicios': 'Servicios',
-            'horarios': 'Horarios',
-            'sin-categoria': 'Sin Cat.'
-        };
-        
-        return labels[category] || labels['sin-categoria'];
-    }
+    // Métodos getCategoryLabel y getCategoryShortLabel movidos a utils/formatters.js
     
     toggleCategoryDropdown(event, messageId) {
         event.stopPropagation();
@@ -947,38 +922,7 @@ render() {
         }
     }
     
-    formatDate(timestamp) {
-        if (!timestamp) return 'Fecha desconocida';
-        
-        const date = new Date(timestamp);
-        const now = new Date();
-        const diff = now - date;
-        
-        // Si es de hoy
-        if (diff < 86400000 && date.getDate() === now.getDate()) {
-            return `Hoy ${date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}`;
-        }
-        
-        // Si es de ayer
-        if (diff < 172800000 && date.getDate() === now.getDate() - 1) {
-            return `Ayer ${date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}`;
-        }
-        
-        // Fecha completa
-        return date.toLocaleDateString('es-CL', { 
-            day: '2-digit', 
-            month: 'short', 
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-    
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    // Métodos formatDate y escapeHtml movidos a utils/formatters.js
     
     async changeCategory(id) {
         const message = this.messages.find(m => m.id === id);
