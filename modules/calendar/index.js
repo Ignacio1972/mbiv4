@@ -96,6 +96,159 @@ export default class CalendarModule {
         
         console.log('[Calendar] Header styles applied');
     }
+    
+    /**
+     * Aplica estilos agresivos para las celdas del calendario
+     * @private
+     */
+    applyCellStyles() {
+        // Crear o actualizar estilos inline para las celdas
+        let styleEl = document.getElementById('calendar-cells-override-styles');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'calendar-cells-override-styles';
+            document.head.appendChild(styleEl);
+        }
+        
+        styleEl.textContent = `
+            /* CALENDARIO MODERNO Y SOBRIO - Tonos Grises Elegantes */
+            
+            /* Container principal */
+            .audio-archive-module {
+                max-width: 1400px !important;
+                margin: 0 auto !important;
+                padding: var(--space-xl) !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Contenedor del calendario con rounded corners */
+            .archive-list {
+                border-radius: 16px !important;
+                overflow: hidden !important;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12) !important;
+                background: linear-gradient(145deg, #2d3748, #1a202c) !important;
+            }
+            
+            /* Celdas principales - Gris sobrio moderno */
+            .fc-daygrid-day,
+            .fc .fc-daygrid-day,
+            .fc-theme-standard .fc-daygrid-day,
+            .calendar-view .fc-daygrid-day {
+                background: linear-gradient(145deg, #374151, #2d3748) !important;
+                border: 1px solid rgba(75, 85, 99, 0.3) !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            
+            /* Hover effect elegante */
+            .fc-daygrid-day:hover,
+            .fc .fc-daygrid-day:hover,
+            .fc-theme-standard .fc-daygrid-day:hover {
+                background: linear-gradient(145deg, #4b5563, #374151) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+            }
+            
+            /* Día actual - Accent moderno */
+            .fc-day-today,
+            .fc .fc-day-today,
+            .fc-theme-standard .fc-day-today {
+                background: linear-gradient(145deg, #3b82f6, #2563eb) !important;
+                border: 2px solid #60a5fa !important;
+                border-radius: 12px !important;
+                box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3) !important;
+            }
+            
+            /* Headers con estilo moderno */
+            .fc-col-header-cell,
+            .fc .fc-col-header-cell,
+            .fc-theme-standard .fc-col-header-cell {
+                background: linear-gradient(145deg, #1f2937, #111827) !important;
+                border-bottom: 2px solid rgba(75, 85, 99, 0.4) !important;
+                color: #9ca3af !important;
+                font-weight: 600 !important;
+                font-size: 0.75rem !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.1em !important;
+                padding: 16px 12px !important;
+            }
+            
+            /* Números de días */
+            .fc-daygrid-day-number {
+                color: #e5e7eb !important;
+                font-weight: 500 !important;
+                font-size: 0.9rem !important;
+                padding: 8px !important;
+            }
+            
+            /* Eventos con diseño moderno */
+            .fc-event,
+            .fc .fc-event {
+                background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+                border: none !important;
+                border-radius: 8px !important;
+                color: white !important;
+                font-weight: 500 !important;
+                font-size: 0.75rem !important;
+                padding: 4px 8px !important;
+                box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
+                transition: all 0.2s ease !important;
+            }
+            
+            .fc-event:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4) !important;
+                background: linear-gradient(135deg, #7c3aed, #6366f1) !important;
+            }
+            
+            /* Botones de navegación modernos */
+            .fc-button,
+            .fc .fc-button {
+                background: linear-gradient(145deg, #374151, #2d3748) !important;
+                border: 1px solid rgba(75, 85, 99, 0.3) !important;
+                border-radius: 10px !important;
+                color: #e5e7eb !important;
+                font-weight: 500 !important;
+                padding: 10px 16px !important;
+                transition: all 0.2s ease !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            .fc-button:hover,
+            .fc .fc-button:hover {
+                background: linear-gradient(145deg, #4b5563, #374151) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            }
+            
+            .fc-button-active,
+            .fc-button:active,
+            .fc .fc-button-active {
+                background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+                border-color: #6366f1 !important;
+                color: white !important;
+                box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
+            }
+            
+            /* Título del calendario */
+            .fc-toolbar-title {
+                color: #f9fafb !important;
+                font-weight: 700 !important;
+                font-size: 1.5rem !important;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            }
+            
+            /* Bordes suaves en todo el calendario */
+            .fc,
+            .fc .fc-scrollgrid,
+            .fc-theme-standard .fc-scrollgrid {
+                border-radius: 16px !important;
+                overflow: hidden !important;
+            }
+        `;
+        
+        console.log('[Calendar] Cell styles applied');
+    }
 
     
     async load(container) {
@@ -130,7 +283,19 @@ export default class CalendarModule {
             // Re-aplicar estilos después de que FullCalendar se renderice
             setTimeout(() => {
                 this.applyHeaderStyles();
+                this.applyCellStyles();
             }, 100);
+            
+            // Re-aplicar estilos periódicamente para asegurar que se mantengan
+            setTimeout(() => {
+                this.applyHeaderStyles();
+                this.applyCellStyles();
+            }, 500);
+            
+            setTimeout(() => {
+                this.applyHeaderStyles();
+                this.applyCellStyles();
+            }, 1000);
             
             eventBus.emit('calendar:loaded');
             console.log('[Calendar] Module loaded successfully');
@@ -218,6 +383,9 @@ export default class CalendarModule {
             // Establecer eventos en el calendario
             this.calendarView.setEvents(audioSchedules);
             
+            // Actualizar contador de resultados
+            this.updateCalendarResultsCount(audioSchedules.length);
+            
             console.log(`[Calendar] Loaded ${audioSchedules.length} audio schedules`);
             
         } catch (error) {
@@ -225,6 +393,28 @@ export default class CalendarModule {
             this.showError('Error al cargar eventos');
         } finally {
             this.showLoading(false);
+        }
+    }
+    
+    /**
+     * Actualiza el contador de eventos en el calendario
+     */
+    updateCalendarResultsCount(eventsCount) {
+        const counter = document.getElementById('resultsCount');
+        if (counter) {
+            if (eventsCount === 0) {
+                counter.innerHTML = `
+                    <div class="archive-empty">
+                        <span>📅</span>
+                        <span>No hay eventos programados en el calendario</span>
+                    </div>
+                `;
+            } else {
+                counter.innerHTML = `
+                    Mostrando <span class="archive-count-number">${eventsCount}</span> 
+                    evento${eventsCount !== 1 ? 's' : ''} programado${eventsCount !== 1 ? 's' : ''}
+                `;
+            }
         }
     }
     
