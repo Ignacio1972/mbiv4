@@ -1,0 +1,349 @@
+/**
+ * MBI v4 - Dashboard Module Styles
+ * =================================
+ * Styles specific to the dashboard module
+ */
+
+/* ========================================
+   DASHBOARD LAYOUT
+   ======================================== */
+
+.dashboard-container {
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--space-4);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: var(--grid-dashboard-cols);
+  gap: var(--grid-gap);
+  height: 100%;
+}
+
+/* ========================================
+   DASHBOARD SECTIONS
+   ======================================== */
+
+.dashboard-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.dashboard-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.dashboard-section__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dashboard-section__body {
+  padding: var(--space-4);
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* ========================================
+   QUOTA DISPLAY
+   ======================================== */
+
+.quota-display {
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.quota-display__chart {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto var(--space-4);
+}
+
+.quota-display__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.quota-stat {
+  text-align: center;
+}
+
+.quota-stat__value {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+.quota-stat__label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* ========================================
+   RECENT MESSAGES
+   ======================================== */
+
+.recent-messages {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.recent-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition-base);
+}
+
+.recent-message:hover {
+  background: var(--bg-tertiary);
+}
+
+.recent-message:last-child {
+  border-bottom: none;
+}
+
+.recent-message__preview {
+  flex-shrink: 0;
+}
+
+.recent-message__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-message__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recent-message__preview-text {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recent-message__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.recent-message__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ========================================
+   CONTROLS SECTION
+   ======================================== */
+
+.controls-section {
+  padding: var(--space-6);
+}
+
+.voice-controls {
+  margin-bottom: var(--space-6);
+}
+
+.voice-control-group {
+  margin-bottom: var(--space-4);
+}
+
+.voice-control-group:last-child {
+  margin-bottom: 0;
+}
+
+.voice-control-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.voice-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.voice-preset {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-base);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.voice-preset:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+.voice-preset.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.voice-slider-container {
+  position: relative;
+  margin-bottom: var(--space-2);
+}
+
+.voice-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* ========================================
+   AUDIO ACTIONS
+   ======================================== */
+
+.audio-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.text-input-container {
+  position: relative;
+}
+
+.text-input {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  resize: vertical;
+  transition: var(--transition-colors);
+}
+
+.text-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(56, 122, 222, 0.1);
+}
+
+.text-input::placeholder {
+  color: var(--text-muted);
+}
+
+.char-counter {
+  position: absolute;
+  bottom: var(--space-2);
+  right: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.char-counter.warning {
+  color: var(--warning);
+}
+
+.char-counter.error {
+  color: var(--danger);
+}
+
+/* ========================================
+   PROGRESS INDICATORS
+   ======================================== */
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  border-radius: var(--radius-full);
+  transition: width var(--duration-base) ease;
+}
+
+.progress-text {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ========================================
+   RESPONSIVE DASHBOARD
+   ======================================== */
+
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .dashboard-container {
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 768px) {
+  .voice-preset-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .quota-display__stats {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  
+  .audio-actions {
+    gap: var(--space-2);
+  }
+}

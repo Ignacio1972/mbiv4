@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI Design Prototype - Solo HTML/CSS</title>
+    
+    <!-- Sistema de diseño -->
+    <link rel="stylesheet" href="/styles/core/design-tokens.css">
+    <link rel="stylesheet" href="new-design/css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="new-design/css/palette-custom.css">
+    
+    <style>
+        /* Estilos específicos para el prototipo */
+        .prototype-notice {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+        }
+        
+        .section-mockup {
+            padding: 40px;
+            min-height: 500px;
+            display: none;
+        }
+        
+        .section-mockup.active {
+            display: block;
+        }
+        
+        /* Dashboard Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 24px;
+        }
+        
+        .dashboard-card {
+            background: var(--card-bg, #1a1a2e);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        
+        .card-content {
+            color: #aaa;
+        }
+        
+        /* Simulación de componentes */
+        .fake-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .fake-button:hover {
+            opacity: 0.8;
+        }
+        
+        .fake-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .fake-textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            min-height: 120px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+        
+        /* Lista de mensajes */
+        .message-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .message-item {
+            background: rgba(255,255,255,0.05);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .message-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        
+        /* Calendario mockup */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .calendar-day.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Notice de prototipo -->
+    <div class="prototype-notice">
+        🎨 PROTOTIPO DE DISEÑO - Solo HTML/CSS (Sin funcionalidad JS)
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#mensajes" class="nav-link" onclick="showSection('mensajes')">Mensajes</a>
+                <a href="#archivos" class="nav-link" onclick="showSection('archivos')">Archivos</a>
+                <a href="#calendario" class="nav-link" onclick="showSection('calendario')">Calendario</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="container" id="main-container">
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section-mockup active">
+            <h2 style="color: white; margin-bottom: 24px;">Dashboard Principal</h2>
+            
+            <div class="dashboard-grid">
+                <!-- Card 1: Generador TTS -->
+                <div class="dashboard-card">
+                    <div class="card-title">🎤 Generador TTS</div>
+                    <div class="card-content">
+                        <textarea class="fake-textarea" placeholder="Escribe tu mensaje aquí..."></textarea>
+                        <select class="fake-input">
+                            <option>Voz: Isabella (Chilena)</option>
+                            <option>Voz: María (Española)</option>
+                        </select>
+                        <div class="fake-button">Generar Audio</div>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Radio en Vivo -->
+                <div class="dashboard-card">
+                    <div class="card-title">📻 Radio en Vivo</div>
+                    <div class="card-content">
+                        <div style="height: 60px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: #666;">
+                            [Player de Radio]
+                        </div>
+                        <div class="fake-button" style="width: 100%; text-align: center;">Interrumpir con Mensaje</div>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Estadísticas -->
+                <div class="dashboard-card">
+                    <div class="card-title">📊 Estadísticas del Día</div>
+                    <div class="card-content">
+                        <div style="margin-bottom: 12px;">
+                            <strong>Mensajes Generados:</strong> 24
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <strong>Interrupciones:</strong> 8
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <strong>Programados:</strong> 15
+                        </div>
+                        <div>
+                            <strong>Tiempo al Aire:</strong> 2h 34m
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 4: Próximas Emisiones -->
+                <div class="dashboard-card">
+                    <div class="card-title">⏰ Próximas Emisiones</div>
+                    <div class="card-content">
+                        <div class="message-item">
+                            <span>14:00 - Promoción Almuerzo</span>
+                            <span style="color: #4CAF50;">✓</span>
+                        </div>
+                        <div class="message-item">
+                            <span>15:30 - Oferta del Día</span>
+                            <span style="color: #FFC107;">⏳</span>
+                        </div>
+                        <div class="message-item">
+                            <span>17:00 - Cierre Tiendas</span>
+                            <span style="color: #888;">○</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensajes Section -->
+        <div id="mensajes" class="section-mockup">
+            <h2 style="color: white; margin-bottom: 24px;">📚 Biblioteca de Mensajes</h2>
+            
+            <div style="display: grid; grid-template-columns: 300px 1fr; gap: 24px;">
+                <!-- Sidebar Categorías -->
+                <div class="dashboard-card">
+                    <div class="card-title">Categorías</div>
+                    <div class="card-content">
+                        <div class="message-item">Promociones (12)</div>
+                        <div class="message-item">Eventos (8)</div>
+                        <div class="message-item">Seguridad (5)</div>
+                        <div class="message-item">Informativos (15)</div>
+                    </div>
+                </div>
+                
+                <!-- Lista de Mensajes -->
+                <div class="dashboard-card">
+                    <div class="card-title">Mensajes Guardados</div>
+                    <div class="card-content">
+                        <ul class="message-list">
+                            <li class="message-item">
+                                <div>
+                                    <strong>Promoción 2x1 Helados</strong><br>
+                                    <small style="color: #888;">Categoría: Promociones | 30 seg</small>
+                                </div>
+                                <div>
+                                    <span class="fake-button" style="padding: 5px 10px;">▶️</span>
+                                    <span class="fake-button" style="padding: 5px 10px;">📅</span>
+                                </div>
+                            </li>
+                            <li class="message-item">
+                                <div>
+                                    <strong>Evento Día del Niño</strong><br>
+                                    <small style="color: #888;">Categoría: Eventos | 45 seg</small>
+                                </div>
+                                <div>
+                                    <span class="fake-button" style="padding: 5px 10px;">▶️</span>
+                                    <span class="fake-button" style="padding: 5px 10px;">📅</span>
+                                </div>
+                            </li>
+                            <li class="message-item">
+                                <div>
+                                    <strong>Recordatorio Mascarillas</strong><br>
+                                    <small style="color: #888;">Categoría: Seguridad | 20 seg</small>
+                                </div>
+                                <div>
+                                    <span class="fake-button" style="padding: 5px 10px;">▶️</span>
+                                    <span class="fake-button" style="padding: 5px 10px;">📅</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Archivos Section -->
+        <div id="archivos" class="section-mockup">
+            <h2 style="color: white; margin-bottom: 24px;">🎵 Biblioteca de Audio</h2>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <div class="card-title">Archivos Recientes</div>
+                    <div class="card-content">
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <th style="text-align: left; padding: 8px;">Nombre</th>
+                                    <th style="text-align: left; padding: 8px;">Tipo</th>
+                                    <th style="text-align: left; padding: 8px;">Fecha</th>
+                                    <th style="text-align: left; padding: 8px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 8px;">tts20250831_promocion.mp3</td>
+                                    <td style="padding: 8px;">TTS</td>
+                                    <td style="padding: 8px;">Hoy 14:23</td>
+                                    <td style="padding: 8px;">
+                                        <span class="fake-button" style="padding: 3px 8px; font-size: 12px;">▶️</span>
+                                        <span class="fake-button" style="padding: 3px 8px; font-size: 12px;">⬇️</span>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 8px;">musica_ambiente_01.mp3</td>
+                                    <td style="padding: 8px;">Upload</td>
+                                    <td style="padding: 8px;">Ayer 11:45</td>
+                                    <td style="padding: 8px;">
+                                        <span class="fake-button" style="padding: 3px 8px; font-size: 12px;">▶️</span>
+                                        <span class="fake-button" style="padding: 3px 8px; font-size: 12px;">⬇️</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-title">📤 Subir Archivo</div>
+                    <div class="card-content">
+                        <div style="border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 40px; text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                            <div>Arrastra archivos aquí</div>
+                            <div style="color: #888; margin: 16px 0;">o</div>
+                            <div class="fake-button">Seleccionar Archivos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calendario Section -->
+        <div id="calendario" class="section-mockup">
+            <h2 style="color: white; margin-bottom: 24px;">📅 Calendario de Programación</h2>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <div class="card-title">Agosto 2025</div>
+                    <div class="card-content">
+                        <div class="calendar-grid">
+                            <!-- Días de la semana -->
+                            <div style="font-weight: bold; text-align: center;">Dom</div>
+                            <div style="font-weight: bold; text-align: center;">Lun</div>
+                            <div style="font-weight: bold; text-align: center;">Mar</div>
+                            <div style="font-weight: bold; text-align: center;">Mié</div>
+                            <div style="font-weight: bold; text-align: center;">Jue</div>
+                            <div style="font-weight: bold; text-align: center;">Vie</div>
+                            <div style="font-weight: bold; text-align: center;">Sáb</div>
+                            
+                            <!-- Días del mes (ejemplo) -->
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day">22</div>
+                            <div class="calendar-day">23</div>
+                            <div class="calendar-day">24</div>
+                            <div class="calendar-day">25</div>
+                            <div class="calendar-day">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day">28</div>
+                            <div class="calendar-day">29</div>
+                            <div class="calendar-day">30</div>
+                            <div class="calendar-day active">31</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-title">📋 Eventos del Día</div>
+                    <div class="card-content">
+                        <div class="message-item">
+                            <div>
+                                <strong>09:00</strong> - Apertura Mall<br>
+                                <small style="color: #888;">Mensaje de bienvenida</small>
+                            </div>
+                        </div>
+                        <div class="message-item">
+                            <div>
+                                <strong>12:00</strong> - Promoción Almuerzo<br>
+                                <small style="color: #888;">Patio de comidas</small>
+                            </div>
+                        </div>
+                        <div class="message-item">
+                            <div>
+                                <strong>18:00</strong> - Happy Hour<br>
+                                <small style="color: #888;">Descuentos especiales</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        // JavaScript mínimo solo para navegación del prototipo
+        function showSection(sectionName) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section-mockup').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            const targetSection = document.getElementById(sectionName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Actualizar navegación activa
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + sectionName) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Manejar navegación por hash
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1) || 'dashboard';
+            showSection(hash);
+        });
+        
+        // Cargar sección inicial
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.slice(1) || 'dashboard';
+            showSection(hash);
+        });
+    </script>
+</body>
+</html>

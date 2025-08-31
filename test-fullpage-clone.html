@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI Dashboard v2 - Sistema Completo</title>
+    
+    <!-- Sistema de diseño -->
+    <link rel="stylesheet" href="/styles/core/design-tokens.css">
+    <link rel="stylesheet" href="new-design/css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="new-design/css/palette-custom.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#dashboard" class="nav-link active" data-view="dashboard">Dashboard</a>
+                <a href="#mensajes" class="nav-link" data-view="mensajes">Mensajes Seleccionados</a>
+                <a href="#archivos" class="nav-link" data-view="archivos">Archivos</a>
+                <a href="#archivo" class="nav-link" data-view="archivo">🗄️ Archivo Completo</a>
+                <a href="#calendario" class="nav-link" data-view="calendario">Calendario</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="container" id="main-container">
+        <!-- El contenido se cargará aquí -->
+    </div>
+    
+    <script type="module">
+        // Event Bus simple (como estaba)
+        window.eventBus = {
+            events: {},
+            on(event, callback) {
+                if (!this.events[event]) this.events[event] = [];
+                this.events[event].push(callback);
+            },
+            off(event) {
+                delete this.events[event];
+            },
+            emit(event, data) {
+                if (this.events[event]) {
+                    this.events[event].forEach(cb => cb(data));
+                }
+            }
+        };
+        
+        // API Client simple
+        window.apiClient = {
+            async post(url, data) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+        };
+        
+        // Sistema de vistas simplificado (como tus tests)
+        let currentModule = null;
+        
+        async function loadView(viewName) {
+            const container = document.getElementById('main-container');
+            
+            // Limpiar módulo anterior si existe
+            if (currentModule && typeof currentModule.unload === 'function') {
+                await currentModule.unload();
+            }
+            
+            // Limpiar container
+            container.innerHTML = '<div class="loading">Cargando...</div>';
+            
+            // Actualizar navegación activa
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.toggle('active', link.dataset.view === viewName);
+            });
+            
+            try {
+                switch(viewName) {
+                    case 'dashboard':
+                        // Cargar Dashboard v2
+                        const { default: DashboardV2Module } = await import('/modules/dashboard-v2/index.js');
+                        currentModule = new DashboardV2Module();
+                        await currentModule.load(container);
+                        
+                        // Activar funcionalidades del dashboard
+                        setTimeout(setupDashboardHandlers, 500);
+                        break;
+                        
+                    case 'mensajes':
+                        // MENSAJES SELECCIONADOS (campaign-library)
+                        // Campañas y mensajes curados para reutilización
+                        const { default: CampaignLibraryModule } = await import('/modules/campaign-library/index.js');
+                        currentModule = new CampaignLibraryModule();
+                        await currentModule.load(container);
+                        break;
+                        
+                    case 'archivos':
+                        // Cargar Audio Library
+                        const { default: AudioLibraryModule } = await import('/modules/audio-library/index.js');
+                        currentModule = new AudioLibraryModule();
+                        await currentModule.load(container);
+                        break;
+                        
+                    case 'archivo':
+                        // Cargar Archivo Completo (Audio Archive)
+                        const { default: AudioArchiveModule } = await import('/modules/audio-archive/index.js');
+                        currentModule = new AudioArchiveModule();
+                        await currentModule.load(container);
+                        break;
+                        
+                    case 'calendario':
+                        // Cargar Calendar
+                        const { default: CalendarModule } = await import('/modules/calendar/index.js');
+                        currentModule = new CalendarModule();
+                        await currentModule.load(container);
+                        break;
+                        
+                    default:
+                        container.innerHTML = '<p>Vista no encontrada</p>';
+                }
+            } catch (error) {
+                console.error(`Error cargando vista ${viewName}:`, error);
+                container.innerHTML = `<div class="error">Error cargando ${viewName}: ${error.message}</div>`;
+            }
+        }
+        
+        // Setup handlers específicos del dashboard
+        function setupDashboardHandlers() {
+            // Toggle de controles avanzados
+            const toggleBtn = document.getElementById('toggleControls');
+            const controlsSection = document.getElementById('controlsSection');
+            
+            if (toggleBtn && controlsSection) {
+                let isVisible = false;
+                toggleBtn.addEventListener('click', () => {
+                    isVisible = !isVisible;
+                    controlsSection.style.display = isVisible ? 'block' : 'none';
+                    toggleBtn.innerHTML = isVisible 
+                        ? '<span>⚙️ Controles Avanzados ▲</span>'
+                        : '<span>⚙️ Controles Avanzados ▼</span>';
+                });
+            }
+            
+            // Sliders
+            const sliders = [
+                { id: 'styleSlider', valueId: 'styleValue', trackId: 'styleTrack' },
+                { id: 'stabilitySlider', valueId: 'stabilityValue', trackId: 'stabilityTrack' },
+                { id: 'claritySlider', valueId: 'clarityValue', trackId: 'clarityTrack' }
+            ];
+            
+            sliders.forEach(slider => {
+                const sliderEl = document.getElementById(slider.id);
+                const valueEl = document.getElementById(slider.valueId);
+                const trackEl = document.getElementById(slider.trackId);
+                
+                if (sliderEl && valueEl && trackEl) {
+                    sliderEl.addEventListener('input', (e) => {
+                        const value = e.target.value;
+                        valueEl.textContent = value + '%';
+                        trackEl.style.width = value + '%';
+                    });
+                }
+            });
+        }
+        
+        // Navegación
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = link.dataset.view;
+                loadView(view);
+                window.location.hash = view;
+            });
+        });
+        
+        // Cargar vista inicial
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.slice(1) || 'dashboard';
+            loadView(hash);
+        });
+        
+        // Manejar cambios de hash
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1) || 'dashboard';
+            loadView(hash);
+        });
+    </script>
+</body>
+</html>

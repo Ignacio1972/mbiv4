@@ -1,0 +1,105 @@
+/**
+ * DASHBOARD CSS LIMPIO - Solo 1 columna vertical
+ */
+
+/* GRID PRINCIPAL - 2 COLUMNAS */
+.dashboard-grid {
+    display: grid !important;
+    grid-template-columns: 1.5fr 1fr !important; /* Generador menos ancho, Mensajes estrecho */
+    grid-template-rows: auto auto !important; /* 2 filas */
+    gap: 24px !important;
+    margin-top: 40px !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* FILA 1: Generador (ancho) + Mensajes (estrecho) */
+.create-message {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+}
+
+.recent-messages {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+}
+
+/* FILA 2: Controles + Quota (lado a lado) */
+.controls-section {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+}
+
+.quota-section {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+}
+
+/* LIMPIAR CUALQUIER FLOTACIÓN O POSICIONAMIENTO */
+.dashboard-grid .card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: static !important;
+    float: none !important;
+    display: block !important;
+}
+
+/* CATEGORIA DROPDOWN */
+.create-message .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.create-message .card-title {
+    margin: 0;
+    flex: 1;
+}
+
+.create-message .category-badge-container {
+    position: relative;
+}
+
+/* ESTILOS DEL GENERADOR */
+/* Textarea más alto */
+.create-message .form-textarea {
+    min-height: 300px !important;
+    height: 300px !important;
+}
+
+/* Controles del form alineados a la derecha */
+.create-message .form-actions-container {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 16px !important;
+    margin-top: 16px !important;
+}
+
+.create-message #generateBtn {
+    order: 2 !important; /* Botón a la derecha */
+}
+
+.create-message #voiceSelect {
+    order: 1 !important; /* Selector a la izquierda del botón */
+    min-width: 200px !important;
+}
+
+/* BOTÓN SUBIR AUDIO EN CAMPAIGN LIBRARY */
+#upload-audio-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+#upload-audio-btn:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+    opacity: 0.9 !important;
+}
+
+/* FIN CSS LIMPIO */

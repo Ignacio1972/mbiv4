@@ -1,0 +1,252 @@
+/**
+ * MBI v4 - Modal Components
+ * =========================
+ * Accessible, modern modal system
+ */
+
+/* ========================================
+   MODAL OVERLAY
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: var(--z-modal-backdrop);
+  animation: modal-fade-in var(--duration-base) ease;
+}
+
+.modal-overlay.closing {
+  animation: modal-fade-out var(--duration-base) ease;
+}
+
+/* ========================================
+   MODAL CONTAINER
+   ======================================== */
+
+.modal {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  z-index: var(--z-modal);
+  animation: modal-slide-in var(--duration-base) ease;
+}
+
+.modal.closing {
+  animation: modal-slide-out var(--duration-base) ease;
+}
+
+/* ========================================
+   MODAL PARTS
+   ======================================== */
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-tertiary);
+}
+
+.modal__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--text-lg);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-colors);
+}
+
+.modal__close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal__body {
+  padding: var(--space-4);
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-tertiary);
+}
+
+/* ========================================
+   MODAL SIZES
+   ======================================== */
+
+.modal--sm {
+  max-width: 400px;
+}
+
+.modal--lg {
+  max-width: 700px;
+}
+
+.modal--xl {
+  max-width: 900px;
+}
+
+.modal--full {
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+/* ========================================
+   MODAL ANIMATIONS
+   ======================================== */
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modal-slide-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+}
+
+/* ========================================
+   SPECIAL MODALS
+   ======================================== */
+
+/* Schedule Modal */
+.schedule-modal .modal__body {
+  max-height: 70vh;
+}
+
+/* Save Message Modal */
+.save-message-modal .form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Confirmation Modal */
+.confirm-modal {
+  max-width: 400px;
+}
+
+.confirm-modal .modal__body {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+.confirm-modal .modal__icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-2xl);
+}
+
+.confirm-modal--danger .modal__icon {
+  background: rgba(255, 89, 94, 0.1);
+  color: var(--danger);
+}
+
+.confirm-modal--warning .modal__icon {
+  background: rgba(255, 146, 76, 0.1);
+  color: var(--warning);
+}
+
+.confirm-modal--info .modal__icon {
+  background: rgba(25, 130, 196, 0.1);
+  color: var(--info);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: var(--space-2);
+  }
+  
+  .modal {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+  
+  .modal__header,
+  .modal__body,
+  .modal__footer {
+    padding: var(--space-3);
+  }
+  
+  .modal__footer {
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+  }
+  
+  .modal__footer .btn {
+    width: 100%;
+  }
+}

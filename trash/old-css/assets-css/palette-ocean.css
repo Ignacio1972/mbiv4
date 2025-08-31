@@ -1,0 +1,28 @@
+/* Dark Ocean Theme - MBI v3
+   NO modifica base.css - Solo agrega variables nuevas */
+
+:root {
+    /* Colores Principales - Blue Crayola */
+    --mbi-primary: #387ade;
+    --mbi-primary-light: #6196e5;
+    --mbi-primary-dark: #1f60c1;
+    
+    /* Colores de Acento */
+    --mbi-secondary: #90adbb;
+    --mbi-success: #89b0ec;
+    --mbi-danger: #de3838;
+    --mbi-warning: #de9f38;
+    --mbi-info: #b0dcff;
+    
+    /* Fondos Dark Mode */
+    --mbi-bg-primary: #1c1b19;
+    --mbi-bg-secondary: #2f3236;
+    --mbi-bg-tertiary: #3f4348;
+    
+    /* Textos */
+    --mbi-text-primary: #e9eff1;
+    --mbi-text-secondary: #a6bdc9;
+    
+    /* Bordes */
+    --mbi-border: #4d5359;
+}

@@ -1,0 +1,200 @@
+/**
+ * MBI v4 - Design Tokens
+ * =====================
+ * Single source of truth for all design decisions
+ * Clean, modern, and standardized
+ */
+
+:root {
+  /* ========================================
+     CATEGORY COLORS - STANDARDIZED
+     ======================================== */
+  
+  --category-ofertas: #8ac926;       /* Green - Promotions/Offers */
+  --category-eventos: #ff924c;       /* Orange - Events */
+  --category-informacion: #ffca3a;   /* Yellow - Information */
+  --category-servicios: #1982c4;     /* Blue - Services */
+  --category-horarios: #6a4c93;      /* Purple - Schedules */
+  --category-emergencias: #ff595e;   /* Red - Emergency */
+  --category-default: #64748b;       /* Gray - Uncategorized */
+
+  /* ========================================
+     BRAND COLORS
+     ======================================== */
+  
+  --primary: #387ade;                /* Main brand blue */
+  --primary-light: #6196e5;          /* Lighter brand blue */
+  --primary-dark: #1f60c1;           /* Darker brand blue */
+  
+  /* ========================================
+     SEMANTIC COLORS
+     ======================================== */
+  
+  --success: #8ac926;                /* Same as ofertas */
+  --danger: #ff595e;                 /* Same as emergencias */
+  --warning: #ff924c;                /* Same as eventos */
+  --info: #1982c4;                   /* Same as servicios */
+
+  /* ========================================
+     GRAYSCALE - DARK THEME OPTIMIZED
+     ======================================== */
+  
+  --gray-900: #1c1b19;               /* Darkest - main background */
+  --gray-800: #2f3236;               /* Card backgrounds */
+  --gray-700: #3f4348;               /* Input backgrounds */
+  --gray-600: #4d5359;               /* Borders */
+  --gray-500: #6e767f;               /* Disabled text */
+  --gray-400: #9198a0;               /* Secondary text */
+  --gray-300: #a6bdc9;               /* Primary text on dark */
+  --gray-200: #bdced6;               /* Light text */
+  --gray-100: #d3dee4;               /* Lightest text */
+
+  /* ========================================
+     BACKGROUND SYSTEM
+     ======================================== */
+  
+  --bg-primary: var(--gray-900);     /* Main app background */
+  --bg-secondary: var(--gray-800);   /* Cards, containers */
+  --bg-tertiary: var(--gray-700);    /* Inputs, nested elements */
+  --bg-elevated: var(--gray-600);    /* Dropdowns, tooltips */
+
+  /* ========================================
+     TEXT COLORS
+     ======================================== */
+  
+  --text-primary: var(--gray-300);   /* Main text color */
+  --text-secondary: var(--gray-400); /* Secondary text */
+  --text-muted: var(--gray-500);     /* Muted/disabled text */
+  --text-inverse: var(--gray-900);   /* Text on light backgrounds */
+
+  /* ========================================
+     BORDER SYSTEM
+     ======================================== */
+  
+  --border-default: var(--gray-600);         /* Standard borders */
+  --border-light: rgba(77, 83, 89, 0.3);    /* Subtle borders */
+  --border-focus: var(--primary);            /* Focus states */
+
+  /* ========================================
+     SPACING SCALE - 8px BASE UNIT
+     ======================================== */
+  
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px - Most common */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+  
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px - Default */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+  
+  --radius-sm: 0.25rem;   /* 4px - Small elements */
+  --radius-md: 0.375rem;  /* 6px - Standard (buttons, inputs) */
+  --radius-lg: 0.5rem;    /* 8px - Cards */
+  --radius-xl: 0.75rem;   /* 12px - Large cards */
+  --radius-full: 9999px;  /* Pills, circular */
+
+  /* ========================================
+     SHADOWS
+     ======================================== */
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+  
+  --duration-fast: 0.15s;
+  --duration-base: 0.2s;
+  --duration-slow: 0.3s;
+  
+  --transition-base: all var(--duration-base) ease;
+  --transition-colors: background-color var(--duration-base) ease, 
+                       border-color var(--duration-base) ease, 
+                       color var(--duration-base) ease;
+
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+  
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-modal-backdrop: 900;
+  --z-modal: 1000;
+  --z-tooltip: 1100;
+  --z-max: 9999;
+
+  /* ========================================
+     COMPONENT SIZES
+     ======================================== */
+  
+  --btn-height-sm: 2rem;      /* 32px */
+  --btn-height-md: 2.5rem;    /* 40px */
+  --btn-height-lg: 3rem;      /* 48px */
+  
+  --input-height: 2.5rem;     /* 40px */
+  --header-height: 4rem;      /* 64px */
+  
+  /* ========================================
+     GRID & LAYOUT
+     ======================================== */
+  
+  --container-max-width: 1400px;
+  --sidebar-width: 280px;
+  
+  /* Dashboard grid */
+  --grid-dashboard-cols: 1fr 1fr 400px;
+  --grid-gap: var(--space-6);
+  
+  /* Responsive breakpoints */
+  --screen-sm: 640px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1200px;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 1200px) {
+  :root {
+    --grid-dashboard-cols: 1fr;
+    --grid-gap: var(--space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --space-4: 0.75rem;     /* Smaller spacing on mobile */
+    --space-6: 1rem;
+    --grid-gap: var(--space-3);
+  }
+}

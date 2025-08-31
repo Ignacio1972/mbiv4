@@ -1,0 +1,392 @@
+/**
+ * MBI v4 - Main CSS
+ * ==================
+ * Clean, unified stylesheet for the entire system
+ * 
+ * Structure:
+ * 1. Core - Tokens, Reset, Base
+ * 2. Components - Reusable UI components
+ * 3. Modules - Specific module styles
+ * 4. Utilities - Helper classes
+ */
+
+/* ========================================
+   CORE STYLES
+   ======================================== */
+
+@import url('core/tokens.css');
+@import url('core/reset.css');
+
+/* ========================================
+   COMPONENTS
+   ======================================== */
+
+@import url('components/buttons.css');
+@import url('components/forms.css');
+@import url('components/cards.css');
+@import url('components/badges.css');
+@import url('components/modals.css');
+
+/* ========================================
+   LAYOUT & UTILITIES
+   ======================================== */
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+/* Grid System */
+.grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Dashboard specific grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: var(--grid-dashboard-cols);
+  gap: var(--grid-gap);
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Flex System */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+
+/* Spacing */
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-6 { padding: var(--space-6); }
+
+.m-2 { margin: var(--space-2); }
+.m-3 { margin: var(--space-3); }
+.m-4 { margin: var(--space-4); }
+.m-6 { margin: var(--space-6); }
+
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+
+/* Text utilities */
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+
+.font-medium { font-weight: var(--font-medium); }
+.font-semibold { font-weight: var(--font-semibold); }
+.font-bold { font-weight: var(--font-bold); }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* Background utilities */
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-tertiary { background-color: var(--bg-tertiary); }
+
+/* Border utilities */
+.border { border: 1px solid var(--border-default); }
+.border-light { border: 1px solid var(--border-light); }
+.rounded { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Shadow utilities */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+
+/* Position utilities */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+
+/* Display utilities */
+.hidden { display: none; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+
+/* Width/Height utilities */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }
+
+/* ========================================
+   HEADER & NAVIGATION
+   ======================================== */
+
+.header {
+  height: var(--header-height);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-base);
+}
+
+.header__title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.header__subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* Tabs Navigation */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+}
+
+.tab {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.tab.active,
+.tab--active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: var(--bg-primary);
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.loading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.loading::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-light);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-light);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner--sm {
+  width: 16px;
+  height: 16px;
+  border-width: 1px;
+}
+
+.spinner--lg {
+  width: 24px;
+  height: 24px;
+  border-width: 3px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   SKELETON LOADING
+   ======================================== */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--gray-700) 0%,
+    var(--gray-600) 50%,
+    var(--gray-700) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+.skeleton--text {
+  height: 1em;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton--title {
+  height: 1.5em;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-2);
+}
+
+.skeleton--button {
+  height: var(--btn-height-md);
+  width: 100px;
+  border-radius: var(--radius-md);
+}
+
+.skeleton--card {
+  height: 200px;
+  border-radius: var(--radius-lg);
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ========================================
+   NOTIFICATIONS
+   ======================================== */
+
+.notification {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  min-width: 300px;
+  max-width: 500px;
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-max);
+  animation: notification-slide-in var(--duration-base) ease;
+}
+
+.notification.closing {
+  animation: notification-slide-out var(--duration-base) ease;
+}
+
+.notification--success {
+  border-left: 4px solid var(--success);
+}
+
+.notification--danger {
+  border-left: 4px solid var(--danger);
+}
+
+.notification--warning {
+  border-left: 4px solid var(--warning);
+}
+
+.notification--info {
+  border-left: 4px solid var(--info);
+}
+
+@keyframes notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notification-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+/* Mobile First Approach */
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .sm\:flex-row { flex-direction: row; }
+  .sm\:text-left { text-align: left; }
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .md\:flex-row { flex-direction: row; }
+  .md\:text-base { font-size: var(--text-base); }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Hide on mobile */
+@media (max-width: 767px) {
+  .hidden-mobile { display: none; }
+}
+
+/* Hide on desktop */
+@media (min-width: 768px) {
+  .hidden-desktop { display: none; }
+}

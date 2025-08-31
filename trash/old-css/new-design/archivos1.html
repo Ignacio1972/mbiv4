@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBI - Archivos</title>
+    <link rel="stylesheet" href="../css/mbi-corporate-dark.css">
+    <link rel="stylesheet" href="../css/palettes/palette-custom.css">
+    
+    <style>
+        /* Container principal */
+        .archives-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .page-title-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-input {
+            padding: var(--space-sm) var(--space-md);
+            padding-left: 36px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            width: 250px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .filter-select {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        /* Contador de resultados */
+        .results-count {
+            padding: var(--space-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-lg);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .count-number {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* Tabla/Lista de archivos */
+        .archives-list {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        /* Header de la tabla */
+        .list-header {
+            display: grid;
+            grid-template-columns: 50px 2fr 120px 120px 150px;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+        
+        /* Items de la lista */
+        .list-items {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .list-item {
+            display: grid;
+            grid-template-columns: 50px 2fr 120px 120px 150px;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .list-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Botón de preview */
+        .btn-preview {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .btn-preview:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .btn-preview.playing {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Título del mensaje */
+        .item-title {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Categoría badge */
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .badge-ofertas { background: #10b981; color: white; }
+        .badge-eventos { background: #8b5cf6; color: white; }
+        .badge-informacion { background: #0891b2; color: white; }
+        .badge-servicios { background: #f59e0b; color: white; }
+        .badge-horarios { background: #6366f1; color: white; }
+        .badge-emergencias { background: #dc2626; color: white; }
+        .badge-sin-categoria { background: var(--gray-500); color: white; }
+        
+        /* Voz */
+        .item-voice {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        /* Fecha */
+        .item-date {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+            padding: var(--space-lg);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .pagination-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: var(--space-sm);
+        }
+        
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .list-header,
+            .list-item {
+                grid-template-columns: 50px 1fr;
+            }
+            
+            .list-header > *:not(:first-child):not(:nth-child(2)),
+            .list-item > *:not(:first-child):not(:nth-child(2)) {
+                display: none;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: var(--space-lg);
+            }
+            
+            .archives-container {
+                padding: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">MBI</div>
+                <div class="logo-text">
+                    <div class="logo-title">Mall Barrio Independencia</div>
+                    <div class="logo-subtitle">Sistema de Anuncios TTS</div>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Generador</a>
+                <a href="#" class="nav-link">Biblioteca</a>
+                <a href="#" class="nav-link">Calendario</a>
+                <a href="#" class="nav-link">Radio</a>
+                <a href="#" class="nav-link active">Archivos</a>
+                <a href="#" class="nav-link">Reportes</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="archives-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">🗄️</span>
+                Archivo Completo
+            </h1>
+            <div class="filter-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Buscar mensajes...">
+                </div>
+                <select class="filter-select">
+                    <option>Todas las categorías</option>
+                    <option>Ofertas</option>
+                    <option>Eventos</option>
+                    <option>Información</option>
+                    <option>Servicios</option>
+                    <option>Horarios</option>
+                    <option>Emergencias</option>
+                    <option>Sin Categoría</option>
+                </select>
+                <select class="filter-select">
+                    <option>Más recientes</option>
+                    <option>Más antiguos</option>
+                    <option>Por categoría</option>
+                    <option>Por locutor</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Contador de resultados -->
+        <div class="results-count">
+            Mostrando <span class="count-number">1-50</span> de <span class="count-number">1,847</span> mensajes totales
+        </div>
+
+        <!-- Lista de archivos -->
+        <div class="archives-list">
+            <!-- Header de la tabla -->
+            <div class="list-header">
+                <div>Play</div>
+                <div>Título</div>
+                <div>Categoría</div>
+                <div>Voz</div>
+                <div>Fecha</div>
+            </div>
+
+            <!-- Items -->
+            <div class="list-items">
+                <!-- Item 1 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Atención visitantes, este viernes tenemos increíbles...</div>
+                    <span class="category-badge badge-ofertas">Ofertas</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Fernanda</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>28/11/2024 14:30</span>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Este sábado a las 6 PM presentamos...</div>
+                    <span class="category-badge badge-eventos">Eventos</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Cristian</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>28/11/2024 12:15</span>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Informamos a nuestros visitantes que a partir...</div>
+                    <span class="category-badge badge-informacion">Información</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Rosa</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>27/11/2024 18:45</span>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Atención, en 15 minutos realizaremos un simulacro...</div>
+                    <span class="category-badge badge-emergencias">Emergencias</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Diego</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>27/11/2024 10:00</span>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Hoy jueves disfrute de estacionamiento gratuito las...</div>
+                    <span class="category-badge badge-servicios">Servicios</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Laura</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>26/11/2024 09:30</span>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Les recordamos que nuestro horario de atención...</div>
+                    <span class="category-badge badge-horarios">Horarios</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Fernanda</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>26/11/2024 08:00</span>
+                    </div>
+                </div>
+
+                <!-- Item 7 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Gran liquidación de temporada con descuentos de...</div>
+                    <span class="category-badge badge-ofertas">Ofertas</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Cristian</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>25/11/2024 16:20</span>
+                    </div>
+                </div>
+
+                <!-- Item 8 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Conéctate a nuestra red WiFi gratuita. Red...</div>
+                    <span class="category-badge badge-informacion">Información</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Rosa</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>25/11/2024 14:00</span>
+                    </div>
+                </div>
+
+                <!-- Item 9 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Este domingo celebramos el día del niño con...</div>
+                    <span class="category-badge badge-eventos">Eventos</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Laura</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>24/11/2024 11:30</span>
+                    </div>
+                </div>
+
+                <!-- Item 10 -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Recordamos a nuestros clientes que el food court...</div>
+                    <span class="category-badge badge-horarios">Horarios</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Diego</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>24/11/2024 09:15</span>
+                    </div>
+                </div>
+
+                <!-- Más items... -->
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Nueva tienda de tecnología abre sus puertas...</div>
+                    <span class="category-badge badge-informacion">Información</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Fernanda</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>23/11/2024 17:00</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Aprovecha nuestras ofertas especiales en la tienda...</div>
+                    <span class="category-badge badge-ofertas">Ofertas</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Cristian</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>23/11/2024 15:45</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <button class="btn-preview" title="Reproducir">▶</button>
+                    <div class="item-title">Por trabajos de mantención, el ascensor del sector...</div>
+                    <span class="category-badge badge-sin-categoria">Sin Categoría</span>
+                    <div class="item-voice">
+                        <span>🎙️</span>
+                        <span>Rosa</span>
+                    </div>
+                    <div class="item-date">
+                        <span>📅</span>
+                        <span>22/11/2024 13:20</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <div class="pagination-info">
+                Página 1 de 37
+            </div>
+            <div class="pagination-controls">
+                <button class="page-btn" disabled>◀</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <span style="color: var(--text-secondary);">...</span>
+                <button class="page-btn">37</button>
+                <button class="page-btn">▶</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preview buttons
+        document.querySelectorAll('.btn-preview').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // Reset all other buttons
+                document.querySelectorAll('.btn-preview').forEach(b => {
+                    if (b !== this) {
+                        b.textContent = '▶';
+                        b.classList.remove('playing');
+                    }
+                });
+                
+                // Toggle this button
+                if (this.classList.contains('playing')) {
+                    this.textContent = '▶';
+                    this.classList.remove('playing');
+                } else {
+                    this.textContent = '⏸';
+                    this.classList.add('playing');
+                }
+            });
+        });
+
+        // Click en fila para ver detalles
+        document.querySelectorAll('.list-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('btn-preview')) {
+                    // Highlight row
+                    document.querySelectorAll('.list-item').forEach(i => {
+                        i.style.background = '';
+                    });
+                    this.style.background = 'var(--bg-tertiary)';
+                    
+                    // Aquí podrías mostrar más detalles del mensaje
+                    const title = this.querySelector('.item-title').textContent;
+                    console.log('Mensaje seleccionado:', title);
+                }
+            });
+        });
+
+        // Búsqueda
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.list-item').forEach(item => {
+                const title = item.querySelector('.item-title').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Filtro por categoría
+        document.querySelectorAll('.filter-select')[0].addEventListener('change', function() {
+            const selectedCategory = this.value.toLowerCase();
+            document.querySelectorAll('.list-item').forEach(item => {
+                if (selectedCategory === 'todas las categorías') {
+                    item.style.display = '';
+                } else {
+                    const badge = item.querySelector('.category-badge').textContent.toLowerCase();
+                    if (badge === selectedCategory) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // Paginación
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.disabled) {
+                    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                    if (this.textContent !== '◀' && this.textContent !== '▶') {
+                        this.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

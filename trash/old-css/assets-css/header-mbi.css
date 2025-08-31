@@ -1,0 +1,99 @@
+/* Header MBI - Sistema de Anuncios TTS
+   Este archivo NO interfiere con el sistema existente */
+
+.mbi-header {
+    background: var(--mbi-bg-secondary);
+    border-bottom: 1px solid var(--mbi-border);
+    padding: 1rem 0;
+    position: relative;
+    z-index: 100;
+}
+
+.mbi-header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mbi-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mbi-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--mbi-primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.mbi-logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.mbi-logo-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--mbi-text-primary);
+}
+
+.mbi-logo-subtitle {
+    font-size: 0.875rem;
+    color: var(--mbi-text-secondary);
+}
+
+.mbi-nav {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.mbi-nav-link {
+    padding: 0.5rem 1rem;
+    color: var(--mbi-text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.mbi-nav-link:hover {
+    background: var(--mbi-bg-tertiary);
+    color: var(--mbi-text-primary);
+}
+
+.mbi-nav-link.active {
+    background: var(--mbi-primary);
+    color: white;
+}
+
+/* Opcional: Ocultar tabs antiguos cuando esté listo */
+.hide-old-nav .configurator-tabs {
+    display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mbi-nav {
+        display: none;
+    }
+    
+    .mbi-header-content {
+        padding: 0 1rem;
+    }
+}
