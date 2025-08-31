@@ -41,6 +41,61 @@ export default class CalendarModule {
             console.log('[Calendar] Tooltip styles loaded');
         }
     }
+    
+    /**
+     * Aplica estilos críticos para el header del calendario
+     * @private
+     */
+    applyHeaderStyles() {
+        // Crear o actualizar estilos inline para el header
+        let styleEl = document.getElementById('calendar-header-override-styles');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'calendar-header-override-styles';
+            document.head.appendChild(styleEl);
+        }
+        
+        styleEl.textContent = `
+            /* Override crítico para header de días */
+            .fc .fc-col-header-cell,
+            .fc-theme-standard .fc-col-header-cell,
+            .fc th.fc-col-header-cell,
+            .fc-col-header th,
+            .fc-scrollgrid-sync-table th {
+                background-color: #4a5568 !important;
+                background: #4a5568 !important;
+            }
+            
+            .fc .fc-col-header-cell-cushion,
+            .fc-col-header-cell a,
+            .fc-col-header-cell span {
+                color: #ffffff !important;
+                font-weight: 700 !important;
+                opacity: 1 !important;
+            }
+            
+            .fc .fc-col-header,
+            .fc-scrollgrid-sync-table thead,
+            .fc-scrollgrid-sync-table tbody tr:first-child {
+                background-color: #4a5568 !important;
+                background: #4a5568 !important;
+            }
+            
+            /* Asegurar que la tabla del header tenga fondo */
+            .fc-scrollgrid-sync-table {
+                background-color: #4a5568 !important;
+            }
+            
+            /* Para vista de semana y día */
+            .fc-timegrid .fc-col-header-cell,
+            .fc-timegrid-axis-cushion {
+                background-color: #4a5568 !important;
+                color: #ffffff !important;
+            }
+        `;
+        
+        console.log('[Calendar] Header styles applied');
+    }
 
     
     async load(container) {
@@ -53,6 +108,9 @@ export default class CalendarModule {
 
             // Cargar estilos del tooltip
             this.loadTooltipStyles();
+            
+            // Aplicar estilos del header
+            this.applyHeaderStyles();
             
             // Cargar archivos disponibles de la biblioteca
             await this.loadAvailableFiles();
@@ -68,6 +126,11 @@ export default class CalendarModule {
             
             // Adjuntar event listeners
             this.attachEventListeners();
+            
+            // Re-aplicar estilos después de que FullCalendar se renderice
+            setTimeout(() => {
+                this.applyHeaderStyles();
+            }, 100);
             
             eventBus.emit('calendar:loaded');
             console.log('[Calendar] Module loaded successfully');
@@ -207,62 +270,168 @@ export default class CalendarModule {
         if (!container) return;
         
         if (!schedules || schedules.length === 0) {
-            container.innerHTML = '<div class="empty-state" style="text-align: center; padding: 2rem; color: #888;">No hay programaciones activas configuradas</div>';
+            container.innerHTML = `
+                <div class="archive-list" style="
+                    background: var(--bg-secondary); 
+                    border: 1px solid var(--border-color); 
+                    border-radius: var(--radius-lg); 
+                    overflow: hidden; 
+                    padding: 3rem; 
+                    text-align: center;
+                ">
+                    <div class="archive-empty">
+                        <div class="archive-empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                        <div style="color: var(--text-primary); font-size: 16px; font-weight: 500; margin-bottom: 8px;">
+                            No hay programaciones activas configuradas
+                        </div>
+                        <div style="color: var(--text-secondary); font-size: 14px;">
+                            Las programaciones aparecerán aquí cuando se creen desde "Mensajes Guardados"
+                        </div>
+                    </div>
+                </div>
+            `;
             return;
         }
         
-        // Crear tabla HTML
+        // Crear tabla HTML con estética de Audio Archive
         let tableHTML = `
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="schedules-table" style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: rgba(255,255,255,0.05); border-bottom: 2px solid rgba(255,255,255,0.1);">
-                            <th style="padding: 0.75rem; text-align: left;">Archivo</th>
-                            <th style="padding: 0.75rem; text-align: left;">Tipo</th>
-                            <th style="padding: 0.75rem; text-align: left;">Programación</th>
-                            <th style="padding: 0.75rem; text-align: center;">Estado</th>
-                            <th style="padding: 0.75rem; text-align: center;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div class="archive-list" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden;">
+                <!-- Header de la tabla -->
+                <div class="archive-list-header" style="
+                    display: grid; 
+                    grid-template-columns: 50px 2fr 120px 150px 100px 120px; 
+                    gap: var(--space-md); 
+                    padding: var(--space-md) var(--space-lg); 
+                    background: var(--bg-tertiary); 
+                    border-bottom: 2px solid var(--border-color); 
+                    font-size: 0.75rem; 
+                    font-weight: 600; 
+                    text-transform: uppercase; 
+                    letter-spacing: 0.05em; 
+                    color: var(--text-secondary);
+                ">
+                    <div></div>
+                    <div>Archivo</div>
+                    <div>Tipo</div>
+                    <div>Programación</div>
+                    <div>Estado</div>
+                    <div>Acciones</div>
+                </div>
+                <!-- Items de la lista -->
+                <div class="archive-list-items" style="max-height: 70vh; overflow-y: auto;">
         `;
         
         schedules.forEach(schedule => {
             const type = this.getScheduleTypeLabel(schedule);
             const timing = this.getScheduleTimingForTable(schedule);
             const status = schedule.is_active ? 
-                '<span style="color: #22c55e;">✅ Activo</span>' : 
-                '<span style="color: #888;">⏸️ Inactivo</span>';
+                '<span class="archive-status-badge archive-status-active" style="padding: 2px 8px; background: var(--primary); color: white; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 500;">Activo</span>' : 
+                '<span class="archive-status-badge archive-status-inactive" style="padding: 2px 8px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 500;">Inactivo</span>';
             
             // Título o nombre del archivo
             const displayName = schedule.title || schedule.filename || 'Sin archivo';
             
             tableHTML += `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 0.75rem;" title="${schedule.filename || ''}">${this.truncateText(displayName, 30)}</td>
-                    <td style="padding: 0.75rem;">${type}</td>
-                    <td style="padding: 0.75rem;">${timing}</td>
-                    <td style="padding: 0.75rem; text-align: center;">${status}</td>
-                    <td style="padding: 0.75rem; text-align: center;">
-                        <button class="btn-icon" onclick="window.calendarModule.viewScheduleFromList(${schedule.id})" 
-                                title="Ver detalles" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0.25rem;">
+                <div class="archive-list-item" style="
+                    display: grid; 
+                    grid-template-columns: 50px 2fr 120px 150px 100px 120px; 
+                    gap: var(--space-md); 
+                    padding: var(--space-md) var(--space-lg); 
+                    border-bottom: 1px solid var(--border-color); 
+                    align-items: center; 
+                    transition: all 0.2s; 
+                    cursor: pointer;
+                " onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
+                    <!-- Botón de preview -->
+                    ${schedule.filename ? `
+                    <button class="archive-btn-preview" onclick="window.calendarModule.previewAudio('${schedule.filename}', this)" 
+                            title="Preview audio" style="
+                                width: 32px; 
+                                height: 32px; 
+                                border-radius: var(--radius-md); 
+                                border: 1px solid var(--border-color); 
+                                background: var(--bg-tertiary); 
+                                color: var(--text-secondary); 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center; 
+                                cursor: pointer; 
+                                transition: all 0.2s; 
+                                font-size: 0.875rem;
+                            "
+                            onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.borderColor='var(--primary)'"
+                            onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'; this.style.borderColor='var(--border-color)'">
+                        ▶
+                    </button>
+                    ` : `<div></div>`}
+                    
+                    <!-- Título del archivo -->
+                    <div class="archive-item-title" style="
+                        font-size: 0.875rem; 
+                        color: var(--text-primary); 
+                        font-weight: 500; 
+                        overflow: hidden; 
+                        text-overflow: ellipsis;
+                    " title="${schedule.filename || ''}">
+                        ${this.truncateText(displayName, 35)}
+                    </div>
+                    
+                    <!-- Tipo -->
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">${type}</div>
+                    
+                    <!-- Programación -->
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">${timing}</div>
+                    
+                    <!-- Estado -->
+                    <div>${status}</div>
+                    
+                    <!-- Acciones -->
+                    <div style="display: flex; gap: 4px; justify-content: center;">
+                        <button onclick="window.calendarModule.viewScheduleFromList(${schedule.id})" 
+                                title="Ver detalles" style="
+                                    width: 28px; height: 28px; 
+                                    border-radius: var(--radius-sm); 
+                                    border: 1px solid var(--border-color); 
+                                    background: var(--bg-tertiary); 
+                                    color: var(--text-secondary); 
+                                    display: flex; align-items: center; justify-content: center; 
+                                    cursor: pointer; transition: all 0.2s; font-size: 0.8rem;
+                                "
+                                onmouseover="this.style.background='var(--primary)'; this.style.color='white'"
+                                onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'">
                             👁️
                         </button>
-                        <button class="btn-icon btn-danger" onclick="window.calendarModule.deleteScheduleFromList(${schedule.id})" 
-                                title="Eliminar" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0.25rem;">
+                        <button onclick="window.calendarModule.deleteScheduleFromList(${schedule.id})" 
+                                title="Eliminar" style="
+                                    width: 28px; height: 28px; 
+                                    border-radius: var(--radius-sm); 
+                                    border: 1px solid var(--border-color); 
+                                    background: var(--bg-tertiary); 
+                                    color: var(--text-secondary); 
+                                    display: flex; align-items: center; justify-content: center; 
+                                    cursor: pointer; transition: all 0.2s; font-size: 0.8rem;
+                                "
+                                onmouseover="this.style.background='#dc2626'; this.style.color='white'"
+                                onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'">
                             🗑️
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `;
         });
         
         tableHTML += `
-                    </tbody>
-                </table>
+                </div>
             </div>
-            <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px;">
-                <small style="color: #888;">Total: ${schedules.length} programación${schedules.length !== 1 ? 'es' : ''} activa${schedules.length !== 1 ? 's' : ''}</small>
+            <div class="archive-results-count" style="
+                padding: var(--space-md); 
+                background: var(--bg-tertiary); 
+                border-radius: var(--radius-md); 
+                margin-top: var(--space-lg); 
+                font-size: 0.875rem; 
+                color: var(--text-secondary);
+            ">
+                Total: <span style="font-weight: 600; color: var(--text-primary);">${schedules.length}</span> programación${schedules.length !== 1 ? 'es' : ''} activa${schedules.length !== 1 ? 's' : ''}
             </div>
         `;
         
@@ -271,7 +440,8 @@ export default class CalendarModule {
         // Hacer disponibles las funciones globalmente para onclick
         window.calendarModule = {
             viewScheduleFromList: (id) => this.viewScheduleFromList(id),
-            deleteScheduleFromList: (id) => this.deleteScheduleFromList(id)
+            deleteScheduleFromList: (id) => this.deleteScheduleFromList(id),
+            previewAudio: (filename, buttonElement) => this.previewAudio(filename, buttonElement)
         };
     }
     
@@ -420,6 +590,74 @@ export default class CalendarModule {
         });
     }
     
+    /**
+     * Preview de audio inline en la tabla
+     */
+    previewAudio(filename, buttonElement) {
+        if (!filename) {
+            this.showError('Archivo no disponible');
+            return;
+        }
+        
+        // Buscar si ya existe un player activo y pausarlo
+        const existingPlayer = document.querySelector('.inline-audio-player');
+        if (existingPlayer) {
+            const audio = existingPlayer.querySelector('audio');
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            existingPlayer.remove();
+        }
+        
+        // Crear player inline
+        const audioUrl = `/api/biblioteca.php?filename=${filename}`;
+        const playerHTML = `
+            <div class="inline-audio-player" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--bg-primary, #1e293b);
+                border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+                border-radius: 8px;
+                padding: 1rem;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                z-index: 1000;
+                max-width: 350px;
+                color: var(--text-primary, #ffffff);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <strong style="font-size: 0.9rem;">🎵 ${filename}</strong>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: none;
+                        border: none;
+                        color: var(--text-secondary, #94a3b8);
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                        padding: 0;
+                    ">&times;</button>
+                </div>
+                <audio controls autoplay style="width: 100%; height: 32px;">
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Tu navegador no soporta reproducción de audio.
+                </audio>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', playerHTML);
+        
+        // Auto-cerrar después de 30 segundos si no se usa
+        setTimeout(() => {
+            const player = document.querySelector('.inline-audio-player');
+            if (player) {
+                const audio = player.querySelector('audio');
+                if (audio && (audio.paused || audio.ended)) {
+                    player.remove();
+                }
+            }
+        }, 30000);
+    }
+    
     attachEventListeners() {
         // Event listeners removidos: create-event-btn y refresh-calendar-btn (ya no existen en el HTML)
         
@@ -466,17 +704,20 @@ export default class CalendarModule {
     
     handleEventClick(event) {
         console.log('[Calendar] Event clicked:', event);
+        console.log('[Calendar] Event full object:', JSON.stringify(event, null, 2));
         
         // Verificar múltiples formas de detectar un audio schedule
         const isAudioSchedule = 
             (event && event.type === 'audio_schedule') ||
             (event && event.id && String(event.id).includes('audio_schedule')) ||
-            (event && event.scheduleId !== undefined);
+            (event && event.scheduleId !== undefined) ||
+            (event && event.filename); // También verificar si tiene filename
         
         console.log('[Calendar] Is audio schedule?', isAudioSchedule);
         console.log('[Calendar] Event type:', event.type);
         console.log('[Calendar] Event id:', event.id);
         console.log('[Calendar] Has scheduleId?', event.scheduleId !== undefined);
+        console.log('[Calendar] Has filename?', event.filename !== undefined);
         
         if (isAudioSchedule) {
             console.log('[Calendar] Audio schedule detected, opening modal');
@@ -486,11 +727,10 @@ export default class CalendarModule {
                 this.showScheduleInfoModal(event);
             } catch (error) {
                 console.error('[Calendar] Error showing modal:', error);
-                this.showError('Error al mostrar información del schedule');
+                this.showError('Error al mostrar información del schedule: ' + error.message);
             }
         } else {
-            console.log('[Calendar] Not an audio schedule');
-            // No mostrar error para eventos normales, simplemente ignorar
+            console.log('[Calendar] Not an audio schedule - ignoring click');
         }
     }
     
@@ -555,8 +795,12 @@ export default class CalendarModule {
         }
         
         // Mostrar modal con animación
+        console.log('[Calendar] Modal element:', modal);
+        console.log('[Calendar] Adding active class...');
+        
         requestAnimationFrame(() => {
             modal.classList.add('active');
+            console.log('[Calendar] Active class added, modal should be visible now');
         });
     }
     
