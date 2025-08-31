@@ -150,7 +150,7 @@ div.dashboard-grid {
     display: flex;
     align-items: flex-end;
     gap: var(--space-md);
-    justify-content: flex-start; /* Alinear a la izquierda */
+    justify-content: flex-end; /* Alinear a la derecha */
     margin-top: var(--space-md);
 }
 
@@ -182,6 +182,15 @@ div.dashboard-grid {
     padding: 0 var(--space-lg);
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+/* ========================================
+   TEXTAREA DE MENSAJE
+   ======================================== */
+
+#messageText {
+    height: 300px !important;
+    resize: vertical;
 }
 
 /* ========================================
