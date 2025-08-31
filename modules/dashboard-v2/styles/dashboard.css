@@ -143,6 +143,48 @@ div.dashboard-grid {
 .badge-sin-categoria { background: var(--gray-500); color: white; }
 
 /* ========================================
+   FORM ACTIONS INLINE
+   ======================================== */
+
+.form-actions-inline {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-md);
+    justify-content: flex-start; /* Alinear a la izquierda */
+    margin-top: var(--space-md);
+}
+
+.voice-selector {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px; /* Ancho mínimo para el selector */
+}
+
+.voice-selector .form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.voice-selector .form-select {
+    height: 44px; /* Mismo alto que el botón */
+    padding: 0 var(--space-md);
+    font-size: 0.875rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.form-actions-inline .btn {
+    height: 44px; /* Altura fija para el botón */
+    padding: 0 var(--space-lg);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ========================================
    BOTONES DE ACCIÓN
    ======================================== */
 

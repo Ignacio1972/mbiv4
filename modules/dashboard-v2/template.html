@@ -38,12 +38,13 @@
                     placeholder="Escriba aquí el mensaje que será convertido a voz..."
                     rows="6"></textarea>
             </div>
-            <div class="form-group">
-                <select id="voiceSelect" class="form-select">
-                    <!-- Se llenará dinámicamente -->
-                </select>
-            </div>
-            <div class="form-actions">
+            <div class="form-actions-inline">
+                <div class="voice-selector">
+                    <label class="form-label">Locutor</label>
+                    <select id="voiceSelect" class="form-select">
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
                 <button type="button" id="generateBtn" class="btn btn-primary">
                     <span>🎙️</span>
                     Generar Audio
