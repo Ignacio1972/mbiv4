@@ -68,11 +68,13 @@ div.dashboard-grid {
     margin: 0;
 }
 
-/* Columna derecha: Mensajes recientes (solo fila 1) */
+/* Columna derecha: Mensajes recientes (ambas filas) */
 .recent-messages {
     grid-column: 2;
-    grid-row: 1; /* Solo fila 1, no todas las filas */
+    grid-row: 1 / 3; /* Ocupar ambas filas (1 y 2) */
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ========================================
@@ -125,8 +127,9 @@ div.dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--space-md);
-    max-height: 400px;
+    flex: 1; /* Ocupar todo el espacio disponible */
     overflow-y: auto;
+    min-height: 0; /* Permitir que se reduzca si es necesario */
 }
 
 
@@ -170,7 +173,7 @@ div.dashboard-grid {
 .voice-selector .form-select {
     height: 44px; /* Mismo alto que el botón */
     padding: 0 var(--space-md);
-    font-size: 0.875rem;
+    font-size: 1rem; /* Más grande, consistente con Campaign Library */
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
@@ -180,8 +183,33 @@ div.dashboard-grid {
 .form-actions-inline .btn {
     height: 44px; /* Altura fija para el botón */
     padding: 0 var(--space-lg);
+    font-size: 1rem; /* Más grande para mejor legibilidad */
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+/* ========================================
+   TÍTULOS Y TEXTO GENERAL
+   ======================================== */
+
+/* Títulos de cards - similar a Campaign Library */
+.card-title {
+    font-size: 1.25rem !important;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Texto general más grande */
+.form-label {
+    font-size: 1rem !important;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Controls labels */
+.control-label {
+    font-size: 1rem !important;
+    font-weight: 500;
 }
 
 /* ========================================
@@ -191,6 +219,11 @@ div.dashboard-grid {
 #messageText {
     height: 300px !important;
     resize: vertical;
+    font-size: 1.5rem !important; /* Texto muy grande para máxima legibilidad */
+    line-height: 1.6;
+    padding: var(--space-lg) !important;
+    font-weight: 400;
+    letter-spacing: 0.02em; /* Mejor espaciado entre letras */
 }
 
 /* ========================================
