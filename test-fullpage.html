@@ -24,7 +24,6 @@
             <nav class="header-nav">
                 <a href="#dashboard" class="nav-link active" data-view="dashboard">Dashboard</a>
                 <a href="#mensajes" class="nav-link" data-view="mensajes">Mensajes Seleccionados</a>
-                <a href="#archivos" class="nav-link" data-view="archivos">Archivos</a>
                 <a href="#archivo" class="nav-link" data-view="archivo">🗄️ Archivo Completo</a>
                 <a href="#calendario" class="nav-link" data-view="calendario">Calendario</a>
             </nav>
@@ -107,13 +106,6 @@
                         // Campañas y mensajes curados para reutilización
                         const { default: CampaignLibraryModule } = await import('/modules/campaign-library/index.js');
                         currentModule = new CampaignLibraryModule();
-                        await currentModule.load(container);
-                        break;
-                        
-                    case 'archivos':
-                        // Cargar Audio Library
-                        const { default: AudioLibraryModule } = await import('/modules/audio-library/index.js');
-                        currentModule = new AudioLibraryModule();
                         await currentModule.load(container);
                         break;
                         
