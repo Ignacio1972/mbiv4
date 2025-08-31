@@ -177,7 +177,7 @@ body {
 }
 
 .nav-link.active {
-    background: var(--primary);
+    background: var(--gray-600);
     color: white;
 }
 
