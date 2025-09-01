@@ -1,0 +1,45 @@
+/* Audio Library - Variables
+   Variables de layout y spacing */
+
+:root {
+  /* Spacing */
+  --al-spacing-xs: 5px;
+  --al-spacing-sm: 10px;
+  --al-spacing-md: 15px;
+  --al-spacing-lg: 20px;
+  --al-spacing-xl: 30px;
+  
+  /* Container */
+  --al-container-max-width: 1400px;
+  --al-container-padding: 20px;
+  
+  /* Grid */
+  --al-grid-gap: 20px;
+  --al-grid-cols: repeat(auto-fill, minmax(280px, 1fr));
+  
+  /* Card */
+  --al-card-padding: 15px;
+  --al-card-border-radius: 8px;
+  
+  /* Button */
+  --al-btn-padding: 8px 16px;
+  --al-btn-border-radius: 4px;
+  --al-btn-icon-size: 35px;
+  
+  /* Floating Player */
+  --al-player-width: 300px;
+  --al-player-height: 80px;
+  
+  /* Transitions */
+  --al-transition: all 0.3s ease;
+  --al-transition-fast: all 0.15s ease;
+  
+  /* Shadows */
+  --al-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --al-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --al-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Z-Index */
+  --al-z-player: 1000;
+  --al-z-notification: 1001;
+}

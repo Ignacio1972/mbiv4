@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Audio Archive Styles</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+</head>
+<body>
+    <div class="audio-archive-module">
+        <!-- Header -->
+        <div class="archive-page-header">
+            <div class="archive-page-title">
+                <div class="archive-page-title-icon">🎵</div>
+                <span>Audio Archive</span>
+            </div>
+            
+            <div class="archive-filter-controls">
+                <div class="archive-search-box">
+                    <span class="archive-search-icon">🔍</span>
+                    <input type="text" class="archive-search-input" placeholder="Buscar archivos...">
+                </div>
+                
+                <select class="archive-filter-select">
+                    <option>Todas las categorías</option>
+                    <option>Ofertas</option>
+                    <option>Eventos</option>
+                    <option>Información</option>
+                    <option>Servicios</option>
+                    <option>Horarios</option>
+                    <option>Emergencias</option>
+                </select>
+                
+                <select class="archive-filter-select">
+                    <option>Todos los estados</option>
+                    <option>Guardados</option>
+                    <option>Generados</option>
+                    <option>Eliminados</option>
+                </select>
+                
+                <div class="archive-view-toggle">
+                    <button class="archive-view-btn active">
+                        <span>📋</span> Lista
+                    </button>
+                    <button class="archive-view-btn">
+                        <span>⚏</span> Grid
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="archive-stats-bar">
+            <div class="archive-stat">
+                <span class="archive-stat-label">Total Archivos</span>
+                <span class="archive-stat-value">847</span>
+            </div>
+            <div class="archive-stat">
+                <span class="archive-stat-label">Guardados</span>
+                <span class="archive-stat-value highlight">42</span>
+            </div>
+            <div class="archive-stat">
+                <span class="archive-stat-label">Esta Semana</span>
+                <span class="archive-stat-value">15</span>
+            </div>
+            <div class="archive-stat">
+                <span class="archive-stat-label">Tamaño Total</span>
+                <span class="archive-stat-value">126.4 MB</span>
+            </div>
+        </div>
+
+        <!-- Vista Lista -->
+        <div class="archive-list">
+            <div class="archive-list-header">
+                <div>Play</div>
+                <div>Nombre / Descripción</div>
+                <div>Estado</div>
+                <div>Categoría</div>
+                <div>Voz</div>
+                <div>Fecha</div>
+            </div>
+            
+            <div class="archive-list-items">
+                <!-- Item 1 - Guardado -->
+                <div class="archive-list-item saved">
+                    <button class="archive-btn-preview">▶</button>
+                    <div>
+                        <div class="archive-item-title">Oferta especial Black Friday 2024</div>
+                        <div class="archive-item-description">50% de descuento en toda la tienda este fin de semana</div>
+                    </div>
+                    <span class="archive-status-badge archive-status-saved">Guardado</span>
+                    <span class="badge-ofertas">Ofertas</span>
+                    <div class="archive-item-voice">
+                        <span class="archive-voice-icon">🎤</span>
+                        <span>Bella</span>
+                    </div>
+                    <div class="archive-item-date">
+                        <span class="archive-date-icon">📅</span>
+                        <span>01/09/2025 14:30</span>
+                    </div>
+                </div>
+
+                <!-- Item 2 - Generado -->
+                <div class="archive-list-item">
+                    <button class="archive-btn-preview">▶</button>
+                    <div>
+                        <div class="archive-item-title">Aviso de mantenimiento sistema eléctrico</div>
+                        <div class="archive-item-description">Corte programado para el día martes de 10 a 12 horas</div>
+                    </div>
+                    <span class="archive-status-badge archive-status-generated">Generado</span>
+                    <span class="badge-servicios">Servicios</span>
+                    <div class="archive-item-voice">
+                        <span class="archive-voice-icon">🎤</span>
+                        <span>Daniel</span>
+                    </div>
+                    <div class="archive-item-date">
+                        <span class="archive-date-icon">📅</span>
+                        <span>01/09/2025 13:15</span>
+                    </div>
+                </div>
+
+                <!-- Item 3 - Playing -->
+                <div class="archive-list-item">
+                    <button class="archive-btn-preview playing">⏸</button>
+                    <div>
+                        <div class="archive-item-title">Evento navideño en el mall</div>
+                        <div class="archive-item-description">Gran celebración con actividades para toda la familia</div>
+                    </div>
+                    <span class="archive-status-badge archive-status-saved">Guardado</span>
+                    <span class="badge-eventos">Eventos</span>
+                    <div class="archive-item-voice">
+                        <span class="archive-voice-icon">🎤</span>
+                        <span>Alice</span>
+                    </div>
+                    <div class="archive-item-date">
+                        <span class="archive-date-icon">📅</span>
+                        <span>01/09/2025 12:00</span>
+                    </div>
+                </div>
+
+                <!-- Item 4 - Eliminado -->
+                <div class="archive-list-item deleted">
+                    <button class="archive-btn-preview">▶</button>
+                    <div>
+                        <div class="archive-item-title">Prueba de sonido del sistema</div>
+                        <div class="archive-item-description">Archivo de prueba para calibración</div>
+                    </div>
+                    <span class="archive-status-badge archive-status-deleted">Eliminado</span>
+                    <span class="badge-sin-categoria">Sin categoría</span>
+                    <div class="archive-item-voice">
+                        <span class="archive-voice-icon">🎤</span>
+                        <span>System</span>
+                    </div>
+                    <div class="archive-item-date">
+                        <span class="archive-date-icon">📅</span>
+                        <span>31/08/2025 18:45</span>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="archive-list-item saved">
+                    <button class="archive-btn-preview">▶</button>
+                    <div>
+                        <div class="archive-item-title">Protocolo de emergencia actualizado</div>
+                        <div class="archive-item-description">Nuevas rutas de evacuación disponibles</div>
+                    </div>
+                    <span class="archive-status-badge archive-status-saved">Guardado</span>
+                    <span class="badge-emergencias">Emergencias</span>
+                    <div class="archive-item-voice">
+                        <span class="archive-voice-icon">🎤</span>
+                        <span>Josh</span>
+                    </div>
+                    <div class="archive-item-date">
+                        <span class="archive-date-icon">📅</span>
+                        <span>31/08/2025 16:30</span>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="archive-list-item">
+                    <button class="archive-btn-preview">▶</button>
+                    <div>
+                        <div class="archive-item-title">Nuevo horario de atención al cliente</div>
+                        <div class="archive-item-description">Lunes a viernes de 9:00 a 18:00 horas</div>
+                    </div>
+                    <span class="archive-status-badge archive-status-generated">Generado</span>
+                    <span class="badge-horarios">Horarios</span>
+                    <div class="archive-item-voice">
+                        <span class="archive-voice-icon">🎤</span>
+                        <span>Emily</span>
+                    </div>
+                    <div class="archive-item-date">
+                        <span class="archive-date-icon">📅</span>
+                        <span>31/08/2025 15:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="archive-pagination">
+            <span class="archive-pagination-info">Mostrando 1-6 de 847 archivos</span>
+            <div class="archive-pagination-controls">
+                <button class="archive-page-btn" disabled>«</button>
+                <button class="archive-page-btn" disabled>‹</button>
+                <button class="archive-page-btn active">1</button>
+                <button class="archive-page-btn">2</button>
+                <button class="archive-page-btn">3</button>
+                <button class="archive-page-btn">...</button>
+                <button class="archive-page-btn">142</button>
+                <button class="archive-page-btn">›</button>
+                <button class="archive-page-btn">»</button>
+            </div>
+        </div>
+
+        <!-- Separador para mostrar vista Grid -->
+        <h3 style="margin: 40px 0 20px; color: var(--text-muted); text-align: center;">
+            ── Vista Grid (Alternativa) ──
+        </h3>
+
+        <!-- Vista Grid -->
+        <div class="archive-grid">
+            <!-- Card 1 -->
+            <div class="archive-card">
+                <div class="archive-card-header">
+                    <div>
+                        <div class="archive-card-title">Oferta especial Black Friday</div>
+                        <div class="archive-card-date">01/09/2025 14:30</div>
+                    </div>
+                    <button class="archive-btn-favorite active">⭐</button>
+                </div>
+                <div class="archive-card-body">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">
+                        50% de descuento en toda la tienda este fin de semana
+                    </p>
+                    <div class="archive-card-info">
+                        <span class="badge-ofertas">Ofertas</span>
+                        <span>🎤 Bella</span>
+                        <span>1.2 MB</span>
+                    </div>
+                </div>
+                <div class="archive-card-actions">
+                    <button class="archive-card-btn btn-play">▶ Play</button>
+                    <button class="archive-card-btn">📥 Download</button>
+                    <button class="archive-card-btn">🗑 Delete</button>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="archive-card">
+                <div class="archive-card-header">
+                    <div>
+                        <div class="archive-card-title">Aviso de mantenimiento</div>
+                        <div class="archive-card-date">01/09/2025 13:15</div>
+                    </div>
+                    <button class="archive-btn-favorite">⭐</button>
+                </div>
+                <div class="archive-card-body">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">
+                        Corte programado para el día martes de 10 a 12 horas
+                    </p>
+                    <div class="archive-card-info">
+                        <span class="badge-servicios">Servicios</span>
+                        <span>🎤 Daniel</span>
+                        <span>0.8 MB</span>
+                    </div>
+                </div>
+                <div class="archive-card-actions">
+                    <button class="archive-card-btn">▶ Play</button>
+                    <button class="archive-card-btn">📥 Download</button>
+                    <button class="archive-card-btn">🗑 Delete</button>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="archive-card">
+                <div class="archive-card-header">
+                    <div>
+                        <div class="archive-card-title">Evento navideño</div>
+                        <div class="archive-card-date">01/09/2025 12:00</div>
+                    </div>
+                    <button class="archive-btn-favorite active">⭐</button>
+                </div>
+                <div class="archive-card-body">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0;">
+                        Gran celebración con actividades para toda la familia
+                    </p>
+                    <div class="archive-card-info">
+                        <span class="badge-eventos">Eventos</span>
+                        <span>🎤 Alice</span>
+                        <span>1.5 MB</span>
+                    </div>
+                </div>
+                <div class="archive-card-actions">
+                    <button class="archive-card-btn">▶ Play</button>
+                    <button class="archive-card-btn">📥 Download</button>
+                    <button class="archive-card-btn">🗑 Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Flotante -->
+        <div class="archive-floating-player">
+            <div class="archive-player-header">
+                <span class="archive-current-playing">🎵 Oferta especial Black Friday 2024</span>
+                <button class="archive-player-close">×</button>
+            </div>
+            <audio class="archive-audio-player" controls>
+                <source src="#" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+</body>
+</html>

@@ -71,7 +71,7 @@
 }
 
 .event-tooltip[data-category="informacion"] .tooltip-header {
-    background: var(--category-informacion);
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
 }
 
 .event-tooltip[data-category="emergencias"] .tooltip-header {
@@ -83,7 +83,7 @@
 }
 
 .event-tooltip[data-category="horarios"] .tooltip-header {
-    background: var(--category-horarios);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
 /* Animación de entrada */

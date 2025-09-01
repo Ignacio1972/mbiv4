@@ -1,0 +1,15 @@
+/* Audio Library - Header Layout */
+
+.library-header {
+    text-align: center;
+    margin-bottom: var(--al-spacing-xl);
+}
+
+.library-header h2 {
+    color: var(--al-text-primary);
+    margin-bottom: var(--al-spacing-sm);
+}
+
+.library-header p {
+    color: var(--al-text-secondary);
+}

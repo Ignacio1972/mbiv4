@@ -24,8 +24,8 @@
 }
 
 .page-title {
-    font-size: 1.875rem;
-    font-weight: 700;
+    font-size: 1.25rem !important;
+    font-weight: 600;
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -182,14 +182,7 @@
 
 /* Filters (eliminados - ahora se usa dropdown) */
 
-/* Actions Bar */
-.library-actions {
-    display: flex;
-    justify-content: flex-end;  /* Alinear a la derecha */
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: var(--space-lg);
-}
+/* Actions Bar - Ya no se usa, el botón está en filter-bar */
 
 /* Estilos base para search-input movidos a .search-input.expanded arriba */
 

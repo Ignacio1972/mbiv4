@@ -1,0 +1,30 @@
+/* ========================================
+   AUDIO LIBRARY MODULE - MAIN CSS
+   CSS extraído y organizado del módulo audio-library
+   ======================================== */
+
+/* ===== BASE (Variables y Colores) ===== */
+@import url('base/variables.css');
+@import url('base/colors.css');
+
+/* ===== LAYOUT ===== */
+@import url('layout/container.css');
+@import url('layout/header.css');
+@import url('layout/stats.css');
+@import url('layout/responsive.css');
+
+/* ===== COMPONENTES ===== */
+@import url('components/controls.css');
+@import url('components/file-card.css');
+@import url('components/file-table.css');
+@import url('components/buttons.css');
+@import url('components/floating-player.css');
+@import url('components/notifications.css');
+
+/* 
+   INSTRUCCIONES:
+   1. Este archivo reemplaza modules/audio-library/styles/library.css
+   2. Cambiar import en index.js de 'styles/library.css' a 'css-extracted/main.css'
+   3. Todo el CSS está organizado por componentes
+   4. Variables centralizadas para fácil mantenimiento
+*/

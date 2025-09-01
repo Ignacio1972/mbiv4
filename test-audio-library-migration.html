@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Audio Library Migration</title>
+    
+    <!-- CSS ACTUAL - Audio Library -->
+    <link rel="stylesheet" href="/modules/audio-library/styles/library.css" id="original-audio-library-css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0f172a;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .migration-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            z-index: 10000;
+        }
+        
+        .migration-controls h3 {
+            margin-top: 0;
+            color: #3b82f6;
+        }
+        
+        .migration-controls button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .migration-controls button:hover {
+            background: #2563eb;
+        }
+        
+        .migration-controls button.danger {
+            background: #dc2626;
+        }
+        
+        .migration-controls button.danger:hover {
+            background: #b91c1c;
+        }
+        
+        .status {
+            font-size: 12px;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .status.success { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .status.error { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status.warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <!-- CONTROLES DE MIGRACIÓN -->
+    <div class="migration-controls">
+        <h3>🔧 CSS Migration</h3>
+        <button onclick="testUnifiedCSS()">1. Test CSS Unificado</button>
+        <button onclick="simulateMigration()">2. Simular Migración</button>
+        <button onclick="applyMigration()">3. Aplicar Migración</button>
+        <button onclick="rollbackMigration()" class="danger">🔙 Rollback</button>
+        <div id="migration-status" class="status"></div>
+    </div>
+
+    <!-- CONTENIDO DE AUDIO LIBRARY SIMULADO -->
+    <div class="audio-library-module">
+        <div class="library-header">
+            <h2>🎵 Biblioteca de Audio</h2>
+            <p>Gestiona y reproduce todos tus archivos de audio</p>
+        </div>
+
+        <div class="library-controls">
+            <input type="text" placeholder="Buscar archivos..." />
+            <select>
+                <option>Todos los tipos</option>
+                <option>Audio TTS</option>
+                <option>Audio Externo</option>
+            </select>
+            <select>
+                <option>Más recientes</option>
+                <option>Más antiguos</option>
+                <option>A-Z</option>
+            </select>
+        </div>
+
+        <div class="stats-bar">
+            <span><strong>24</strong> archivos totales</span>
+            <span><strong>18</strong> archivos TTS</span>
+            <span><strong>6</strong> archivos externos</span>
+            <span><strong>45.2 MB</strong> espacio usado</span>
+        </div>
+
+        <div class="library-grid">
+            <!-- Archivo TTS ejemplo -->
+            <div class="file-card">
+                <div class="card-header">
+                    <div class="file-icon">🎤</div>
+                    <button class="btn-favorite">⭐</button>
+                </div>
+                <div class="file-info">
+                    <div class="file-name">tts_oferta_especial_20250831.mp3</div>
+                    <div class="file-meta">
+                        <span>📅 Hoy, 14:30</span>
+                        <span>⏱️ 45s</span>
+                        <span>💾 2.1 MB</span>
+                    </div>
+                </div>
+                <div class="file-actions">
+                    <button class="btn btn-icon btn-secondary">▶️</button>
+                    <button class="btn btn-icon btn-secondary">📅</button>
+                    <button class="btn btn-icon btn-danger">🗑️</button>
+                </div>
+            </div>
+
+            <!-- Archivo externo ejemplo -->
+            <div class="file-card">
+                <div class="card-header">
+                    <div class="file-icon">🎵</div>
+                    <button class="btn-favorite favorited">⭐</button>
+                </div>
+                <div class="file-info">
+                    <div class="file-name">musica_navidad_mall.mp3</div>
+                    <div class="file-meta">
+                        <span>📅 Ayer, 09:15</span>
+                        <span>⏱️ 3:24</span>
+                        <span>💾 8.7 MB</span>
+                    </div>
+                </div>
+                <div class="file-actions">
+                    <button class="btn btn-icon btn-secondary">▶️</button>
+                    <button class="btn btn-icon btn-secondary">📅</button>
+                    <button class="btn btn-icon btn-danger">🗑️</button>
+                </div>
+            </div>
+
+            <!-- Más cards... -->
+            <div class="file-card">
+                <div class="card-header">
+                    <div class="file-icon">🎤</div>
+                    <button class="btn-favorite">⭐</button>
+                </div>
+                <div class="file-info">
+                    <div class="file-name">anuncio_evento_familiar.mp3</div>
+                    <div class="file-meta">
+                        <span>📅 2 días</span>
+                        <span>⏱️ 1:12</span>
+                        <span>💾 3.4 MB</span>
+                    </div>
+                </div>
+                <div class="file-actions">
+                    <button class="btn btn-icon btn-secondary">▶️</button>
+                    <button class="btn btn-icon btn-secondary">📅</button>
+                    <button class="btn btn-icon btn-danger">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS DE MIGRACIÓN -->
+    <script src="/css-migration-tools.js"></script>
+    <script>
+        let migrator = null;
+        let originalCSS = null;
+
+        function updateStatus(message, type = 'success') {
+            const statusEl = document.getElementById('migration-status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        async function testUnifiedCSS() {
+            updateStatus('🔍 Probando CSS unificado...', 'warning');
+            
+            try {
+                migrator = new CSSMigrationTools();
+                const isValid = await migrator.validateUnifiedCSS();
+                
+                if (isValid) {
+                    updateStatus('✅ CSS unificado válido', 'success');
+                } else {
+                    updateStatus('❌ CSS unificado no válido', 'error');
+                }
+            } catch (error) {
+                updateStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function simulateMigration() {
+            updateStatus('🧪 Simulando migración...', 'warning');
+            
+            if (!migrator) {
+                updateStatus('❌ Ejecuta primero el test de CSS', 'error');
+                return;
+            }
+
+            try {
+                // Simular aplicación de CSS unificado
+                const testLink = document.createElement('link');
+                testLink.rel = 'stylesheet';
+                testLink.href = '/styles-unified/main.css';
+                testLink.id = 'test-unified-css';
+                
+                document.head.appendChild(testLink);
+                
+                await new Promise((resolve, reject) => {
+                    testLink.onload = resolve;
+                    testLink.onerror = reject;
+                    setTimeout(() => reject(new Error('Timeout')), 5000);
+                });
+
+                // Verificar que se ve bien
+                updateStatus('✅ Simulación exitosa. ¿Se ve igual?', 'success');
+                
+                // Remover después de 5 segundos
+                setTimeout(() => {
+                    testLink.remove();
+                    updateStatus('🔄 Test removido', 'warning');
+                }, 5000);
+
+            } catch (error) {
+                updateStatus(`❌ Error simulación: ${error.message}`, 'error');
+            }
+        }
+
+        async function applyMigration() {
+            if (!confirm('¿Aplicar migración real? Esto cambiará los CSS cargados.')) {
+                return;
+            }
+
+            updateStatus('🔄 Aplicando migración...', 'warning');
+
+            try {
+                // Guardar referencia al CSS original
+                originalCSS = document.getElementById('original-audio-library-css');
+
+                // Aplicar CSS unificado
+                const unifiedLink = document.createElement('link');
+                unifiedLink.rel = 'stylesheet';
+                unifiedLink.href = '/styles-unified/main.css';
+                unifiedLink.id = 'unified-css';
+                
+                document.head.appendChild(unifiedLink);
+
+                await new Promise((resolve, reject) => {
+                    unifiedLink.onload = resolve;
+                    unifiedLink.onerror = reject;
+                    setTimeout(() => reject(new Error('Timeout')), 5000);
+                });
+
+                // Remover CSS original
+                if (originalCSS) {
+                    originalCSS.remove();
+                }
+
+                updateStatus('✅ Migración aplicada exitosamente', 'success');
+
+            } catch (error) {
+                updateStatus(`❌ Error aplicando: ${error.message}`, 'error');
+            }
+        }
+
+        function rollbackMigration() {
+            updateStatus('🔙 Revirtiendo migración...', 'warning');
+
+            try {
+                // Remover CSS unificado
+                const unifiedCSS = document.getElementById('unified-css');
+                if (unifiedCSS) {
+                    unifiedCSS.remove();
+                }
+
+                const testCSS = document.getElementById('test-unified-css');
+                if (testCSS) {
+                    testCSS.remove();
+                }
+
+                // Restaurar CSS original si se removió
+                if (!document.getElementById('original-audio-library-css')) {
+                    const originalLink = document.createElement('link');
+                    originalLink.rel = 'stylesheet';
+                    originalLink.href = '/modules/audio-library/styles/library.css';
+                    originalLink.id = 'original-audio-library-css';
+                    document.head.appendChild(originalLink);
+                }
+
+                updateStatus('✅ Rollback completado', 'success');
+
+            } catch (error) {
+                updateStatus(`❌ Error rollback: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-inicializar
+        window.addEventListener('load', () => {
+            updateStatus('✅ Test preparado. Ejecuta los pasos en orden', 'success');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+/**
+ * Design Tokens - MBI-v4
+ * =======================
+ * 
+ * Tokens de diseño específicos del sistema MBI.
+ * Colores por categorías, estados de UI, etc.
+ */
+
+:root {
+    /* ==========================================================================
+       COLORES POR CATEGORÍAS DE AUDIO/MENSAJES
+       ========================================================================== */
+    
+    /* Ofertas */
+    --category-ofertas: #10b981;
+    --category-ofertas-light: #34d399;
+    --category-ofertas-dark: #059669;
+    
+    /* Eventos */
+    --category-eventos: #8b5cf6;
+    --category-eventos-light: #a78bfa;
+    --category-eventos-dark: #7c3aed;
+    
+    /* Información */
+    --category-informacion: #0891b2;
+    --category-informacion-light: #06b6d4;
+    --category-informacion-dark: #0e7490;
+    
+    /* Servicios */
+    --category-servicios: #f59e0b;
+    --category-servicios-light: #fbbf24;
+    --category-servicios-dark: #d97706;
+    
+    /* Horarios */
+    --category-horarios: #6366f1;
+    --category-horarios-light: #818cf8;
+    --category-horarios-dark: #4f46e5;
+    
+    /* Emergencias */
+    --category-emergencias: #dc2626;
+    --category-emergencias-light: #ef4444;
+    --category-emergencias-dark: #b91c1c;
+    
+    /* Sin categoría */
+    --category-sin-categoria: var(--gray-500);
+    --category-sin-categoria-light: var(--gray-400);
+    --category-sin-categoria-dark: var(--gray-600);
+    
+    /* ==========================================================================
+       ESTADOS DE UI
+       ========================================================================== */
+    
+    /* Loading/Procesando */
+    --state-loading: #3b82f6;
+    --state-loading-bg: rgba(59, 130, 246, 0.1);
+    
+    /* Éxito */
+    --state-success: #16a34a;
+    --state-success-bg: rgba(22, 163, 74, 0.1);
+    
+    /* Error */
+    --state-error: #dc2626;
+    --state-error-bg: rgba(220, 38, 38, 0.1);
+    
+    /* Warning */
+    --state-warning: #ea580c;
+    --state-warning-bg: rgba(234, 88, 12, 0.1);
+    
+    /* Info */
+    --state-info: #0891b2;
+    --state-info-bg: rgba(8, 145, 178, 0.1);
+    
+    /* ==========================================================================
+       COMPONENTES ESPECÍFICOS
+       ========================================================================== */
+    
+    /* Botones */
+    --btn-primary-bg: var(--primary);
+    --btn-primary-bg-hover: var(--primary-light);
+    --btn-primary-text: white;
+    
+    --btn-secondary-bg: var(--bg-tertiary);
+    --btn-secondary-bg-hover: var(--bg-input);
+    --btn-secondary-text: var(--text-primary);
+    --btn-secondary-border: var(--border-color);
+    
+    --btn-danger-bg: var(--danger);
+    --btn-danger-bg-hover: #ef4444;
+    --btn-danger-text: white;
+    
+    /* Cards */
+    --card-bg: var(--bg-secondary);
+    --card-border: var(--border-color);
+    --card-shadow: var(--shadow);
+    --card-shadow-hover: var(--shadow-md);
+    
+    /* Modales */
+    --modal-bg: var(--bg-modal);
+    --modal-overlay: rgba(15, 23, 42, 0.8);
+    --modal-border: var(--border-color);
+    --modal-shadow: var(--shadow-2xl);
+    
+    /* Inputs */
+    --input-bg: var(--bg-input);
+    --input-border: var(--border-color);
+    --input-border-focus: var(--primary);
+    --input-text: var(--text-primary);
+    --input-placeholder: var(--text-secondary);
+    
+    /* Dropdown/Select */
+    --dropdown-bg: var(--bg-secondary);
+    --dropdown-border: var(--border-color);
+    --dropdown-shadow: var(--shadow-lg);
+    --dropdown-item-hover: var(--bg-tertiary);
+    
+    /* ==========================================================================
+       LAYOUT Y NAVEGACIÓN
+       ========================================================================== */
+    
+    /* Header */
+    --header-bg: var(--bg-secondary);
+    --header-border: var(--border-color);
+    --header-text: var(--text-primary);
+    --header-height: 4rem;
+    
+    /* Sidebar */
+    --sidebar-bg: var(--bg-secondary);
+    --sidebar-border: var(--border-color);
+    --sidebar-width: 16rem;
+    --sidebar-width-collapsed: 4rem;
+    
+    /* Footer */
+    --footer-bg: var(--bg-secondary);
+    --footer-border: var(--border-color);
+    --footer-text: var(--text-secondary);
+    
+    /* ==========================================================================
+       MÓDULOS ESPECÍFICOS
+       ========================================================================== */
+    
+    /* Dashboard */
+    --dashboard-grid-gap: var(--space-lg);
+    --dashboard-card-bg: var(--card-bg);
+    
+    /* Calendar */
+    --calendar-header-bg: #4a5568;
+    --calendar-header-text: #ffffff;
+    --calendar-cell-bg: var(--bg-primary);
+    --calendar-cell-border: var(--border-color);
+    --calendar-today-bg: rgba(59, 130, 246, 0.1);
+    --calendar-today-border: var(--primary);
+    
+    /* Player de audio */
+    --player-bg: var(--bg-secondary);
+    --player-controls-bg: var(--bg-tertiary);
+    --player-progress-bg: var(--gray-600);
+    --player-progress-fill: var(--primary);
+    
+    /* ==========================================================================
+       ANIMACIONES ESPECÍFICAS
+       ========================================================================== */
+    
+    /* Loading spinner */
+    --spinner-color: var(--primary);
+    --spinner-bg: var(--border-color);
+    
+    /* Fade transitions */
+    --fade-in: opacity var(--transition-normal);
+    --slide-up: transform var(--transition-normal);
+    
+    /* Hover effects */
+    --hover-lift: transform var(--transition-fast);
+    --hover-glow: box-shadow var(--transition-fast);
+}

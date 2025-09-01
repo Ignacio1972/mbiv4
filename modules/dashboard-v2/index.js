@@ -51,28 +51,12 @@ export default class DashboardV2Module {
     
     /**
      * Carga los estilos necesarios para el dashboard v2
+     * MIGRADO: Los estilos ahora se cargan globalmente desde /styles-v5/main.css
      */
     loadStyles() {
-        // Remover CSS antiguos si existen
-        const oldStyles = document.querySelectorAll('link[data-module]');
-        oldStyles.forEach(link => link.remove());
-        
-        // Rutas confirmadas de tus archivos CSS
-        const styles = [
-            '/new-design/mbi-corporate-dark.css',
-            '/new-design/palette-custom.css',
-            '/modules/dashboard-v2/styles/dashboard.css'
-        ];
-        
-        styles.forEach(href => {
-            if (!document.querySelector(`link[href="${href}"]`)) {
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = href;
-                link.setAttribute('data-module', this.name);
-                document.head.appendChild(link);
-            }
-        });
+        // Los estilos CSS ahora se cargan globalmente desde index.html
+        // No es necesario cargar estilos específicos del módulo
+        console.log('Dashboard styles loaded from global styles-v5');
     }
     
     /**
@@ -148,12 +132,12 @@ export default class DashboardV2Module {
             clarityValue: document.getElementById('clarityValue'),
             clarityTrack: document.getElementById('clarityTrack'),
             
-            // Quota chart reactivado
-            quotaProgressCircle: document.getElementById('quotaProgressCircle'),
-            quotaPercentage: document.getElementById('quotaPercentage'),
-            quotaUsed: document.getElementById('quotaUsed'),
-            quotaRemaining: document.getElementById('quotaRemaining'),
-            quotaResetDate: document.getElementById('quotaResetDate'),
+            // Quota chart eliminado - ya no se usa
+            // quotaProgressCircle: document.getElementById('quotaProgressCircle'),
+            // quotaPercentage: document.getElementById('quotaPercentage'),
+            // quotaUsed: document.getElementById('quotaUsed'),
+            // quotaRemaining: document.getElementById('quotaRemaining'),
+            // quotaResetDate: document.getElementById('quotaResetDate'),
             
             // Mensajes
             messageList: document.getElementById('messageList'),
@@ -302,11 +286,8 @@ export default class DashboardV2Module {
                 this.playAudio(audioUrl);
                 this.showSuccess('Audio generado exitosamente');
                 
-                // Actualizar quota y mensajes recientes
-                await Promise.all([
-                    this.updateQuotaChart(),
-                    this.loadRecentMessages()
-                ]);
+                // Actualizar mensajes recientes (quota eliminado)
+                await this.loadRecentMessages();
             } else {
                 throw new Error(response.error || 'Error al generar audio');
             }
@@ -452,7 +433,6 @@ export default class DashboardV2Module {
                 </div>
                 <div class="message-preview">${this.truncateText(msg.notes || msg.content || 'Archivo de audio guardado', 100)}</div>
                 <div class="message-footer">
-                    <span class="message-time">${this.getRelativeTime(msg.createdAt || msg.saved_at)}</span>
                     <div class="message-actions">
                         ${msg.filename ? `<button class="btn-icon" title="Reproducir" onclick="window.dashboardV2.playMessageAudio('${msg.filename}')">▶</button>` : ''}
                         <button class="btn-icon btn-save" title="Guardar" onclick="window.dashboardV2.saveToFavorites('${msg.id}', '${msg.filename || ''}', '${(msg.title || '').replace(/'/g, "\\'")}')">✓</button>
@@ -584,8 +564,8 @@ export default class DashboardV2Module {
      * Inicia actualizaciones periódicas
      */
     startPeriodicUpdates() {
-        // Actualizar quota cada 30 segundos
-        this.quotaInterval = setInterval(() => this.updateQuotaChart(), 30000);
+        // Quota eliminado - ya no se actualiza
+        // this.quotaInterval = setInterval(() => this.updateQuotaChart(), 30000);
         
         // Actualizar mensajes cada minuto
         this.messagesInterval = setInterval(() => this.loadRecentMessages(), 60000);

@@ -1,0 +1,73 @@
+/* Audio Library - Buttons Component */
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--al-card-border-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--al-transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--al-spacing-xs);
+}
+
+.btn-primary {
+    background: var(--al-btn-primary);
+    color: var(--al-text-white);
+}
+
+.btn-primary:hover {
+    background: var(--al-btn-primary-hover);
+}
+
+.btn-secondary {
+    background: var(--al-border-light);
+    color: var(--al-btn-secondary-hover);
+}
+
+.btn-secondary:hover {
+    background: var(--al-border-medium);
+}
+
+.btn-play {
+    background: var(--al-success);
+    color: var(--al-text-white);
+}
+
+.btn-play:hover {
+    background: #059669;
+}
+
+.btn-danger {
+    background: var(--al-btn-danger);
+    color: var(--al-text-white);
+}
+
+.btn-danger:hover {
+    background: var(--al-btn-danger-hover);
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    padding: var(--al-spacing-xs);
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: var(--al-btn-border-radius);
+    transition: var(--al-transition-fast);
+    width: var(--al-btn-icon-size);
+    height: var(--al-btn-icon-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background: var(--al-bg-hover);
+}
+
+.btn-icon.btn-danger:hover {
+    background: #fee2e2;
+}

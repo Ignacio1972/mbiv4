@@ -1,0 +1,39 @@
+/**
+ * Forms - Sistema Unificado MBI-v4  
+ * =================================
+ */
+
+/* Base form styles already handled in reset.css */
+
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-label {
+    display: block;
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    font-size: var(--text-sm);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--input-border);
+    border-radius: var(--radius-md);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: var(--text-base);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--input-border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--input-placeholder);
+}

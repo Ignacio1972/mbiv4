@@ -1,0 +1,84 @@
+/* Audio Library - File Card Component (Grid View) */
+
+.library-grid {
+    display: grid;
+    grid-template-columns: var(--al-grid-cols);
+    gap: var(--al-grid-gap);
+}
+
+.file-card {
+    background: var(--al-bg-white);
+    border: 1px solid var(--al-border-light);
+    border-radius: 12px;
+    padding: var(--al-card-padding);
+    transition: var(--al-transition);
+}
+
+.file-card:hover {
+    box-shadow: var(--al-shadow-md);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--al-spacing-md);
+}
+
+.btn-favorite {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.btn-favorite.active {
+    filter: none;
+    opacity: 1;
+    color: var(--al-favorite-active);
+}
+
+.btn-favorite:hover {
+    transform: scale(1.2);
+}
+
+.file-date {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: var(--al-spacing-xs);
+}
+
+.card-body {
+    margin-bottom: var(--al-spacing-md);
+}
+
+.file-name {
+    font-weight: 500;
+    color: var(--al-text-primary);
+    margin-bottom: var(--al-spacing-xs);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.file-info {
+    font-size: 12px;
+    color: var(--al-text-secondary);
+    display: flex;
+    gap: var(--al-spacing-md);
+}
+
+.card-actions {
+    display: flex;
+    gap: var(--al-spacing-sm);
+    justify-content: flex-end;
+}
+
+.card-actions button {
+    padding: var(--al-spacing-xs) var(--al-spacing-sm);
+    font-size: 12px;
+    border-radius: var(--al-btn-border-radius);
+}

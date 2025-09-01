@@ -1,0 +1,39 @@
+/* Audio Library - File Table Component (List View) */
+
+.library-list {
+    background: var(--al-bg-white);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.library-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.library-table thead {
+    background: var(--al-bg-light);
+}
+
+.library-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--al-btn-secondary-hover);
+    font-size: 14px;
+    border-bottom: 1px solid var(--al-border-light);
+}
+
+.library-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--al-bg-hover);
+}
+
+.library-table tr:hover {
+    background: var(--al-bg-light);
+}
+
+.library-table .actions {
+    display: flex;
+    gap: var(--al-spacing-xs);
+}

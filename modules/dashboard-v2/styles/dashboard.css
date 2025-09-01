@@ -34,7 +34,7 @@
 .dashboard-grid,
 div.dashboard-grid {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* Forzar exactamente 2 columnas iguales */
+    grid-template-columns: 1.5fr 1fr !important; /* Columna 1 (Generador) más ancha (60%), Columna 2 (Mensajes recientes) más angosta (40%) */
     grid-template-rows: auto auto !important;
     gap: var(--space-lg) !important;
     margin-top: var(--space-xl);
@@ -73,8 +73,84 @@ div.dashboard-grid {
     grid-column: 2;
     grid-row: 1 / 3; /* Ocupar ambas filas (1 y 2) */
     width: 100%;
+    min-width: 0; /* Prevenir que el contenido expanda la columna */
+    overflow: hidden; /* Evitar desbordamiento */
     display: flex;
     flex-direction: column;
+}
+
+/* ========================================
+   MENSAJES RECIENTES - Estilos específicos
+   ======================================== */
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    overflow-y: auto;
+    max-height: calc(100vh - 250px);
+    padding: var(--space-md);
+}
+
+.message-item {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.message-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+    gap: var(--space-sm);
+}
+
+.message-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+}
+
+.message-preview {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: var(--space-sm);
+    
+    /* Crítico: prevenir expansión */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    
+    /* Limitar a 2 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.message-actions {
+    display: flex;
+    gap: var(--space-xs);
 }
 
 /* ========================================
@@ -123,14 +199,10 @@ div.dashboard-grid {
    LISTA DE MENSAJES
    ======================================== */
 
+/* ELIMINADO - Conflicto con estilos de message-list arriba
 .message-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-md);
-    flex: 1; /* Ocupar todo el espacio disponible */
-    overflow-y: auto;
-    min-height: 0; /* Permitir que se reduzca si es necesario */
-}
+    Ya está definido correctamente en línea 86-93
+} */
 
 
 /* ========================================
@@ -260,9 +332,10 @@ div.dashboard-grid {
         width: 100%;
     }
     
+    /* Comentado - message-list usa flex, no grid
     .message-list {
         grid-template-columns: 1fr;
-    }
+    } */
 }
 
 @media (max-width: 768px) {

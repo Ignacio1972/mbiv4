@@ -1,0 +1,117 @@
+/**
+ * MBI-v4 CSS UNIFIED - Main Entry Point
+ * ====================================
+ * 
+ * Este es el ÚNICO archivo CSS que debe ser cargado por las páginas HTML.
+ * Consolida todo el sistema de estilos en orden correcto de dependencias.
+ * 
+ * Orden de carga optimizado:
+ * 1. Core (variables, reset, tokens)
+ * 2. Components (reutilizables)
+ * 3. Modules (específicos)
+ * 4. Themes (personalización)
+ */
+
+/* ==========================================================================
+   CORE - Base del sistema de diseño
+   ========================================================================== */
+
+/* Variables CSS globales - SIEMPRE PRIMERO */
+@import url('./core/variables.css');
+
+/* Reset y normalize - SEGUNDO */
+@import url('./core/reset.css'); 
+
+/* Design tokens (colores, espaciado, tipografía) */
+@import url('./core/design-tokens.css');
+
+/* Tipografía base */
+@import url('./core/typography.css');
+
+/* ==========================================================================
+   COMPONENTS - Elementos reutilizables
+   ========================================================================== */
+
+/* Botones globales */
+@import url('./components/buttons.css');
+
+/* Formularios */
+@import url('./components/forms.css');
+
+/* Cards/Tarjetas */
+@import url('./components/cards.css');
+
+/* Modales */
+@import url('./components/modals.css');
+
+/* Badges/Etiquetas */
+@import url('./components/badges.css');
+
+/* ==========================================================================
+   MODULES - Estilos específicos por módulo
+   ========================================================================== */
+
+/* Dashboard principal */
+@import url('./modules/dashboard.css');
+
+/* Campaign Library */
+@import url('./modules/campaign-library.css');
+
+/* Calendar */
+@import url('./modules/calendar.css');
+
+/* Audio Library */
+@import url('./modules/audio-library.css');
+
+/* Message Configurator */
+@import url('./modules/message-configurator.css');
+
+/* Radio Player */
+@import url('./modules/radio.css');
+
+/* ==========================================================================
+   THEMES - Personalización y temas
+   ========================================================================== */
+
+/* Tema corporativo MBI */
+@import url('./themes/mbi-corporate.css');
+
+/* ==========================================================================
+   UTILITIES - Utilidades y overrides
+   ========================================================================== */
+
+/* Clases de utilidad globales */
+.hidden { display: none !important; }
+.visible { display: block !important; }
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
+/* Margins y padding utilities */
+.m-0 { margin: 0 !important; }
+.p-0 { padding: 0 !important; }
+.mt-1 { margin-top: var(--space-xs) !important; }
+.mb-1 { margin-bottom: var(--space-xs) !important; }
+.mt-2 { margin-top: var(--space-sm) !important; }
+.mb-2 { margin-bottom: var(--space-sm) !important; }
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .mobile-hidden { display: none !important; }
+    .mobile-visible { display: block !important; }
+}
+
+@media (min-width: 769px) {
+    .desktop-hidden { display: none !important; }
+    .desktop-visible { display: block !important; }
+}
+
+/* ==========================================================================
+   DEBUG - Solo para desarrollo (remover en producción)
+   ========================================================================== */
+
+/* 
+.debug * {
+    outline: 1px solid red;
+}
+*/

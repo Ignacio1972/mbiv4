@@ -1,0 +1,309 @@
+/**
+ * Cards - Sistema Unificado MBI-v4
+ * =================================
+ * 
+ * Estilos para todos los tipos de cards del sistema.
+ */
+
+/* ==========================================================================
+   BASE CARD STYLES
+   ========================================================================== */
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    transition: all var(--transition-fast);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   CARD COMPONENTS
+   ========================================================================== */
+
+.card-header {
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.card-subtitle {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin: var(--space-xs) 0 0 0;
+}
+
+.card-body {
+    padding: var(--space-lg);
+}
+
+.card-footer {
+    padding: var(--space-lg);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-tertiary);
+}
+
+/* ==========================================================================
+   MESSAGE CARDS (Campaign Library)
+   ========================================================================== */
+
+.message-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.message-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: var(--space-md);
+}
+
+.message-title {
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    font-size: var(--text-xl);
+    line-height: 1.4;
+    margin: 0;
+    flex: 1;
+    margin-right: var(--space-md);
+}
+
+.message-content {
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-meta {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.message-actions {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+/* ==========================================================================
+   FILE CARDS (Audio Library)
+   ========================================================================== */
+
+.file-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: all var(--transition-normal);
+}
+
+.file-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--primary-light);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.file-icon {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.btn-favorite {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.btn-favorite:hover,
+.btn-favorite.favorited {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.file-name {
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+    word-break: break-all;
+}
+
+.file-meta {
+    display: flex;
+    gap: var(--space-lg);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.file-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+}
+
+/* ==========================================================================
+   DASHBOARD CARDS
+   ========================================================================== */
+
+.create-message {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.create-message .card-title {
+    margin: 0;
+    flex: 1;
+}
+
+.category-badge-container {
+    position: relative;
+}
+
+/* ==========================================================================
+   STATS CARDS
+   ========================================================================== */
+
+.stats-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-align: center;
+}
+
+.stats-number {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    color: var(--primary);
+    margin-bottom: var(--space-xs);
+}
+
+.stats-label {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   CARD VARIANTS
+   ========================================================================== */
+
+.card--flat {
+    border: none;
+    box-shadow: none;
+}
+
+.card--elevated {
+    box-shadow: var(--shadow-lg);
+}
+
+.card--outlined {
+    border-width: 2px;
+    border-color: var(--primary);
+}
+
+.card--interactive {
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.card--interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ==========================================================================
+   CARD LAYOUTS
+   ========================================================================== */
+
+.cards-grid {
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.cards-grid--2col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.cards-grid--3col {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .cards-grid,
+    .cards-grid--2col,
+    .cards-grid--3col {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: var(--space-md);
+    }
+    
+    .message-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+    
+    .message-title {
+        margin-right: 0;
+    }
+}

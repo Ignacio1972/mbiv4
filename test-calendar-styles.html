@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Calendar - Nuevos Estilos MBI-v4</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+    <style>
+        /* Estilos temporales para simular FullCalendar */
+        .fc-mock {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--color-gray-700);
+            border: 1px solid var(--color-gray-700);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+        
+        .fc-day-mock {
+            background: var(--bg-secondary);
+            min-height: 100px;
+            padding: var(--spacing-sm);
+            position: relative;
+            transition: background 0.2s ease;
+        }
+        
+        .fc-day-mock:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .fc-day-mock.today {
+            background: rgba(56, 122, 222, 0.1);
+        }
+        
+        .fc-day-number {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .fc-day-mock.today .fc-day-number {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+        
+        .fc-event-mock {
+            background: var(--color-primary);
+            color: white;
+            padding: 2px 4px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .fc-event-mock:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-module">
+        <!-- Header del calendario -->
+        <div class="calendar-header">
+            <div class="calendar-title">
+                <span style="font-size: 2rem;">📅</span>
+                <span>Calendario de Programaciones</span>
+            </div>
+            
+            <div class="view-selector">
+                <button class="view-btn active">Mes</button>
+                <button class="view-btn">Semana</button>
+                <button class="view-btn">Día</button>
+                <button class="view-btn">Lista</button>
+            </div>
+        </div>
+        
+        <!-- Filtros de categorías - Minimalista -->
+        <div class="category-filters">
+            <span class="filter-label">Filtros:</span>
+            
+            <label class="category-filter-item" title="Ofertas">
+                <input type="checkbox" class="category-filter" checked>
+                <span class="filter-dot" style="background: #10b981;"></span>
+            </label>
+            
+            <label class="category-filter-item" title="Eventos">
+                <input type="checkbox" class="category-filter" checked>
+                <span class="filter-dot" style="background: #8b5cf6;"></span>
+            </label>
+            
+            <label class="category-filter-item" title="Información">
+                <input type="checkbox" class="category-filter" checked>
+                <span class="filter-dot" style="background: #0891b2;"></span>
+            </label>
+            
+            <label class="category-filter-item" title="Servicios">
+                <input type="checkbox" class="category-filter" checked>
+                <span class="filter-dot" style="background: #f59e0b;"></span>
+            </label>
+            
+            <label class="category-filter-item" title="Horarios">
+                <input type="checkbox" class="category-filter" checked>
+                <span class="filter-dot" style="background: #6366f1;"></span>
+            </label>
+            
+            <label class="category-filter-item" title="Emergencias">
+                <input type="checkbox" class="category-filter" checked>
+                <span class="filter-dot" style="background: #dc2626;"></span>
+            </label>
+        </div>
+        
+        <!-- Vista del calendario -->
+        <div class="calendar-view">
+            <!-- Toolbar del calendario -->
+            <div class="fc-header-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <button class="fc-button">←</button>
+                    <button class="fc-button">→</button>
+                    <button class="fc-button">Hoy</button>
+                </div>
+                <h2 class="fc-toolbar-title">Noviembre 2024</h2>
+                <div></div>
+            </div>
+            
+            <!-- Días de la semana -->
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: var(--spacing-sm);">
+                <div class="fc-col-header-cell">DOM</div>
+                <div class="fc-col-header-cell">LUN</div>
+                <div class="fc-col-header-cell">MAR</div>
+                <div class="fc-col-header-cell">MIÉ</div>
+                <div class="fc-col-header-cell">JUE</div>
+                <div class="fc-col-header-cell">VIE</div>
+                <div class="fc-col-header-cell">SÁB</div>
+            </div>
+            
+            <!-- Grid del calendario (simulado) -->
+            <div class="fc-mock">
+                <!-- Semana 1 -->
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">27</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">28</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">29</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">30</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">31</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">1</div>
+                    <div class="fc-event-mock" style="background: #10b981;" onclick="openEventModal('Ofertas Black Friday')">
+                        10:00 Ofertas
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">2</div>
+                </div>
+                
+                <!-- Semana 2 -->
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">3</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">4</div>
+                    <div class="fc-event-mock" style="background: #dc2626;" onclick="openEventModal('Simulacro de Evacuación')">
+                        11:00 Emergencia
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">5</div>
+                </div>
+                <div class="fc-day-mock today">
+                    <div class="fc-day-number">6</div>
+                    <div class="fc-event-mock" style="background: #8b5cf6;" onclick="openEventModal('Concierto Gratuito')">
+                        18:00 Evento
+                    </div>
+                    <div class="fc-event-mock" style="background: #0891b2;" onclick="openEventModal('Nuevo Starbucks')">
+                        12:00 Info
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">7</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">8</div>
+                    <div class="fc-event-mock" style="background: #f59e0b;" onclick="openEventModal('Estacionamiento Gratuito')">
+                        09:00 Servicios
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">9</div>
+                </div>
+                
+                <!-- Semana 3 -->
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">10</div>
+                    <div class="fc-event-mock" style="background: #6366f1;" onclick="openEventModal('Horario Especial')">
+                        08:00 Horarios
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">11</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">12</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">13</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">14</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">15</div>
+                    <div class="fc-event-mock" style="background: #10b981;" onclick="openEventModal('Descuentos Fin de Semana')">
+                        10:00 Ofertas
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">16</div>
+                </div>
+                
+                <!-- Semana 4 -->
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">17</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">18</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">19</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">20</div>
+                    <div class="fc-event-mock" style="background: #8b5cf6;" onclick="openEventModal('Festival de Música')">
+                        19:00 Evento
+                    </div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">21</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">22</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">23</div>
+                </div>
+                
+                <!-- Semana 5 -->
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">24</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">25</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">26</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">27</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">28</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">29</div>
+                </div>
+                <div class="fc-day-mock">
+                    <div class="fc-day-number">30</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de Programaciones Activas -->
+        <div class="schedules-section">
+            <div class="schedules-header">
+                <div class="schedules-title">
+                    <span>⏰</span>
+                    <span>Programaciones Activas</span>
+                    <span class="schedules-count">8</span>
+                </div>
+                <button class="btn btn-primary btn-sm">
+                    <span>➕</span>
+                    Nueva Programación
+                </button>
+            </div>
+            
+            <div class="schedules-list">
+                <!-- Programación 1 -->
+                <div class="schedule-card">
+                    <div class="schedule-time-block">
+                        <div class="schedule-time">10:00</div>
+                        <div class="schedule-frequency">Cada 2h</div>
+                    </div>
+                    
+                    <div class="schedule-content">
+                        <div class="schedule-header">
+                            <h3 class="schedule-title">Gran Venta de Black Friday</h3>
+                            <span class="badge badge-ofertas">OFERTAS</span>
+                        </div>
+                        <p class="schedule-message">
+                            Atención visitantes del Mall Barrio Independencia. Este viernes tenemos increíbles descuentos de hasta el 50% en todas las tiendas participantes...
+                        </p>
+                        <div class="schedule-meta">
+                            <div class="schedule-meta-item">
+                                <span>📅</span>
+                                <span>10:00 - 20:00</span>
+                            </div>
+                            <div class="schedule-meta-item">
+                                <span>🔄</span>
+                                <span>Intervalo</span>
+                            </div>
+                            <div class="schedule-days">
+                                <div class="schedule-day active">Lu</div>
+                                <div class="schedule-day active">Ma</div>
+                                <div class="schedule-day active">Mi</div>
+                                <div class="schedule-day active">Ju</div>
+                                <div class="schedule-day active">Vi</div>
+                                <div class="schedule-day">Sa</div>
+                                <div class="schedule-day">Do</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-actions">
+                        <div class="schedule-status active">
+                            <span>●</span>
+                            <span>Activo</span>
+                        </div>
+                        <div class="schedule-btn-group">
+                            <button class="btn-icon btn-icon--small" title="Pausar">⏸️</button>
+                            <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                            <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Programación 2 -->
+                <div class="schedule-card">
+                    <div class="schedule-time-block">
+                        <div class="schedule-time">18:00</div>
+                        <div class="schedule-frequency">Diario</div>
+                    </div>
+                    
+                    <div class="schedule-content">
+                        <div class="schedule-header">
+                            <h3 class="schedule-title">Concierto Gratuito</h3>
+                            <span class="badge badge-eventos">EVENTOS</span>
+                        </div>
+                        <p class="schedule-message">
+                            Este sábado a las 6 de la tarde, los invitamos a disfrutar de un concierto gratuito en la plaza central del mall...
+                        </p>
+                        <div class="schedule-meta">
+                            <div class="schedule-meta-item">
+                                <span>📅</span>
+                                <span>18:00 - 20:00</span>
+                            </div>
+                            <div class="schedule-meta-item">
+                                <span>📍</span>
+                                <span>Específico</span>
+                            </div>
+                            <div class="schedule-days">
+                                <div class="schedule-day">Lu</div>
+                                <div class="schedule-day">Ma</div>
+                                <div class="schedule-day">Mi</div>
+                                <div class="schedule-day">Ju</div>
+                                <div class="schedule-day">Vi</div>
+                                <div class="schedule-day active">Sa</div>
+                                <div class="schedule-day">Do</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-actions">
+                        <div class="schedule-status active">
+                            <span>●</span>
+                            <span>Activo</span>
+                        </div>
+                        <div class="schedule-btn-group">
+                            <button class="btn-icon btn-icon--small" title="Pausar">⏸️</button>
+                            <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                            <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Programación 3 -->
+                <div class="schedule-card">
+                    <div class="schedule-time-block">
+                        <div class="schedule-time">11:00</div>
+                        <div class="schedule-frequency">Una vez</div>
+                    </div>
+                    
+                    <div class="schedule-content">
+                        <div class="schedule-header">
+                            <h3 class="schedule-title">Simulacro de Evacuación</h3>
+                            <span class="badge badge-emergencias">EMERGENCIA</span>
+                        </div>
+                        <p class="schedule-message">
+                            Mañana miércoles a las 11am realizaremos un simulacro de evacuación. Cuando escuchen la alarma...
+                        </p>
+                        <div class="schedule-meta">
+                            <div class="schedule-meta-item">
+                                <span>📅</span>
+                                <span>11:00</span>
+                            </div>
+                            <div class="schedule-meta-item">
+                                <span>⏰</span>
+                                <span>Una vez</span>
+                            </div>
+                            <div class="schedule-meta-item">
+                                <span>📆</span>
+                                <span>Miércoles 15</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-actions">
+                        <div class="schedule-status paused">
+                            <span>⏸</span>
+                            <span>Pausado</span>
+                        </div>
+                        <div class="schedule-btn-group">
+                            <button class="btn-icon btn-icon--small btn-play" title="Reanudar">▶</button>
+                            <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                            <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Programación 4 -->
+                <div class="schedule-card">
+                    <div class="schedule-time-block">
+                        <div class="schedule-time">09:00</div>
+                        <div class="schedule-frequency">Cada 3h</div>
+                    </div>
+                    
+                    <div class="schedule-content">
+                        <div class="schedule-header">
+                            <h3 class="schedule-title">Estacionamiento Gratuito Primera Hora</h3>
+                            <span class="badge badge-servicios">SERVICIOS</span>
+                        </div>
+                        <p class="schedule-message">
+                            Recordamos a nuestros visitantes que el estacionamiento del mall tiene la primera hora completamente gratis...
+                        </p>
+                        <div class="schedule-meta">
+                            <div class="schedule-meta-item">
+                                <span>📅</span>
+                                <span>09:00 - 21:00</span>
+                            </div>
+                            <div class="schedule-meta-item">
+                                <span>🔄</span>
+                                <span>Intervalo</span>
+                            </div>
+                            <div class="schedule-days">
+                                <div class="schedule-day active">Lu</div>
+                                <div class="schedule-day active">Ma</div>
+                                <div class="schedule-day active">Mi</div>
+                                <div class="schedule-day active">Ju</div>
+                                <div class="schedule-day active">Vi</div>
+                                <div class="schedule-day active">Sa</div>
+                                <div class="schedule-day active">Do</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-actions">
+                        <div class="schedule-status active">
+                            <span>●</span>
+                            <span>Activo</span>
+                        </div>
+                        <div class="schedule-btn-group">
+                            <button class="btn-icon btn-icon--small" title="Pausar">⏸️</button>
+                            <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                            <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vista de Lista (oculta por defecto) -->
+        <div class="list-view" style="display: none;" id="listView">
+            <div class="event-list-item">
+                <span class="event-list-time">10:00 - 11:00</span>
+                <span class="event-list-title">Gran Venta de Black Friday</span>
+                <span class="event-list-category badge badge-ofertas">OFERTAS</span>
+            </div>
+            <div class="event-list-item">
+                <span class="event-list-time">11:00 - 11:30</span>
+                <span class="event-list-title">Simulacro de Evacuación</span>
+                <span class="event-list-category badge badge-emergencias">EMERGENCIA</span>
+            </div>
+            <div class="event-list-item">
+                <span class="event-list-time">18:00 - 20:00</span>
+                <span class="event-list-title">Concierto Gratuito</span>
+                <span class="event-list-category badge badge-eventos">EVENTOS</span>
+            </div>
+        </div>
+        
+        <!-- Tooltip de evento (oculto por defecto) -->
+        <div class="event-tooltip" style="display: none; top: 300px; left: 400px;" id="eventTooltip">
+            <div class="tooltip-header">
+                Concierto Gratuito
+            </div>
+            <div class="tooltip-body">
+                <p><strong>Hora:</strong> 18:00 - 20:00</p>
+                <p><strong>Categoría:</strong> Eventos</p>
+                <p><strong>Frecuencia:</strong> Una vez</p>
+                <p><strong>Estado:</strong> Activo</p>
+            </div>
+        </div>
+        
+        <!-- Modal de Evento Mejorado -->
+        <div class="event-modal-overlay" id="eventModal">
+            <div class="event-modal">
+                <div class="event-modal-header">
+                    <h2>
+                        <span>📅</span>
+                        <span id="modalEventTitle">Detalle del Evento</span>
+                    </h2>
+                    <button class="event-modal-close" onclick="closeEventModal()">×</button>
+                </div>
+                
+                <div class="event-modal-content">
+                    <div class="event-detail">
+                        <div class="event-detail-label">TÍTULO</div>
+                        <div class="event-detail-value" id="modalTitle">Concierto Gratuito</div>
+                    </div>
+                    
+                    <div class="event-detail">
+                        <div class="event-detail-label">CATEGORÍA</div>
+                        <div class="event-detail-value">
+                            <span class="badge badge-eventos">EVENTOS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="event-detail">
+                        <div class="event-detail-label">HORARIO</div>
+                        <div class="event-detail-value">18:00 - 20:00</div>
+                    </div>
+                    
+                    <div class="event-detail">
+                        <div class="event-detail-label">FRECUENCIA</div>
+                        <div class="event-detail-value">Todos los sábados</div>
+                    </div>
+                    
+                    <div class="event-detail">
+                        <div class="event-detail-label">DÍAS ACTIVOS</div>
+                        <div class="event-detail-value">
+                            <div class="weekday-selector" style="pointer-events: none;">
+                                <button class="weekday-btn">LU</button>
+                                <button class="weekday-btn">MA</button>
+                                <button class="weekday-btn">MI</button>
+                                <button class="weekday-btn">JU</button>
+                                <button class="weekday-btn">VI</button>
+                                <button class="weekday-btn selected">SA</button>
+                                <button class="weekday-btn">DO</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-detail">
+                        <div class="event-detail-label">MENSAJE</div>
+                        <div class="event-detail-value event-detail-message">
+                            Este sábado a las 6 de la tarde, los invitamos a disfrutar de un concierto gratuito en la plaza central del mall. 
+                            Presentaremos a la banda local "Los Independientes" con su mejor repertorio de rock y pop. 
+                            La entrada es libre para toda la familia. No se lo pierdan.
+                        </div>
+                    </div>
+                    
+                    <div class="event-detail">
+                        <div class="event-detail-label">ESTADO</div>
+                        <div class="event-detail-value">
+                            <span style="color: #10b981; font-weight: 600;">● Activo</span>
+                        </div>
+                    </div>
+                    
+                    <div class="event-modal-actions">
+                        <button class="btn btn-secondary" onclick="closeEventModal()">Cerrar</button>
+                        <button class="btn btn-primary">
+                            <span>✏️</span>
+                            Editar Programación
+                        </button>
+                        <button class="btn btn-danger">
+                            <span>🗑️</span>
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Cambiar entre vistas
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const calendarView = document.querySelector('.calendar-view');
+                const listView = document.getElementById('listView');
+                
+                if (this.textContent === 'Lista') {
+                    calendarView.style.display = 'none';
+                    listView.style.display = 'block';
+                } else {
+                    calendarView.style.display = 'block';
+                    listView.style.display = 'none';
+                }
+            });
+        });
+        
+        // Mostrar tooltip en hover (simulado)
+        let tooltipTimeout;
+        document.querySelectorAll('.fc-event-mock').forEach(event => {
+            event.addEventListener('mouseenter', function(e) {
+                tooltipTimeout = setTimeout(() => {
+                    const tooltip = document.getElementById('eventTooltip');
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY + 10 + 'px';
+                }, 500);
+            });
+            
+            event.addEventListener('mouseleave', function() {
+                clearTimeout(tooltipTimeout);
+                document.getElementById('eventTooltip').style.display = 'none';
+            });
+        });
+        
+        // Abrir modal de evento
+        function openEventModal(title) {
+            document.getElementById('modalEventTitle').textContent = title;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('eventModal').classList.add('show');
+        }
+        
+        // Cerrar modal
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('show');
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('eventModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEventModal();
+            }
+        });
+        
+        // Hover en días
+        document.querySelectorAll('.fc-day-mock').forEach(day => {
+            day.addEventListener('click', function() {
+                if (!this.querySelector('.fc-event-mock')) {
+                    console.log('Crear nuevo evento en este día');
+                }
+            });
+        });
+        
+        // Filtros de categorías
+        document.querySelectorAll('.category-filter').forEach(filter => {
+            filter.addEventListener('change', function() {
+                console.log('Filtro cambiado:', this.checked);
+            });
+        });
+    </script>
+</body>
+</html>

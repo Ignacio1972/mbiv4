@@ -157,6 +157,42 @@ export class CalendarView {
         
         this.calendar.render();
         this.attachViewButtons();
+        
+        // Aplicar estilos del header después del render
+        this.applyHeaderStyles();
+    }
+    
+    /**
+     * Aplica estilos críticos para el header del calendario
+     * @private
+     */
+    applyHeaderStyles() {
+        // Aplicar estilos directamente a los elementos del DOM
+        setTimeout(() => {
+            // Buscar todos los elementos del header
+            const headerCells = document.querySelectorAll('.fc-col-header-cell, .fc th, .fc-scrollgrid-sync-table th');
+            headerCells.forEach(cell => {
+                cell.style.backgroundColor = '#4a5568';
+                cell.style.background = '#4a5568';
+            });
+            
+            // Buscar el texto dentro de los headers
+            const headerText = document.querySelectorAll('.fc-col-header-cell-cushion, .fc-col-header-cell a, .fc-col-header-cell span');
+            headerText.forEach(text => {
+                text.style.color = '#ffffff';
+                text.style.fontWeight = '700';
+                text.style.opacity = '1';
+            });
+            
+            // Aplicar al contenedor del header
+            const headerContainers = document.querySelectorAll('.fc-col-header, .fc-scrollgrid-sync-table thead');
+            headerContainers.forEach(container => {
+                container.style.backgroundColor = '#4a5568';
+                container.style.background = '#4a5568';
+            });
+            
+            console.log('[CalendarView] Header styles applied directly to DOM');
+        }, 200);
     }
     
     attachViewButtons() {
@@ -181,6 +217,9 @@ export class CalendarView {
         const fcView = viewMap[viewName] || viewName;
         this.calendar.changeView(fcView);
         this.currentView = fcView;
+        
+        // Re-aplicar estilos después del cambio de vista
+        this.applyHeaderStyles();
     }
     
     handleEventClick(info) {

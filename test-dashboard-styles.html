@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dashboard - Nuevos Estilos MBI-v4</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+</head>
+<body>
+    <div style="padding: 2rem;">
+        <h1>Dashboard MBI-v4 - Test de Estilos</h1>
+        <p class="text-muted mb-3">Prueba del módulo Dashboard con CSS optimizado</p>
+        
+        <!-- Grid Principal del Dashboard -->
+        <div class="dashboard-grid">
+            
+            <!-- Card 1: Generador de Mensajes -->
+            <div class="create-message card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🎙️</span>
+                        Generador de Mensajes Buenos
+                    </h2>
+                    <select class="form-control form-select" style="width: 150px;">
+                        <option>Sin categoría</option>
+                        <option>Ofertas</option>
+                        <option>Eventos</option>
+                        <option>Información</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Mensaje a convertir</label>
+                        <textarea id="messageText" class="form-control" 
+                                  placeholder="Escribe aquí tu mensaje...">Bienvenidos al Mall Barrio Independencia. Les recordamos que nuestro horario de atención es de 10am a 9pm de lunes a domingo.</textarea>
+                    </div>
+                    <div class="form-actions-inline">
+                        <div class="voice-selector">
+                            <label class="form-label">Voz</label>
+                            <select class="form-control form-select">
+                                <option>Juan Carlos (Profesional)</option>
+                                <option>María (Amigable)</option>
+                                <option>Pedro (Serio)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary">
+                            🎙️ Generar Audio
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 2: Controles de Voz -->
+            <div class="controls-section card">
+                <div class="card-header">
+                    <h3 class="card-title">⚙️ Controles de Voz</h3>
+                </div>
+                <div class="card-body">
+                    <div class="controls-grid">
+                        <div class="control-group">
+                            <label class="control-label">
+                                Estilo <span class="control-value">50</span>
+                            </label>
+                            <input type="range" class="slider" min="0" max="100" value="50">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                Estabilidad <span class="control-value">75</span>
+                            </label>
+                            <input type="range" class="slider" min="0" max="100" value="75">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">
+                                Claridad <span class="control-value">80</span>
+                            </label>
+                            <input type="range" class="slider" min="0" max="100" value="80">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 3: Quota Chart -->
+            <div class="quota-section card">
+                <div class="card-header">
+                    <h3 class="card-title">📊 Uso de Quota</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quota-chart">
+                        <div class="chart-circle">
+                            <svg width="150" height="150">
+                                <circle cx="75" cy="75" r="60" fill="none" 
+                                        stroke="var(--bg-primary)" stroke-width="15"/>
+                                <circle cx="75" cy="75" r="60" fill="none" 
+                                        stroke="#0070E0" stroke-width="15"
+                                        stroke-dasharray="377" stroke-dashoffset="94"
+                                        transform="rotate(-90 75 75)"/>
+                            </svg>
+                            <div style="margin-top: -100px;">
+                                <div class="quota-percentage">75%</div>
+                            </div>
+                        </div>
+                        <div class="quota-details">
+                            <div class="quota-used">75,000 / 100,000 caracteres</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 4: Mensajes Recientes -->
+            <div class="recent-messages card">
+                <div class="card-header">
+                    <h3 class="card-title">📝 Mensajes Recientes</h3>
+                </div>
+                <div class="card-body">
+                    <div class="message-list">
+                        <!-- Mensaje 1 -->
+                        <div class="message-item">
+                            <div class="message-header">
+                                <span class="message-title">Promoción Black Friday</span>
+                                <span class="badge badge-ofertas">OFERTAS</span>
+                            </div>
+                            <div class="message-preview">
+                                Atención visitantes, este viernes tenemos increíbles descuentos de hasta 50% en todas las tiendas participantes...
+                            </div>
+                            <div class="message-footer">
+                                <div class="message-actions">
+                                    <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                                    <button class="btn-icon btn-icon--small btn-save" title="Guardar">✓</button>
+                                    <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mensaje 2 -->
+                        <div class="message-item">
+                            <div class="message-header">
+                                <span class="message-title">Evento Musical</span>
+                                <span class="badge badge-eventos">EVENTOS</span>
+                            </div>
+                            <div class="message-preview">
+                                Este sábado a las 6pm los invitamos al concierto gratuito en la plaza central del mall...
+                            </div>
+                            <div class="message-footer">
+                                <div class="message-actions">
+                                    <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                                    <button class="btn-icon btn-icon--small btn-save" title="Guardar">✓</button>
+                                    <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mensaje 3 -->
+                        <div class="message-item">
+                            <div class="message-header">
+                                <span class="message-title">Horario Especial</span>
+                                <span class="badge badge-horarios">HORARIOS</span>
+                            </div>
+                            <div class="message-preview">
+                                Informamos que este domingo el mall abrirá desde las 11am hasta las 7pm...
+                            </div>
+                            <div class="message-footer">
+                                <div class="message-actions">
+                                    <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                                    <button class="btn-icon btn-icon--small btn-save" title="Guardar">✓</button>
+                                    <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mensaje 4 -->
+                        <div class="message-item">
+                            <div class="message-header">
+                                <span class="message-title">Nuevo Local</span>
+                                <span class="badge badge-informacion">INFO</span>
+                            </div>
+                            <div class="message-preview">
+                                Les damos la bienvenida a Starbucks que abre sus puertas en el segundo piso...
+                            </div>
+                            <div class="message-footer">
+                                <div class="message-actions">
+                                    <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                                    <button class="btn-icon btn-icon--small btn-save" title="Guardar">✓</button>
+                                    <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script>
+        // Interactividad básica para los sliders
+        document.querySelectorAll('.slider').forEach(slider => {
+            slider.addEventListener('input', function() {
+                const value = this.value;
+                const valueSpan = this.parentElement.querySelector('.control-value');
+                if (valueSpan) {
+                    valueSpan.textContent = value;
+                }
+                // Actualizar color del track
+                const percentage = (value / 100) * 100;
+                this.style.background = `linear-gradient(to right, #0070E0 0%, #0070E0 ${percentage}%, #252525 ${percentage}%, #252525 100%)`;
+            });
+        });
+        
+        // Hover en mensajes
+        document.querySelectorAll('.message-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Mensaje clickeado:', this.querySelector('.message-title').textContent);
+            });
+        });
+    </script>
+</body>
+</html>

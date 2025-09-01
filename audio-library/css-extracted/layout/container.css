@@ -1,0 +1,7 @@
+/* Audio Library - Main Container Layout */
+
+.audio-library-module {
+    padding: var(--al-container-padding);
+    max-width: var(--al-container-max-width);
+    margin: 0 auto;
+}

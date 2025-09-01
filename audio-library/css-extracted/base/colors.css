@@ -1,0 +1,38 @@
+/* Audio Library - Colors
+   Colores extraídos del CSS original */
+
+:root {
+  /* Text Colors */
+  --al-text-primary: #1e293b;
+  --al-text-secondary: #64748b;
+  --al-text-white: #ffffff;
+  
+  /* Background Colors */
+  --al-bg-white: #ffffff;
+  --al-bg-light: #f8fafc;
+  --al-bg-hover: #f1f5f9;
+  --al-bg-dark: #1a1a1a;
+  --al-bg-overlay: rgba(0, 0, 0, 0.8);
+  
+  /* Border Colors */
+  --al-border-light: #e2e8f0;
+  --al-border-medium: #cbd5e1;
+  
+  /* Status Colors */
+  --al-success: #10b981;
+  --al-error: #ef4444;
+  --al-info: #3b82f6;
+  --al-warning: #f59e0b;
+  
+  /* Button Colors */
+  --al-btn-primary: #3b82f6;
+  --al-btn-primary-hover: #2563eb;
+  --al-btn-secondary: #64748b;
+  --al-btn-secondary-hover: #475569;
+  --al-btn-danger: #ef4444;
+  --al-btn-danger-hover: #dc2626;
+  
+  /* Special Colors */
+  --al-favorite-active: #fbbf24;
+  --al-favorite-hover: #f59e0b;
+}

@@ -541,11 +541,13 @@
   gap: var(--grid-gap-lg);
 }
 
+/* COMENTADO - Conflicto con dashboard layout
 .message-list {
   display: grid;
   grid-template-columns: var(--grid-messages);
   gap: var(--grid-gap-md);
 }
+*/
 ```
 
 ### Interaction Pattern Usage:

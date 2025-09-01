@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 CSS Migration Test - Archives</title>
+    
+    <!-- CSS ACTUAL - ESTOS SE VAN A MIGRAR -->
+    <link rel="stylesheet" href="new-design/css/mbi-corporate-dark.css" id="original-css-corporate">
+    <link rel="stylesheet" href="new-design/css/palette-custom.css" id="original-css-palette">
+    
+    <style>
+        /* Estilos específicos para el archivo - ESTOS SE MANTENDRÁN */
+        .archives-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .page-title-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .archives-list {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .list-header {
+            display: grid;
+            grid-template-columns: 50px 2fr 120px 120px 150px;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+        
+        .list-item {
+            display: grid;
+            grid-template-columns: 50px 2fr 120px 120px 150px;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .list-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .btn-preview {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-preview:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        /* Colores de categorías */
+        .badge-ofertas { background: #10b981; color: white; }
+        .badge-eventos { background: #8b5cf6; color: white; }
+        .badge-informacion { background: #0891b2; color: white; }
+        .badge-servicios { background: #f59e0b; color: white; }
+        .badge-horarios { background: #6366f1; color: white; }
+        .badge-emergencias { background: #dc2626; color: white; }
+        
+        /* ==========================================================================
+           CONTROLES DE MIGRACIÓN - PANEL FLOTANTE
+           ========================================================================== */
+        
+        .migration-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .migration-header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 10px 10px 0 0;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .migration-body {
+            padding: 20px;
+        }
+        
+        .migration-step {
+            margin-bottom: 12px;
+        }
+        
+        .step-button {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            background: #374151;
+            color: #f3f4f6;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step-button:hover {
+            background: #4b5563;
+            border-color: #6b7280;
+        }
+        
+        .step-button.primary {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        
+        .step-button.primary:hover {
+            background: #2563eb;
+        }
+        
+        .step-button.success {
+            background: #059669;
+            border-color: #059669;
+        }
+        
+        .step-button.danger {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+        
+        .step-button.danger:hover {
+            background: #b91c1c;
+        }
+        
+        .step-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .migration-status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+            min-height: 20px;
+        }
+        
+        .status-info { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .status-success { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .status-warning { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .status-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        
+        .comparison-note {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #c4b5fd;
+        }
+        
+        /* Toggle para mostrar/ocultar panel */
+        .migration-toggle {
+            position: fixed;
+            top: 20px;
+            right: 360px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 9999;
+        }
+        
+        .migration-panel.hidden {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- PANEL DE MIGRACIÓN FLOTANTE -->
+    <button class="migration-toggle" onclick="toggleMigrationPanel()">🔧 CSS Migration</button>
+    
+    <div class="migration-panel" id="migrationPanel">
+        <div class="migration-header">
+            <span>🔧</span>
+            CSS Migration Control
+        </div>
+        <div class="migration-body">
+            <div class="migration-step">
+                <button class="step-button" onclick="step1_ValidateCSS()">
+                    <span>1️⃣</span>
+                    Validar CSS Unificado
+                </button>
+            </div>
+            
+            <div class="migration-step">
+                <button class="step-button" onclick="step2_SimulateMigration()" id="step2btn" disabled>
+                    <span>🧪</span>
+                    Simular Migración (5s)
+                </button>
+            </div>
+            
+            <div class="migration-step">
+                <button class="step-button primary" onclick="step3_ApplyMigration()" id="step3btn" disabled>
+                    <span>🚀</span>
+                    Aplicar Migración Real
+                </button>
+            </div>
+            
+            <div class="migration-step">
+                <button class="step-button danger" onclick="step4_Rollback()" id="rollbackBtn" disabled>
+                    <span>🔙</span>
+                    Rollback Completo
+                </button>
+            </div>
+            
+            <div class="migration-status status-info" id="migrationStatus">
+                ✅ Sistema listo. Ejecuta los pasos en orden.
+            </div>
+            
+            <div class="comparison-note">
+                <strong>💡 Qué verificar:</strong><br>
+                • Fondo oscuro se mantiene<br>
+                • Colores de categorías iguales<br>
+                • Botones funcionan igual<br>
+                • Variables CSS cargadas
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL - ARCHIVO DE MENSAJES -->
+    <div class="archives-container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">🗄️</span>
+                Archivo de Mensajes - CSS Migration Test
+            </h1>
+        </div>
+
+        <div class="archives-list">
+            <div class="list-header">
+                <div>Play</div>
+                <div>Título</div>
+                <div>Categoría</div>
+                <div>Voz</div>
+                <div>Fecha</div>
+            </div>
+            <div id="archive-items" class="list-items">
+                <!-- DATOS DE PRUEBA ESTÁTICOS -->
+                <div class="list-item">
+                    <button class="btn-preview" onclick="playAudio('test1.mp3')">▶</button>
+                    <div class="item-title">Oferta especial fin de semana</div>
+                    <span class="category-badge badge-ofertas">Ofertas</span>
+                    <div class="item-voice">🎤 Ana</div>
+                    <div class="item-date">📅 31/08/2025 14:30</div>
+                </div>
+                
+                <div class="list-item">
+                    <button class="btn-preview" onclick="playAudio('test2.mp3')">▶</button>
+                    <div class="item-title">Evento familiar este domingo</div>
+                    <span class="category-badge badge-eventos">Eventos</span>
+                    <div class="item-voice">🎤 Carlos</div>
+                    <div class="item-date">📅 30/08/2025 09:15</div>
+                </div>
+                
+                <div class="list-item">
+                    <button class="btn-preview" onclick="playAudio('test3.mp3')">▶</button>
+                    <div class="item-title">Información horarios navidad</div>
+                    <span class="category-badge badge-informacion">Info</span>
+                    <div class="item-voice">🎤 María</div>
+                    <div class="item-date">📅 29/08/2025 16:45</div>
+                </div>
+                
+                <div class="list-item">
+                    <button class="btn-preview" onclick="playAudio('test4.mp3')">▶</button>
+                    <div class="item-title">Nuevos servicios disponibles</div>
+                    <span class="category-badge badge-servicios">Servicios</span>
+                    <div class="item-voice">🎤 Luis</div>
+                    <div class="item-date">📅 28/08/2025 11:20</div>
+                </div>
+                
+                <div class="list-item">
+                    <button class="btn-preview" onclick="playAudio('test5.mp3')">▶</button>
+                    <div class="item-title">Horario especial feriado</div>
+                    <span class="category-badge badge-horarios">Horarios</span>
+                    <div class="item-voice">🎤 Ana</div>
+                    <div class="item-date">📅 27/08/2025 08:00</div>
+                </div>
+                
+                <div class="list-item">
+                    <button class="btn-preview" onclick="playAudio('test6.mp3')">▶</button>
+                    <div class="item-title">Aviso importante seguridad</div>
+                    <span class="category-badge badge-emergencias">Urgente</span>
+                    <div class="item-voice">🎤 Carlos</div>
+                    <div class="item-date">📅 26/08/2025 15:30</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS DE MIGRACIÓN -->
+    <script src="/css-migration-tools.js"></script>
+    <script>
+        let migrator = null;
+        let originalCSS = {
+            corporate: null,
+            palette: null
+        };
+        let migrationApplied = false;
+
+        // Referencias a elementos
+        const statusEl = document.getElementById('migrationStatus');
+        const step2Btn = document.getElementById('step2btn');
+        const step3Btn = document.getElementById('step3btn');
+        const rollbackBtn = document.getElementById('rollbackBtn');
+
+        function updateStatus(message, type = 'info') {
+            statusEl.textContent = message;
+            statusEl.className = `migration-status status-${type}`;
+        }
+
+        function toggleMigrationPanel() {
+            const panel = document.getElementById('migrationPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // PASO 1: Validar CSS Unificado
+        async function step1_ValidateCSS() {
+            updateStatus('🔍 Validando CSS unificado...', 'warning');
+            
+            try {
+                migrator = new CSSMigrationTools();
+                const isValid = await migrator.validateUnifiedCSS();
+                
+                if (isValid) {
+                    updateStatus('✅ CSS unificado válido y listo', 'success');
+                    step2Btn.disabled = false;
+                    step2Btn.classList.add('primary');
+                } else {
+                    updateStatus('❌ CSS unificado no válido - revisar archivos', 'error');
+                }
+            } catch (error) {
+                updateStatus(`❌ Error validando: ${error.message}`, 'error');
+                console.error('Validation error:', error);
+            }
+        }
+
+        // PASO 2: Simular Migración
+        async function step2_SimulateMigration() {
+            updateStatus('🧪 Simulando migración por 5 segundos...', 'warning');
+            step2Btn.disabled = true;
+            
+            try {
+                // Crear link temporal para CSS unificado
+                const testLink = document.createElement('link');
+                testLink.rel = 'stylesheet';
+                testLink.href = '/styles-unified/main.css';
+                testLink.id = 'test-unified-css';
+                
+                // Agregar al head
+                document.head.appendChild(testLink);
+                
+                // Esperar a que cargue
+                await new Promise((resolve, reject) => {
+                    testLink.onload = resolve;
+                    testLink.onerror = reject;
+                    setTimeout(() => reject(new Error('Timeout cargando CSS')), 5000);
+                });
+
+                updateStatus('✅ Simulación activa - ¿Se ve igual? Removiendo en 5s...', 'success');
+                
+                // Habilitar siguiente paso
+                step3Btn.disabled = false;
+                
+                // Auto-remover después de 5 segundos
+                setTimeout(() => {
+                    testLink.remove();
+                    updateStatus('🔄 Simulación completada. ¿Aplicar migración real?', 'info');
+                    step2Btn.disabled = false;
+                }, 5000);
+
+            } catch (error) {
+                updateStatus(`❌ Error simulación: ${error.message}`, 'error');
+                step2Btn.disabled = false;
+                
+                // Limpiar cualquier CSS de test
+                const testLink = document.getElementById('test-unified-css');
+                if (testLink) testLink.remove();
+            }
+        }
+
+        // PASO 3: Aplicar Migración Real
+        async function step3_ApplyMigration() {
+            if (!confirm('⚠️  ¿Aplicar migración REAL?\n\nEsto cambiará permanentemente los CSS cargados hasta hacer rollback.')) {
+                return;
+            }
+
+            updateStatus('🚀 Aplicando migración real...', 'warning');
+            step3Btn.disabled = true;
+
+            try {
+                // Guardar referencias a CSS originales
+                originalCSS.corporate = document.getElementById('original-css-corporate');
+                originalCSS.palette = document.getElementById('original-css-palette');
+
+                // Crear y aplicar CSS unificado
+                const unifiedLink = document.createElement('link');
+                unifiedLink.rel = 'stylesheet';
+                unifiedLink.href = '/styles-unified/main.css';
+                unifiedLink.id = 'unified-css-applied';
+                
+                document.head.appendChild(unifiedLink);
+
+                // Esperar a que cargue
+                await new Promise((resolve, reject) => {
+                    unifiedLink.onload = resolve;
+                    unifiedLink.onerror = reject;
+                    setTimeout(() => reject(new Error('Timeout')), 5000);
+                });
+
+                // Remover CSS originales
+                if (originalCSS.corporate) originalCSS.corporate.remove();
+                if (originalCSS.palette) originalCSS.palette.remove();
+
+                migrationApplied = true;
+                rollbackBtn.disabled = false;
+                rollbackBtn.classList.add('danger');
+
+                updateStatus('✅ Migración aplicada exitosamente!', 'success');
+
+                // Verificar variables CSS
+                const rootStyles = getComputedStyle(document.documentElement);
+                const primaryColor = rootStyles.getPropertyValue('--primary');
+                if (primaryColor) {
+                    updateStatus(`✅ Migración exitosa! Variables CSS: ${primaryColor.trim()}`, 'success');
+                } else {
+                    updateStatus('⚠️  Migración aplicada pero variables CSS no detectadas', 'warning');
+                }
+
+            } catch (error) {
+                updateStatus(`❌ Error aplicando: ${error.message}`, 'error');
+                step3Btn.disabled = false;
+                
+                // Intentar rollback automático
+                setTimeout(step4_Rollback, 1000);
+            }
+        }
+
+        // PASO 4: Rollback Completo
+        function step4_Rollback() {
+            updateStatus('🔙 Ejecutando rollback...', 'warning');
+
+            try {
+                // Remover CSS unificado
+                const unifiedCSS = document.getElementById('unified-css-applied');
+                if (unifiedCSS) unifiedCSS.remove();
+
+                const testCSS = document.getElementById('test-unified-css');
+                if (testCSS) testCSS.remove();
+
+                // Restaurar CSS originales si no existen
+                if (!document.getElementById('original-css-corporate')) {
+                    const corporateLink = document.createElement('link');
+                    corporateLink.rel = 'stylesheet';
+                    corporateLink.href = 'new-design/css/mbi-corporate-dark.css';
+                    corporateLink.id = 'original-css-corporate';
+                    document.head.appendChild(corporateLink);
+                }
+
+                if (!document.getElementById('original-css-palette')) {
+                    const paletteLink = document.createElement('link');
+                    paletteLink.rel = 'stylesheet';
+                    paletteLink.href = 'new-design/css/palette-custom.css';
+                    paletteLink.id = 'original-css-palette';
+                    document.head.appendChild(paletteLink);
+                }
+
+                // Resetear estado
+                migrationApplied = false;
+                step2Btn.disabled = false;
+                step3Btn.disabled = false;
+                rollbackBtn.disabled = true;
+                rollbackBtn.classList.remove('danger');
+
+                updateStatus('✅ Rollback completado - estado original restaurado', 'success');
+
+            } catch (error) {
+                updateStatus(`❌ Error en rollback: ${error.message}`, 'error');
+            }
+        }
+
+        // Función de audio simulada
+        window.playAudio = function(filename) {
+            updateStatus(`🎵 Reproduciendo: ${filename}`, 'info');
+            console.log(`Playing audio: ${filename}`);
+        }
+
+        // Inicialización
+        window.addEventListener('load', () => {
+            updateStatus('✅ Test preparado. Ejecuta los pasos en orden.', 'info');
+            console.log('🔧 CSS Migration Test loaded');
+            
+            // Verificar que las variables CSS actuales funcionan
+            const rootStyles = getComputedStyle(document.documentElement);
+            const currentPrimary = rootStyles.getPropertyValue('--primary');
+            console.log('Current --primary variable:', currentPrimary);
+        });
+    </script>
+</body>
+</html>

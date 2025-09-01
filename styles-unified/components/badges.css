@@ -1,0 +1,51 @@
+/**
+ * Badges - Sistema Unificado MBI-v4
+ * ==================================
+ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-md);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Category badges */
+.badge-ofertas { 
+    background: var(--category-ofertas); 
+    color: white; 
+}
+
+.badge-eventos { 
+    background: var(--category-eventos); 
+    color: white; 
+}
+
+.badge-informacion { 
+    background: var(--category-informacion); 
+    color: white; 
+}
+
+.badge-servicios { 
+    background: var(--category-servicios); 
+    color: white; 
+}
+
+.badge-horarios { 
+    background: var(--category-horarios); 
+    color: white; 
+}
+
+.badge-emergencias { 
+    background: var(--category-emergencias); 
+    color: white; 
+}
+
+.badge-sin-categoria { 
+    background: var(--category-sin-categoria); 
+    color: white; 
+}

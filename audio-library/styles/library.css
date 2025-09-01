@@ -49,7 +49,7 @@
     display: flex;
     gap: 30px;
     padding: 15px;
-    background: #f8fafc;
+    background: var(--bg-tertiary, #f8fafc);
     border-radius: 8px;
     margin-bottom: 20px;
 }
@@ -160,7 +160,7 @@
 }
 
 .library-table thead {
-    background: #f8fafc;
+    background: var(--bg-tertiary, #f8fafc);
 }
 
 .library-table th {
@@ -178,7 +178,7 @@
 }
 
 .library-table tr:hover {
-    background: #f8fafc;
+    background: var(--bg-tertiary, #f8fafc);
 }
 
 .library-table .actions {
@@ -201,12 +201,12 @@
 }
 
 .btn-primary {
-    background: #3b82f6;
+    background: var(--gray-600, #64748b);
     color: white;
 }
 
 .btn-primary:hover {
-    background: #2563eb;
+    background: var(--gray-700, #475569);
 }
 
 .btn-secondary {
@@ -338,7 +338,7 @@
 }
 
 .notification-info {
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid var(--gray-600, #64748b);
 }
 
 /* Responsive */

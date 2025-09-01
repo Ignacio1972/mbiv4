@@ -1,0 +1,39 @@
+/* Audio Library - Floating Player Component */
+
+.floating-player {
+    position: fixed;
+    bottom: var(--al-spacing-lg);
+    right: var(--al-spacing-lg);
+    background: var(--al-bg-white);
+    border: 1px solid var(--al-border-light);
+    border-radius: 12px;
+    box-shadow: var(--al-shadow-lg);
+    z-index: var(--al-z-player);
+    width: 350px;
+}
+
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--al-spacing-md);
+    border-bottom: 1px solid var(--al-border-light);
+}
+
+.player-header button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--al-text-secondary);
+    transition: var(--al-transition-fast);
+}
+
+.player-header button:hover {
+    color: var(--al-text-primary);
+}
+
+#audioPlayer {
+    width: 100%;
+    padding: var(--al-spacing-sm);
+}

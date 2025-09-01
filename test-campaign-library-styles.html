@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Campaign Library - Nuevos Estilos MBI-v4</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+</head>
+<body>
+    <div class="campaign-library-module">
+        <!-- Header de página -->
+        <div class="page-header">
+            <div class="page-title">
+                <div class="page-title-icon">📚</div>
+                <span>Biblioteca de Mensajes</span>
+            </div>
+            
+            <div class="filter-bar">
+                <select class="filter-select">
+                    <option>Todos</option>
+                    <option>Ofertas</option>
+                    <option>Eventos</option>
+                    <option>Información</option>
+                    <option>Servicios</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option>Más recientes</option>
+                    <option>Más antiguos</option>
+                    <option>Más reproducidos</option>
+                    <option>Alfabético</option>
+                </select>
+                
+                <!-- Búsqueda estilo Apple -->
+                <div class="search-container">
+                    <button class="search-toggle-btn" onclick="toggleSearch()">🔍</button>
+                    <div class="search-input-container">
+                        <input type="text" 
+                               class="search-input collapsed" 
+                               id="searchInput"
+                               placeholder="Buscar mensajes...">
+                        <button class="search-clear-btn" onclick="clearSearch()">✕</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grid de mensajes -->
+        <div class="messages-grid">
+            
+            <!-- Mensaje 1 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Gran Venta de Black Friday</h3>
+                    <span class="message-badge badge-ofertas">OFERTAS</span>
+                </div>
+                <div class="message-content">
+                    Atención visitantes del Mall Barrio Independencia. Este viernes tenemos increíbles descuentos de hasta el 50% en todas las tiendas participantes. No se pierdan esta oportunidad única de comprar los mejores productos a precios irresistibles. Los esperamos desde las 10am hasta las 10pm.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                        <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                        <button class="btn-icon btn-icon--small" title="Cambiar categoría">🏷️</button>
+                        <button class="btn-icon btn-icon--small btn-radio" title="Enviar a radio">📻</button>
+                        <button class="btn-icon btn-icon--small btn-schedule" title="Programar">🕐</button>
+                        <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 2 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Concierto Gratuito Este Sábado</h3>
+                    <span class="message-badge badge-eventos">EVENTOS</span>
+                </div>
+                <div class="message-content">
+                    Este sábado 15 de noviembre a las 6 de la tarde, los invitamos a disfrutar de un concierto gratuito en la plaza central del mall. Presentaremos a la banda local "Los Independientes" con su mejor repertorio de rock y pop. La entrada es libre para toda la familia. No se lo pierdan.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                        <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                        <button class="btn-icon btn-icon--small" title="Cambiar categoría">🏷️</button>
+                        <button class="btn-icon btn-icon--small btn-radio" title="Enviar a radio">📻</button>
+                        <button class="btn-icon btn-icon--small btn-schedule" title="Programar">🕐</button>
+                        <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 3 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Nuevo Starbucks en Segundo Piso</h3>
+                    <span class="message-badge badge-informacion">INFO</span>
+                </div>
+                <div class="message-content">
+                    Les informamos que ya está abierto el nuevo Starbucks en el segundo piso del mall, al lado de la tienda Falabella. Los esperamos con el mejor café de la ciudad, deliciosos postres y un ambiente acogedor. Horario de atención de lunes a domingo de 8am a 10pm.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                        <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                        <button class="btn-icon btn-icon--small" title="Cambiar categoría">🏷️</button>
+                        <button class="btn-icon btn-icon--small btn-radio" title="Enviar a radio">📻</button>
+                        <button class="btn-icon btn-icon--small btn-schedule" title="Programar">🕐</button>
+                        <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 4 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Estacionamiento Gratuito Primera Hora</h3>
+                    <span class="message-badge badge-servicios">SERVICIOS</span>
+                </div>
+                <div class="message-content">
+                    Recordamos a nuestros visitantes que el estacionamiento del mall tiene la primera hora completamente gratis. Después de la primera hora, la tarifa es de 1500 pesos por hora adicional. Contamos con más de 500 espacios disponibles y seguridad las 24 horas.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                        <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                        <button class="btn-icon btn-icon--small" title="Cambiar categoría">🏷️</button>
+                        <button class="btn-icon btn-icon--small btn-radio" title="Enviar a radio">📻</button>
+                        <button class="btn-icon btn-icon--small btn-schedule" title="Programar">🕐</button>
+                        <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 5 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Horario Especial Domingo</h3>
+                    <span class="message-badge badge-horarios">HORARIOS</span>
+                </div>
+                <div class="message-content">
+                    Este domingo el mall tendrá un horario especial de 11am a 7pm. Las tiendas ancla como Falabella, Paris y Ripley mantendrán el mismo horario. El patio de comidas atenderá hasta las 8pm. Agradecemos su comprensión.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                        <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                        <button class="btn-icon btn-icon--small" title="Cambiar categoría">🏷️</button>
+                        <button class="btn-icon btn-icon--small btn-radio" title="Enviar a radio">📻</button>
+                        <button class="btn-icon btn-icon--small btn-schedule" title="Programar">🕐</button>
+                        <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 6 -->
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Simulacro de Evacuación</h3>
+                    <span class="message-badge badge-emergencias">EMERGENCIA</span>
+                </div>
+                <div class="message-content">
+                    Mañana miércoles a las 11am realizaremos un simulacro de evacuación. Cuando escuchen la alarma, por favor sigan las señales de evacuación y diríjanse a los puntos de encuentro en el estacionamiento. El ejercicio durará aproximadamente 15 minutos.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon btn-icon--small btn-play" title="Reproducir">▶</button>
+                        <button class="btn-icon btn-icon--small" title="Editar">✏️</button>
+                        <button class="btn-icon btn-icon--small" title="Cambiar categoría">🏷️</button>
+                        <button class="btn-icon btn-icon--small btn-radio" title="Enviar a radio">📻</button>
+                        <button class="btn-icon btn-icon--small btn-schedule" title="Programar">🕐</button>
+                        <button class="btn-icon btn-icon--small btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Modal de Programación (oculto por defecto) -->
+        <div id="scheduleModal">
+            <div class="schedule-modal">
+                <div class="modal-header">
+                    <h2>📅 Programar Mensaje</h2>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-content">
+                    <div class="schedule-info">
+                        <strong>Mensaje:</strong> <span id="modalMessageTitle">Gran Venta de Black Friday</span>
+                    </div>
+                    
+                    <!-- Tabs de tipo de programación -->
+                    <div class="schedule-tabs">
+                        <button class="schedule-tab active">🔁 Intervalo</button>
+                        <button class="schedule-tab">📅 Específico</button>
+                        <button class="schedule-tab">⏰ Una vez</button>
+                    </div>
+                    
+                    <!-- Contenido del tab -->
+                    <div class="schedule-tab-content">
+                        <div class="form-group">
+                            <label class="form-label">Repetir cada:</label>
+                            <select class="form-control form-select">
+                                <option>30 minutos</option>
+                                <option>1 hora</option>
+                                <option>2 horas</option>
+                                <option>3 horas</option>
+                                <option>4 horas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Días de la semana:</label>
+                            <div class="weekday-selector">
+                                <button class="weekday-btn selected">LU</button>
+                                <button class="weekday-btn selected">MA</button>
+                                <button class="weekday-btn selected">MI</button>
+                                <button class="weekday-btn selected">JU</button>
+                                <button class="weekday-btn selected">VI</button>
+                                <button class="weekday-btn">SA</button>
+                                <button class="weekday-btn">DO</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Hora inicio:</label>
+                            <input type="time" class="form-control" value="10:00">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Hora fin:</label>
+                            <input type="time" class="form-control" value="20:00">
+                        </div>
+                        
+                        <div class="form-actions" style="margin-top: var(--spacing-lg);">
+                            <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                            <button class="btn btn-primary">Guardar Programación</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Función para expandir/colapsar búsqueda
+        function toggleSearch() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.querySelector('.search-clear-btn');
+            
+            if (input.classList.contains('collapsed')) {
+                input.classList.remove('collapsed');
+                input.classList.add('expanded');
+                input.focus();
+                if (input.value) {
+                    clearBtn.classList.add('visible');
+                }
+            } else {
+                input.classList.remove('expanded');
+                input.classList.add('collapsed');
+                clearBtn.classList.remove('visible');
+            }
+        }
+        
+        // Mostrar botón de limpiar cuando hay texto
+        document.getElementById('searchInput')?.addEventListener('input', function() {
+            const clearBtn = document.querySelector('.search-clear-btn');
+            if (this.value) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+        });
+        
+        // Limpiar búsqueda
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.querySelector('.search-clear-btn');
+            input.value = '';
+            clearBtn.classList.remove('visible');
+            input.focus();
+        }
+        
+        // Abrir modal de programación
+        document.querySelectorAll('.btn-schedule').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const card = this.closest('.message-card');
+                const title = card.querySelector('.message-title').textContent;
+                document.getElementById('modalMessageTitle').textContent = title;
+                document.getElementById('scheduleModal').style.display = 'block';
+            });
+        });
+        
+        // Cerrar modal
+        function closeModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('scheduleModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // Tabs del modal
+        document.querySelectorAll('.schedule-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.schedule-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Selector de días
+        document.querySelectorAll('.weekday-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('selected');
+            });
+        });
+    </script>
+</body>
+</html>

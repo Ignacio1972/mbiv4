@@ -107,6 +107,9 @@ render() {
                     Mensajes Guardados
                 </h1>
                 <div class="filter-bar">
+                    <button class="btn btn-secondary" id="upload-audio-btn">
+                        🎵 Subir Audio
+                    </button>
                     <select id="library-filter" class="filter-select">
                         <option value="all">Todas las categorías</option>
                         <option value="ofertas">Ofertas</option>
@@ -138,13 +141,6 @@ render() {
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Barra de acciones secundarias -->
-            <div class="library-actions">
-                <button class="btn btn-secondary" id="upload-audio-btn">
-                    🎵 Subir Audio
-                </button>
             </div>
             
             <!-- Grid de mensajes -->

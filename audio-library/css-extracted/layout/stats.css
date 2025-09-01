@@ -1,0 +1,19 @@
+/* Audio Library - Stats Bar */
+
+.stats-bar {
+    background: var(--al-bg-light);
+    padding: var(--al-spacing-sm) var(--al-spacing-lg);
+    border-radius: var(--al-card-border-radius);
+    margin-bottom: var(--al-spacing-lg);
+    text-align: center;
+    font-size: 14px;
+}
+
+.stats-bar span {
+    margin: 0 var(--al-spacing-md);
+}
+
+.stats-bar strong {
+    color: var(--al-text-primary);
+    font-weight: 600;
+}

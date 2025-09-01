@@ -1,0 +1,24 @@
+/* Audio Library - Controls Component */
+
+.library-controls {
+    display: flex;
+    gap: var(--al-spacing-md);
+    margin-bottom: var(--al-spacing-lg);
+    flex-wrap: wrap;
+}
+
+.library-controls input[type="text"] {
+    padding: var(--al-spacing-sm);
+    border: 1px solid var(--al-border-light);
+    border-radius: var(--al-btn-border-radius);
+    font-size: 14px;
+    min-width: 200px;
+}
+
+.library-controls select {
+    padding: var(--al-spacing-sm);
+    border: 1px solid var(--al-border-light);
+    border-radius: var(--al-btn-border-radius);
+    font-size: 14px;
+    background-color: var(--al-bg-white);
+}

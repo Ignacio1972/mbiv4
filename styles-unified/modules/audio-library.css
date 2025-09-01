@@ -1,0 +1,387 @@
+/**
+ * Audio Library Module - Sistema Unificado
+ * =========================================
+ * 
+ * Estilos específicos para el módulo de biblioteca de audio.
+ * Consolidado y adaptado al sistema de diseño unificado.
+ */
+
+/* ==========================================================================
+   MODULE CONTAINER
+   ========================================================================== */
+
+.audio-library-module {
+    padding: var(--space-xl);
+    max-width: var(--container-xl);
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.library-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.library-header h2 {
+    color: var(--text-primary);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-md);
+}
+
+.library-header p {
+    color: var(--text-secondary);
+    font-size: var(--text-lg);
+}
+
+/* ==========================================================================
+   CONTROLS
+   ========================================================================== */
+
+.library-controls {
+    display: flex;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.library-controls input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--input-border);
+    border-radius: var(--radius-md);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: var(--text-sm);
+    transition: border-color var(--transition-fast);
+}
+
+.library-controls input[type="text"]:focus {
+    outline: none;
+    border-color: var(--input-border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.library-controls input[type="text"]::placeholder {
+    color: var(--input-placeholder);
+}
+
+.library-controls select {
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--input-border);
+    border-radius: var(--radius-md);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.library-controls select:focus {
+    outline: none;
+    border-color: var(--input-border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ==========================================================================
+   STATS BAR
+   ========================================================================== */
+
+.stats-bar {
+    display: flex;
+    gap: var(--space-2xl);
+    padding: var(--space-lg);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+}
+
+.stats-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.stats-bar span {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+.stats-bar strong {
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-base);
+}
+
+/* ==========================================================================
+   LIBRARY GRID
+   ========================================================================== */
+
+.library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-xl);
+}
+
+/* ==========================================================================
+   FILE CARD (usando estilos base de cards.css y extendiendo)
+   ========================================================================== */
+
+.file-card {
+    /* Hereda de .card en cards.css */
+    position: relative;
+}
+
+.file-card::before {
+    content: '🎵';
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    opacity: 0.1;
+    font-size: 2rem;
+    pointer-events: none;
+}
+
+.file-card .card-header {
+    padding: var(--space-lg);
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.file-info {
+    padding: 0 var(--space-lg) var(--space-lg);
+}
+
+.file-name {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.file-meta {
+    display: flex;
+    gap: var(--space-lg);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.meta-icon {
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   FILE ACTIONS
+   ========================================================================== */
+
+.file-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* ==========================================================================
+   LOADING & EMPTY STATES
+   ========================================================================== */
+
+.loading-state {
+    text-align: center;
+    padding: var(--space-3xl);
+    color: var(--text-secondary);
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto var(--space-lg);
+    animation: spin 1s linear infinite;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-3xl);
+    grid-column: 1/-1;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-lg);
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-sm);
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+    font-size: var(--text-lg);
+}
+
+/* ==========================================================================
+   AUDIO PLAYER INTEGRATION
+   ========================================================================== */
+
+.audio-player-embedded {
+    width: 100%;
+    margin-top: var(--space-md);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.audio-player-embedded audio {
+    width: 100%;
+    height: 40px;
+    background-color: var(--bg-tertiary);
+}
+
+/* ==========================================================================
+   FAVORITE FUNCTIONALITY
+   ========================================================================== */
+
+.btn-favorite {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    filter: grayscale(100%);
+    opacity: 0.5;
+    padding: var(--space-xs);
+}
+
+.btn-favorite:hover {
+    filter: none;
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.btn-favorite.favorited {
+    filter: none;
+    opacity: 1;
+    color: #f59e0b;
+    text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+}
+
+/* ==========================================================================
+   SEARCH HIGHLIGHTING
+   ========================================================================== */
+
+.search-highlight {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: var(--primary-light);
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-medium);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .audio-library-module {
+        padding: var(--space-lg);
+    }
+    
+    .library-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .library-controls input[type="text"],
+    .library-controls select {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .stats-bar {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+    
+    .library-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    .file-meta {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .file-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .library-header h2 {
+        font-size: var(--text-2xl);
+    }
+    
+    .file-card .card-header,
+    .file-info,
+    .file-actions {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+    }
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.file-card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Stagger animation para múltiples cards */
+.file-card:nth-child(1) { animation-delay: 0.0s; }
+.file-card:nth-child(2) { animation-delay: 0.1s; }
+.file-card:nth-child(3) { animation-delay: 0.2s; }
+.file-card:nth-child(4) { animation-delay: 0.3s; }
+.file-card:nth-child(5) { animation-delay: 0.4s; }
+.file-card:nth-child(n+6) { animation-delay: 0.5s; }

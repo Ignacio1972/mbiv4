@@ -1,0 +1,47 @@
+/* Audio Library - Notifications Component */
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--al-text-secondary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px var(--al-spacing-lg);
+    color: var(--al-text-secondary);
+}
+
+.empty-state p {
+    margin: var(--al-spacing-sm) 0;
+}
+
+.notification {
+    position: fixed;
+    top: var(--al-spacing-lg);
+    right: var(--al-spacing-lg);
+    padding: var(--al-spacing-md) var(--al-spacing-lg);
+    border-radius: var(--al-card-border-radius);
+    background: var(--al-bg-white);
+    border: 1px solid var(--al-border-light);
+    box-shadow: var(--al-shadow-md);
+    z-index: var(--al-z-notification);
+    transform: translateX(400px);
+    transition: var(--al-transition);
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-success {
+    border-left: 4px solid var(--al-success);
+}
+
+.notification-error {
+    border-left: 4px solid var(--al-error);
+}
+
+.notification-info {
+    border-left: 4px solid var(--al-info);
+}

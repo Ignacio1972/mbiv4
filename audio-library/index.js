@@ -56,7 +56,7 @@ export default class AudioLibraryModule {
             const link = document.createElement('link');
             link.id = 'audio-library-styles';
             link.rel = 'stylesheet';
-            link.href = '/modules/audio-library/styles/library.css';
+            link.href = '/modules/audio-library/css-extracted/main.css';
             document.head.appendChild(link);
             await new Promise((resolve) => {
                 link.onload = resolve;
