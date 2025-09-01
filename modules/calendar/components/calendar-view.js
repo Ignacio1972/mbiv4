@@ -269,7 +269,7 @@ export class CalendarView {
         // Actualizar el título con el emoji de la categoría
         const titleEl = element.querySelector('.fc-event-title');
         if (titleEl) {
-            titleEl.innerHTML = categoryInfo.emoji + ' ' + event.title.replace(/^🎵\s*/, '');
+            titleEl.innerHTML = event.title.replace(/^🎵\s*/, '');
         }
         
         this.addEventTooltip(element, event);
@@ -295,7 +295,7 @@ export class CalendarView {
         tooltipContent += '<div class="tooltip-body">';
         
         // Mostrar categoría
-        tooltipContent += '<p><strong>Categoría:</strong> ' + categoryInfo.emoji + ' ' + this.getCategoryName(category) + '</p>';
+        tooltipContent += '<p><strong>Categoría:</strong> ' + this.getCategoryName(category) + '</p>';
         
         const filename = (event.extendedProps && event.extendedProps.filename) || 
                         (event.extendedProps && event.extendedProps.file_path) || 
@@ -360,7 +360,7 @@ export class CalendarView {
     
     async loadAudioSchedules() {
         try {
-            const response = await fetch('http://localhost:3001/api/audio-scheduler.php', {
+            const response = await fetch('/api/audio-scheduler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'list' })
@@ -430,18 +430,31 @@ export class CalendarView {
                     }
                     
                     // Para eventos 'once', usar la fecha start_date o hoy
-                    const eventDate = schedule.start_date ? new Date(schedule.start_date) : new Date();
+                    // Importante: Crear la fecha en hora local, no UTC
+                    let eventDate;
+                    if (schedule.start_date) {
+                        // Parsear la fecha como local (agregando hora para evitar UTC)
+                        const [year, month, day] = schedule.start_date.split('-');
+                        eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                    } else {
+                        eventDate = new Date();
+                    }
                     
                     scheduleTimes.forEach(time => {
                         const [hours, minutes] = time.split(':');
                         const eventDateTime = new Date(eventDate);
                         eventDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
                         
-                        // Solo mostrar si es futuro o hoy
-                        if (eventDateTime >= new Date().setHours(0,0,0,0)) {
+                        // Comparar con el momento actual para eventos futuros
+                        const now = new Date();
+                        
+                        // Mostrar si:
+                        // 1. El evento es en el futuro (después de ahora)
+                        // 2. O es hoy pero aún no ha pasado la hora
+                        if (eventDateTime > now) {
                             const event = {
                                 id: 'audio_schedule_once_' + schedule.id + '_' + time,
-                                title: categoryColors.emoji + ' ' + (schedule.title || schedule.filename),
+                                title: schedule.title || schedule.filename,
                                 start: eventDateTime,
                                 backgroundColor: categoryColors.bg,
                                 borderColor: categoryColors.border,
@@ -544,7 +557,7 @@ export class CalendarView {
                             // Crear el evento con colores de categoría
                             const event = {
                                 id: `audio_schedule_${schedule.id}_${dayOffset}_${timeIndex}`,
-                                title: categoryColors.emoji + ' ' + (schedule.title || schedule.filename),
+                                title: schedule.title || schedule.filename,
                                 start: eventDate,
                                 backgroundColor: categoryColors.bg,
                                 borderColor: categoryColors.border,
@@ -582,7 +595,7 @@ export class CalendarView {
                     
                     const event = {
                         id: 'audio_schedule_' + schedule.id,
-                        title: categoryColors.emoji + ' ' + (schedule.title || schedule.filename),
+                        title: schedule.title || schedule.filename,
                         start: nextExecution,
                         backgroundColor: categoryColors.bg,
                         borderColor: categoryColors.border,
