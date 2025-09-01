@@ -54,9 +54,15 @@ export default class DashboardV2Module {
      * MIGRADO: Los estilos ahora se cargan globalmente desde /styles-v5/main.css
      */
     loadStyles() {
-        // Los estilos CSS ahora se cargan globalmente desde index.html
-        // No es necesario cargar estilos específicos del módulo
-        console.log('Dashboard styles loaded from global styles-v5');
+        // Cargar CSS del dashboard dinámicamente solo cuando se necesita
+        if (!document.getElementById('dashboard-module-styles')) {
+            const link = document.createElement('link');
+            link.id = 'dashboard-module-styles';
+            link.rel = 'stylesheet';
+            link.href = '/styles-v5/3-modules/dashboard.css';
+            document.head.appendChild(link);
+            console.log('Dashboard styles loaded dynamically');
+        }
     }
     
     /**
@@ -578,6 +584,13 @@ export default class DashboardV2Module {
         // Limpiar estilos del módulo
         const moduleStyles = document.querySelectorAll(`link[data-module="${this.name}"]`);
         moduleStyles.forEach(link => link.remove());
+        
+        // Remover CSS específico del dashboard
+        const dashboardStyles = document.getElementById('dashboard-module-styles');
+        if (dashboardStyles) {
+            dashboardStyles.remove();
+            console.log('[Dashboard v2] Styles removed');
+        }
         
         // Limpiar intervalos
         if (this.quotaInterval) clearInterval(this.quotaInterval);

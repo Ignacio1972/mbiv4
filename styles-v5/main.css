@@ -14,7 +14,9 @@
 @import url('./2-components/badges.css');
 
 /* 3. Módulos específicos */
-@import url('./3-modules/dashboard.css');
+/* NOTA: Los módulos se cargan dinámicamente según necesidad */
+/* Los CSS de módulos NO deben cargarse todos juntos para evitar conflictos */
+/* @import url('./3-modules/dashboard.css'); */
 @import url('./3-modules/campaign-library.css');
 @import url('./3-modules/calendar.css');
 @import url('./3-modules/audio-archive.css');

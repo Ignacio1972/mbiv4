@@ -22,14 +22,9 @@ export class ScheduleModal {
     show(filename, title, category = null) {
         console.log('[ScheduleModal] Abriendo con categoría:', category);
         
-        // Cargar CSS externo
-        if (!document.getElementById("schedule-modal-css")) {
-            const link = document.createElement("link");
-            link.id = "schedule-modal-css";
-            link.rel = "stylesheet";
-            link.href = "./modules/campaign-library/styles/schedule-modal.css";
-            document.head.appendChild(link);
-        }
+        // MIGRADO: Los estilos ahora se cargan globalmente desde /styles-v5/main.css
+        // No es necesario cargar estilos específicos del modal
+        console.log('[ScheduleModal] Styles loaded from global styles-v5');
         
         this.selectedFile = filename;
         this.selectedTitle = title;
@@ -167,7 +162,7 @@ export class ScheduleModal {
         `;
         
         document.body.appendChild(modal);
-        this.addCategoryStyles(); // NUEVO: Agregar estilos de categorías
+        // this.addCategoryStyles(); // DESACTIVADO: Los estilos ya están en styles-v5
     }
     
     /**

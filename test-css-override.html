@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CSS Override</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+    <style>
+        /* Override específico para arreglar el problema */
+        .campaign-library-module .message-content {
+            display: -webkit-box !important;
+            -webkit-line-clamp: 5 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-height: calc(1.6rem * 5) !important; /* line-height * lines */
+        }
+        
+        /* Debug visual */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-info">
+        <button onclick="applyFix()">Aplicar Fix CSS</button>
+        <button onclick="removeFix()">Remover Fix CSS</button>
+    </div>
+
+    <div class="container" id="main-container">
+        <!-- Contenido se carga aquí -->
+    </div>
+
+    <script type="module">
+        // Copiar el sistema básico de carga
+        import('/modules/campaign-library/index.js').then(module => {
+            const CampaignLibraryModule = module.default;
+            const container = document.getElementById('main-container');
+            const campaignModule = new CampaignLibraryModule();
+            campaignModule.load(container);
+        });
+    </script>
+    
+    <script>
+        function applyFix() {
+            const style = document.createElement('style');
+            style.id = 'css-fix';
+            style.textContent = `
+                .message-content {
+                    display: -webkit-box !important;
+                    -webkit-line-clamp: 5 !important;
+                    -webkit-box-orient: vertical !important;
+                    overflow: hidden !important;
+                    max-height: calc(1.6rem * 5) !important;
+                }
+            `;
+            document.head.appendChild(style);
+            console.log('Fix aplicado');
+        }
+        
+        function removeFix() {
+            const fix = document.getElementById('css-fix');
+            if (fix) fix.remove();
+            console.log('Fix removido');
+        }
+    </script>
+</body>
+</html>

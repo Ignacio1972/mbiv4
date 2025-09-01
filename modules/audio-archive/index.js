@@ -62,19 +62,20 @@ export default class AudioArchiveModule {
     }
     
     async loadStyles() {
-        const styleId = 'audio-archive-styles';
-        if (!document.querySelector(`#${styleId}`)) {
-            const link = document.createElement('link');
-            link.id = styleId;
-            link.rel = 'stylesheet';
-            link.href = '/modules/audio-archive/styles.css';
-            document.head.appendChild(link);
-            
-            await new Promise((resolve) => {
-                link.onload = resolve;
-                link.onerror = resolve;
-            });
-        }
+        // DESACTIVADO: CSS ya está en styles-v5
+        // const styleId = 'audio-archive-styles';
+        // if (!document.querySelector(`#${styleId}`)) {
+        //     const link = document.createElement('link');
+        //     link.id = styleId;
+        //     link.rel = 'stylesheet';
+        //     link.href = '/modules/audio-archive/styles.css';
+        //     document.head.appendChild(link);
+        //     
+        //     await new Promise((resolve) => {
+        //         link.onload = resolve;
+        //         link.onerror = resolve;
+        //     });
+        // }
     }
     
     render() {

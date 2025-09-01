@@ -29,45 +29,49 @@ class ModuleLoader {
      * @private
      */
     async loadModuleStyles(moduleName) {
-        const styleId = `module-style-${moduleName}`;
+        // DESACTIVADO: Todos los estilos ahora están en styles-v5/main.css
+        console.log(`[ModuleLoader] Skipping style loading for ${moduleName} - using global styles-v5`);
+        return;
         
-        // Remover estilos previos de otros módulos
-        document.querySelectorAll('[id^="module-style-"]').forEach(link => {
-            if (link.id !== styleId) {
-                link.remove();
-            }
-        });
-        
-        // Verificar si ya existe
-        let styleLink = document.getElementById(styleId);
-        
-        if (!styleLink) {
-            // Crear nuevo link
-            styleLink = document.createElement('link');
-            styleLink.id = styleId;
-            styleLink.rel = 'stylesheet';
-            styleLink.href = `/modules/${moduleName}/style.css`;
-            
-            console.log(`[ModuleLoader] Loading styles for ${moduleName}`);
-            
-            // Agregar al head
-            document.head.appendChild(styleLink);
-            
-            // Esperar a que cargue
-            await new Promise((resolve, reject) => {
-                styleLink.onload = () => {
-                    console.log(`[ModuleLoader] Styles loaded for ${moduleName}`);
-                    resolve();
-                };
-                styleLink.onerror = () => {
-                    console.warn(`[ModuleLoader] No style.css found for ${moduleName}`);
-                    resolve(); // No es error crítico
-                };
-                
-                // Timeout fallback
-                setTimeout(resolve, 1000);
-            });
-        }
+        // const styleId = `module-style-${moduleName}`;
+        // 
+        // // Remover estilos previos de otros módulos
+        // document.querySelectorAll('[id^="module-style-"]').forEach(link => {
+        //     if (link.id !== styleId) {
+        //         link.remove();
+        //     }
+        // });
+        // 
+        // // Verificar si ya existe
+        // let styleLink = document.getElementById(styleId);
+        // 
+        // if (!styleLink) {
+        //     // Crear nuevo link
+        //     styleLink = document.createElement('link');
+        //     styleLink.id = styleId;
+        //     styleLink.rel = 'stylesheet';
+        //     styleLink.href = `/modules/${moduleName}/style.css`;
+        //     
+        //     console.log(`[ModuleLoader] Loading styles for ${moduleName}`);
+        //     
+        //     // Agregar al head
+        //     document.head.appendChild(styleLink);
+        //     
+        //     // Esperar a que cargue
+        //     await new Promise((resolve, reject) => {
+        //         styleLink.onload = () => {
+        //             console.log(`[ModuleLoader] Styles loaded for ${moduleName}`);
+        //             resolve();
+        //         };
+        //         styleLink.onerror = () => {
+        //             console.warn(`[ModuleLoader] No style.css found for ${moduleName}`);
+        //             resolve(); // No es error crítico
+        //         };
+        //         
+        //         // Timeout fallback
+        //         setTimeout(resolve, 1000);
+        //     });
+        // }
     }
     
     /**

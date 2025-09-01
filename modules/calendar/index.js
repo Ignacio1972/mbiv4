@@ -32,15 +32,15 @@ export default class CalendarModule {
      */
     loadTooltipStyles() {
         // Verificar si ya existe
-        // Cargar estilos de tooltips
-        if (!document.getElementById('calendar-tooltip-styles')) {
-            const link = document.createElement('link');
-            link.id = 'calendar-tooltip-styles';
-            link.rel = 'stylesheet';
-            link.href = '/modules/calendar/styles/calendar-tooltips.css';
-            document.head.appendChild(link);
-            console.log('[Calendar] Tooltip styles loaded');
-        }
+        // DESACTIVADO: CSS ya está en styles-v5
+        // if (!document.getElementById('calendar-tooltip-styles')) {
+        //     const link = document.createElement('link');
+        //     link.id = 'calendar-tooltip-styles';
+        //     link.rel = 'stylesheet';
+        //     link.href = '/modules/calendar/styles/calendar-tooltips.css';
+        //     document.head.appendChild(link);
+        //     console.log('[Calendar] Tooltip styles loaded');
+        // }
     }
     
     /**
@@ -48,40 +48,42 @@ export default class CalendarModule {
      * @private
      */
     async loadMainStyles() {
-        if (!document.querySelector('#calendar-main-styles')) {
-            const link = document.createElement('link');
-            link.id = 'calendar-main-styles';
-            link.rel = 'stylesheet';
-            link.href = '/modules/calendar/style.css';
-            document.head.appendChild(link);
-            
-            await new Promise((resolve) => {
-                link.onload = resolve;
-                link.onerror = () => {
-                    console.error('[Calendar] Failed to load main styles');
-                    resolve();
-                };
-            });
-            console.log('[Calendar] Main styles loaded');
-        }
+        // DESACTIVADO: CSS ya está en styles-v5
+        // if (!document.querySelector('#calendar-main-styles')) {
+        //     const link = document.createElement('link');
+        //     link.id = 'calendar-main-styles';
+        //     link.rel = 'stylesheet';
+        //     link.href = '/modules/calendar/style.css';
+        //     document.head.appendChild(link);
+        //     
+        //     await new Promise((resolve) => {
+        //         link.onload = resolve;
+        //         link.onerror = () => {
+        //             console.error('[Calendar] Failed to load main styles');
+        //             resolve();
+        //         };
+        //     });
+        //     console.log('[Calendar] Main styles loaded');
+        // }
         
-        // Cargar también los estilos de Audio Archive para la lista de archivos
-        if (!document.querySelector('#calendar-audio-archive-styles')) {
-            const link = document.createElement('link');
-            link.id = 'calendar-audio-archive-styles';
-            link.rel = 'stylesheet';
-            link.href = '/modules/audio-archive/styles.css';
-            document.head.appendChild(link);
-            
-            await new Promise((resolve) => {
-                link.onload = resolve;
-                link.onerror = () => {
-                    console.error('[Calendar] Failed to load Audio Archive styles');
-                    resolve();
-                };
-            });
-            console.log('[Calendar] Audio Archive styles loaded for file list');
-        }
+        // DESACTIVADO: CSS ya está en styles-v5
+        // // Cargar también los estilos de Audio Archive para la lista de archivos
+        // if (!document.querySelector('#calendar-audio-archive-styles')) {
+        //     const link = document.createElement('link');
+        //     link.id = 'calendar-audio-archive-styles';
+        //     link.rel = 'stylesheet';
+        //     link.href = '/modules/audio-archive/styles.css';
+        //     document.head.appendChild(link);
+        //     
+        //     await new Promise((resolve) => {
+        //         link.onload = resolve;
+        //         link.onerror = () => {
+        //             console.error('[Calendar] Failed to load Audio Archive styles');
+        //             resolve();
+        //         };
+        //     });
+        //     console.log('[Calendar] Audio Archive styles loaded for file list');
+        // }
     }
     
     /**

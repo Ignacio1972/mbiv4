@@ -60,23 +60,9 @@ export default class CampaignLibraryModule {
     }
     
     async loadStyles() {
-        // Cargar CSS externo
-        if (!document.querySelector('#campaign-library-styles')) {
-            const link = document.createElement('link');
-            link.id = 'campaign-library-styles';
-            link.rel = 'stylesheet';
-            link.href = '/modules/campaign-library/styles/library.css';
-            document.head.appendChild(link);
-            
-            // Esperar a que cargue
-            await new Promise((resolve) => {
-                link.onload = resolve;
-                link.onerror = () => {
-                    console.error('[CampaignLibrary] Failed to load styles');
-                    resolve(); // Continuar de todos modos
-                };
-            });
-        }
+        // MIGRADO: Los estilos ahora se cargan globalmente desde /styles-v5/main.css
+        // No es necesario cargar CSS específicos
+        console.log('[RecentMessages] Styles loaded from global styles-v5');
     }
     
   // En /v2/modules/campaign-library/index.js

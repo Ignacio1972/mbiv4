@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Campaign Library Width</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+    <style>
+        .width-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border: 2px solid #0f0;
+            z-index: 10000;
+            font-family: monospace;
+        }
+        
+        .test-container {
+            border: 2px solid red;
+            padding: 20px;
+            margin: 20px;
+        }
+        
+        .messages-grid {
+            border: 2px solid blue;
+        }
+        
+        .message-card {
+            border: 2px solid yellow !important;
+        }
+        
+        .message-content {
+            border: 2px solid green !important;
+            background: rgba(0,255,0,0.1) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="width-info">
+        <div>Window width: <span id="window-width"></span>px</div>
+        <div>Container width: <span id="container-width"></span>px</div>
+        <div>Media query active: <span id="media-active"></span></div>
+        <div>Line clamp: <span id="line-clamp"></span></div>
+        <div>Max height: <span id="max-height"></span></div>
+    </div>
+
+    <!-- Test con container (como producción) -->
+    <h2>CON CONTAINER (como producción):</h2>
+    <div class="container test-container">
+        <div class="campaign-library-module">
+            <div class="messages-grid">
+                <div class="message-card">
+                    <div class="message-header">
+                        <h3 class="message-title">Test Card con Container</h3>
+                        <span class="message-badge badge-ofertas">OFERTAS</span>
+                    </div>
+                    <div class="message-content" id="test-content-1">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </div>
+                    <div class="message-meta">
+                        <div class="message-actions">
+                            <button class="btn-icon">▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test sin container (como test-campaign-library-styles.html) -->
+    <h2>SIN CONTAINER (como el test):</h2>
+    <div class="campaign-library-module test-container">
+        <div class="messages-grid">
+            <div class="message-card">
+                <div class="message-header">
+                    <h3 class="message-title">Test Card sin Container</h3>
+                    <span class="message-badge badge-eventos">EVENTOS</span>
+                </div>
+                <div class="message-content" id="test-content-2">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </div>
+                <div class="message-meta">
+                    <div class="message-actions">
+                        <button class="btn-icon">▶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateInfo() {
+            const windowWidth = window.innerWidth;
+            const container = document.querySelector('.container');
+            const containerWidth = container ? container.offsetWidth : 0;
+            const testContent = document.getElementById('test-content-1');
+            
+            document.getElementById('window-width').textContent = windowWidth;
+            document.getElementById('container-width').textContent = containerWidth;
+            document.getElementById('media-active').textContent = 
+                window.matchMedia('(max-width: 768px)').matches ? '≤768px (MOBILE)' : '>768px (DESKTOP)';
+            
+            if (testContent) {
+                const styles = window.getComputedStyle(testContent);
+                document.getElementById('line-clamp').textContent = styles.webkitLineClamp || 'none';
+                document.getElementById('max-height').textContent = styles.maxHeight || 'none';
+            }
+        }
+        
+        updateInfo();
+        window.addEventListener('resize', updateInfo);
+        
+        // Mostrar los estilos computados
+        setTimeout(() => {
+            const content1 = document.getElementById('test-content-1');
+            const content2 = document.getElementById('test-content-2');
+            const card1 = content1.closest('.message-card');
+            
+            console.log('CON CONTAINER - Estilos computados:', {
+                display: getComputedStyle(content1).display,
+                webkitLineClamp: getComputedStyle(content1).webkitLineClamp,
+                webkitBoxOrient: getComputedStyle(content1).webkitBoxOrient,
+                overflow: getComputedStyle(content1).overflow,
+                maxHeight: getComputedStyle(content1).maxHeight,
+                height: content1.offsetHeight + 'px'
+            });
+            
+            console.log('CARD - max-height:', getComputedStyle(card1).maxHeight);
+            
+            console.log('SIN CONTAINER - Estilos computados:', {
+                display: getComputedStyle(content2).display,
+                webkitLineClamp: getComputedStyle(content2).webkitLineClamp,
+                webkitBoxOrient: getComputedStyle(content2).webkitBoxOrient,
+                overflow: getComputedStyle(content2).overflow,
+                maxHeight: getComputedStyle(content2).maxHeight,
+                height: content2.offsetHeight + 'px'
+            });
+            
+            // Buscar reglas CSS aplicadas
+            const sheets = document.styleSheets;
+            for (let sheet of sheets) {
+                try {
+                    const rules = sheet.cssRules || sheet.rules;
+                    for (let rule of rules) {
+                        if (rule.selectorText && rule.selectorText.includes('.message-content')) {
+                            console.log('REGLA ENCONTRADA:', rule.selectorText, rule.style.maxHeight);
+                        }
+                    }
+                } catch(e) {}
+            }
+        }, 100);
+    </script>
+</body>
+</html>
