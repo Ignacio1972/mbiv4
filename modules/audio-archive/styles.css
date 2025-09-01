@@ -19,7 +19,7 @@
     align-items: center;
     margin-bottom: var(--space-xl);
     padding-bottom: var(--space-lg);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .archive-page-title {
@@ -76,7 +76,7 @@
 
 .archive-filter-select {
     padding: var(--space-sm) var(--space-md);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md);
     background: var(--bg-tertiary);
     color: var(--text-primary);
@@ -105,7 +105,7 @@
  * ============================================ */
 .archive-list {
     background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-lg);
     overflow: hidden;
 }
@@ -117,7 +117,7 @@
     gap: var(--space-md);
     padding: var(--space-md) var(--space-lg);
     background: var(--bg-tertiary);
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -136,7 +136,7 @@
     grid-template-columns: 50px 2fr 120px 120px 150px 100px;
     gap: var(--space-md);
     padding: var(--space-md) var(--space-lg);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     align-items: center;
     transition: all 0.2s;
     cursor: pointer;
@@ -168,7 +168,7 @@
     width: 32px;
     height: 32px;
     border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     display: flex;
