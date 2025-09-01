@@ -32,6 +32,7 @@ export default class CalendarModule {
      */
     loadTooltipStyles() {
         // Verificar si ya existe
+        // Cargar estilos de tooltips
         if (!document.getElementById('calendar-tooltip-styles')) {
             const link = document.createElement('link');
             link.id = 'calendar-tooltip-styles';
@@ -39,6 +40,47 @@ export default class CalendarModule {
             link.href = '/modules/calendar/styles/calendar-tooltips.css';
             document.head.appendChild(link);
             console.log('[Calendar] Tooltip styles loaded');
+        }
+    }
+    
+    /**
+     * Carga los estilos principales del módulo Calendar
+     * @private
+     */
+    async loadMainStyles() {
+        if (!document.querySelector('#calendar-main-styles')) {
+            const link = document.createElement('link');
+            link.id = 'calendar-main-styles';
+            link.rel = 'stylesheet';
+            link.href = '/modules/calendar/style.css';
+            document.head.appendChild(link);
+            
+            await new Promise((resolve) => {
+                link.onload = resolve;
+                link.onerror = () => {
+                    console.error('[Calendar] Failed to load main styles');
+                    resolve();
+                };
+            });
+            console.log('[Calendar] Main styles loaded');
+        }
+        
+        // Cargar también los estilos de Audio Archive para la lista de archivos
+        if (!document.querySelector('#calendar-audio-archive-styles')) {
+            const link = document.createElement('link');
+            link.id = 'calendar-audio-archive-styles';
+            link.rel = 'stylesheet';
+            link.href = '/modules/audio-archive/styles.css';
+            document.head.appendChild(link);
+            
+            await new Promise((resolve) => {
+                link.onload = resolve;
+                link.onerror = () => {
+                    console.error('[Calendar] Failed to load Audio Archive styles');
+                    resolve();
+                };
+            });
+            console.log('[Calendar] Audio Archive styles loaded for file list');
         }
     }
     
@@ -259,6 +301,9 @@ export default class CalendarModule {
             // Cargar template HTML
             await this.loadTemplate();
 
+            // Cargar estilos principales (incluyendo modal)
+            await this.loadMainStyles();
+
             // Cargar estilos del tooltip
             this.loadTooltipStyles();
             
@@ -461,14 +506,7 @@ export default class CalendarModule {
         
         if (!schedules || schedules.length === 0) {
             container.innerHTML = `
-                <div class="archive-list" style="
-                    background: var(--bg-secondary); 
-                    border: 1px solid var(--border-color); 
-                    border-radius: var(--radius-lg); 
-                    overflow: hidden; 
-                    padding: 3rem; 
-                    text-align: center;
-                ">
+                <div class="archive-list" style="padding: 3rem; text-align: center;">
                     <div class="archive-empty">
                         <div class="archive-empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
                         <div style="color: var(--text-primary); font-size: 16px; font-weight: 500; margin-bottom: 8px;">
@@ -485,21 +523,9 @@ export default class CalendarModule {
         
         // Crear tabla HTML con estética de Audio Archive
         let tableHTML = `
-            <div class="archive-list" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden;">
+            <div class="archive-list">
                 <!-- Header de la tabla -->
-                <div class="archive-list-header" style="
-                    display: grid; 
-                    grid-template-columns: 50px 2fr 120px 150px 100px 120px; 
-                    gap: var(--space-md); 
-                    padding: var(--space-md) var(--space-lg); 
-                    background: var(--bg-tertiary); 
-                    border-bottom: 2px solid var(--border-color); 
-                    font-size: 0.75rem; 
-                    font-weight: 600; 
-                    text-transform: uppercase; 
-                    letter-spacing: 0.05em; 
-                    color: var(--text-secondary);
-                ">
+                <div class="archive-list-header" style="grid-template-columns: 50px 2fr 120px 150px 100px 120px;">
                     <div></div>
                     <div>Archivo</div>
                     <div>Tipo</div>
@@ -508,7 +534,7 @@ export default class CalendarModule {
                     <div>Acciones</div>
                 </div>
                 <!-- Items de la lista -->
-                <div class="archive-list-items" style="max-height: 70vh; overflow-y: auto;">
+                <div class="archive-list-items">
         `;
         
         schedules.forEach(schedule => {
@@ -522,55 +548,25 @@ export default class CalendarModule {
             const displayName = schedule.title || schedule.filename || 'Sin archivo';
             
             tableHTML += `
-                <div class="archive-list-item" style="
-                    display: grid; 
-                    grid-template-columns: 50px 2fr 120px 150px 100px 120px; 
-                    gap: var(--space-md); 
-                    padding: var(--space-md) var(--space-lg); 
-                    border-bottom: 1px solid var(--border-color); 
-                    align-items: center; 
-                    transition: all 0.2s; 
-                    cursor: pointer;
-                " onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
+                <div class="archive-list-item" style="grid-template-columns: 50px 2fr 120px 150px 100px 120px;">
                     <!-- Botón de preview -->
                     ${schedule.filename ? `
                     <button class="archive-btn-preview" onclick="window.calendarModule.previewAudio('${schedule.filename}', this)" 
-                            title="Preview audio" style="
-                                width: 32px; 
-                                height: 32px; 
-                                border-radius: var(--radius-md); 
-                                border: 1px solid var(--border-color); 
-                                background: var(--bg-tertiary); 
-                                color: var(--text-secondary); 
-                                display: flex; 
-                                align-items: center; 
-                                justify-content: center; 
-                                cursor: pointer; 
-                                transition: all 0.2s; 
-                                font-size: 0.875rem;
-                            "
-                            onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'; this.style.borderColor='var(--border-color)'">
+                            title="Preview audio">
                         ▶
                     </button>
                     ` : `<div></div>`}
                     
                     <!-- Título del archivo -->
-                    <div class="archive-item-title" style="
-                        font-size: 0.875rem; 
-                        color: var(--text-primary); 
-                        font-weight: 500; 
-                        overflow: hidden; 
-                        text-overflow: ellipsis;
-                    " title="${schedule.filename || ''}">
+                    <div class="archive-item-title" title="${schedule.filename || ''}">
                         ${this.truncateText(displayName, 35)}
                     </div>
                     
                     <!-- Tipo -->
-                    <div style="font-size: 0.875rem; color: var(--text-secondary);">${type}</div>
+                    <div class="archive-item-voice">${type}</div>
                     
                     <!-- Programación -->
-                    <div style="font-size: 0.875rem; color: var(--text-secondary);">${timing}</div>
+                    <div class="archive-item-date">${timing}</div>
                     
                     <!-- Estado -->
                     <div>${status}</div>
