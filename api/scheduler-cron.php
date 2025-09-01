@@ -13,8 +13,8 @@ if (!is_dir($logDir)) {
     mkdir($logDir, 0755, true);
 }
 
-// Configuración
-$dbPath = __DIR__ . '/db/calendar.db';
+// Configuración - Usar BD principal en calendario/api/db/
+$dbPath = __DIR__ . '/../calendario/api/db/calendar.db';
 $logFile = $logDir . date('Y-m-d') . '.log';
 
 // Función para log
@@ -29,7 +29,7 @@ function sendToRadio($filename) {
     logMessage("Enviando a radio: $filename");
     
     // Usar el endpoint de biblioteca para enviar archivos guardados
-    $ch = curl_init('http://localhost/api/biblioteca.php');
+    $ch = curl_init('http://localhost:3001/api/biblioteca.php');
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
         'action' => 'send_library_to_radio',
@@ -73,7 +73,7 @@ try {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Obtener programaciones a ejecutar
-    $ch = curl_init('http://localhost/api/audio-scheduler.php');
+    $ch = curl_init('http://localhost:3001/api/audio-scheduler.php');
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['action' => 'check_execute']));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -81,12 +81,15 @@ try {
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     
     $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
     curl_close($ch);
     
     if ($error) {
         throw new Exception("Error conectando con scheduler API: $error");
     }
+    
+    logMessage("Response from API (HTTP $httpCode): " . substr($response, 0, 500));
     
     $result = json_decode($response, true);
     
@@ -108,7 +111,7 @@ try {
             $success = sendToRadio($filename);
             
             // Registrar ejecución
-            $ch = curl_init('http://localhost/api/audio-scheduler.php');
+            $ch = curl_init('http://localhost:3001/api/audio-scheduler.php');
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
                 'action' => 'log_execution',
