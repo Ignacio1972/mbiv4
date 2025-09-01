@@ -357,8 +357,8 @@ export default class CalendarModule {
                     
                     <div class="schedule-content">
                         <div class="schedule-header">
+                            <span class="category-dot category-dot-${category}"></span>
                             <h3 class="schedule-title">${this.truncateText(displayName, 35)}</h3>
-                            ${categoryBadge}
                         </div>
                         <p class="schedule-message">
                             ${schedule.notes || 'Sin descripción'}
