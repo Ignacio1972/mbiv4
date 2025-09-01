@@ -361,7 +361,7 @@ export default class CalendarModule {
                             <h3 class="schedule-title">${this.truncateText(displayName, 35)}</h3>
                         </div>
                         <p class="schedule-message">
-                            ${schedule.notes || 'Sin descripción'}
+                            ${this.getScheduleDescription(schedule)}
                         </p>
                         <div class="schedule-meta">
                             <div class="schedule-meta-item">
@@ -448,6 +448,31 @@ export default class CalendarModule {
             return schedule.schedule_time;
         }
         return '00:00';
+    }
+    
+    /**
+     * Obtiene la descripción de la programación
+     */
+    getScheduleDescription(schedule) {
+        // Si notes es un JSON string, intentar parsearlo
+        if (schedule.notes && typeof schedule.notes === 'string') {
+            try {
+                const parsed = JSON.parse(schedule.notes);
+                // Si hay un campo notes dentro del JSON, usarlo
+                if (parsed.notes && parsed.notes.trim() !== '') {
+                    return parsed.notes;
+                }
+            } catch (e) {
+                // Si no es JSON, usar el valor directamente si no está vacío
+                if (schedule.notes.trim() !== '' && !schedule.notes.startsWith('{')) {
+                    return schedule.notes;
+                }
+            }
+        }
+        
+        // Si no hay descripción, mostrar tipo de programación
+        const type = this.getScheduleTypeLabel(schedule);
+        return `Programación ${type.toLowerCase()}`;
     }
     
     /**
