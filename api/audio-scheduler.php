@@ -338,6 +338,22 @@ function getSchedulesToExecute() {
                     }
                 }
             }
+        } elseif ($schedule_type === 'once') {
+            // Para programaciones de una sola vez
+            $schedule_times = json_decode($schedule['schedule_time'], true) ?? [];
+            
+            // Verificar si ya se ejecutó
+            $last_executed = getLastExecution($schedule['id']);
+            
+            // Solo ejecutar si no se ha ejecutado antes y es la hora correcta
+            if (!$last_executed) {
+                foreach ($schedule_times as $time) {
+                    if ($time === $current_time) {
+                        $should_execute = true;
+                        break;
+                    }
+                }
+            }
         }
         
         if ($should_execute) {

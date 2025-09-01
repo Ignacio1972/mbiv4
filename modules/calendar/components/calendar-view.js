@@ -10,43 +10,43 @@ const DAY_NAME_TO_NUMBER = {
     'thursday': 4, 'friday': 5, 'saturday': 6
 };
 
-// NUEVO: Definición de colores por categoría
+// NUEVO: Definición de colores por categoría (7 categorías según test)
 const CATEGORY_COLORS = {
     'ofertas': { 
-        bg: '#22c55e', 
-        border: '#16a34a',
+        bg: '#10b981',  // Verde
+        border: '#059669',
         text: '#ffffff',
         emoji: '🛒'
     },
     'eventos': { 
-        bg: '#3b82f6', 
+        bg: '#3b82f6',  // Azul
         border: '#2563eb',
         text: '#ffffff',
         emoji: '🎉'
     },
     'informacion': { 
-        bg: '#06b6d4', 
+        bg: '#06b6d4',  // Cyan
         border: '#0891b2',
         text: '#ffffff',
         emoji: 'ℹ️'
     },
-    'emergencias': { 
-        bg: '#ef4444', 
-        border: '#dc2626',
-        text: '#ffffff',
-        emoji: '🚨'
-    },
     'servicios': { 
-        bg: '#a855f7', 
-        border: '#9333ea',
+        bg: '#8b5cf6',  // Púrpura
+        border: '#7c3aed',
         text: '#ffffff',
         emoji: '🛎️'
     },
     'horarios': { 
-        bg: '#f59e0b', 
+        bg: '#f59e0b',  // Amarillo
         border: '#d97706',
         text: '#ffffff',
         emoji: '🕐'
+    },
+    'emergencias': { 
+        bg: '#ef4444',  // Rojo
+        border: '#dc2626',
+        text: '#ffffff',
+        emoji: '🚨'
     },
     'sin_categoria': { 
         bg: '#6b7280', 
@@ -360,7 +360,7 @@ export class CalendarView {
     
     async loadAudioSchedules() {
         try {
-            const response = await fetch('/api/audio-scheduler.php', {
+            const response = await fetch('http://localhost:3001/api/audio-scheduler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'list' })
@@ -413,8 +413,58 @@ export class CalendarView {
             });
             
             try {
-                // Detectar si es tipo specific con múltiples configuraciones
-                if (schedule.schedule_type === 'specific' && 
+                // Detectar si es tipo 'once' (una sola vez)
+                if (schedule.schedule_type === 'once' && schedule.schedule_time) {
+                    // Parsear las horas (pueden venir como JSON string)
+                    let scheduleTimes = [];
+                    if (typeof schedule.schedule_time === 'string' && schedule.schedule_time.startsWith('[')) {
+                        try {
+                            scheduleTimes = JSON.parse(schedule.schedule_time);
+                        } catch(e) {
+                            scheduleTimes = [schedule.schedule_time];
+                        }
+                    } else if (Array.isArray(schedule.schedule_time)) {
+                        scheduleTimes = schedule.schedule_time;
+                    } else {
+                        scheduleTimes = [schedule.schedule_time];
+                    }
+                    
+                    // Para eventos 'once', usar la fecha start_date o hoy
+                    const eventDate = schedule.start_date ? new Date(schedule.start_date) : new Date();
+                    
+                    scheduleTimes.forEach(time => {
+                        const [hours, minutes] = time.split(':');
+                        const eventDateTime = new Date(eventDate);
+                        eventDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                        
+                        // Solo mostrar si es futuro o hoy
+                        if (eventDateTime >= new Date().setHours(0,0,0,0)) {
+                            const event = {
+                                id: 'audio_schedule_once_' + schedule.id + '_' + time,
+                                title: categoryColors.emoji + ' ' + (schedule.title || schedule.filename),
+                                start: eventDateTime,
+                                backgroundColor: categoryColors.bg,
+                                borderColor: categoryColors.border,
+                                textColor: categoryColors.text,
+                                extendedProps: {
+                                    type: 'audio_schedule',
+                                    scheduleId: schedule.id,
+                                    filename: schedule.filename,
+                                    scheduleType: 'once',
+                                    scheduleTime: time,
+                                    startDate: schedule.start_date,
+                                    isActive: schedule.is_active,
+                                    createdAt: schedule.created_at,
+                                    category: category
+                                }
+                            };
+                            events.push(event);
+                        }
+                    });
+                    
+                    continue; // Saltar el procesamiento normal
+                    
+                } else if (schedule.schedule_type === 'specific' && 
                     schedule.schedule_days && 
                     schedule.schedule_time) {
                     
@@ -721,7 +771,7 @@ export class CalendarView {
         return null;
     }
     
-    filterByScheduleType(activeTypes) {
+    filterByCategory(activeCategories) {
         const allEvents = this.calendar.getEvents();
         let visibleCount = 0;
         let totalCount = 0;
@@ -731,8 +781,8 @@ export class CalendarView {
             if (event.extendedProps && event.extendedProps.type === 'audio_schedule') {
                 totalCount++;
                 
-                const scheduleType = event.extendedProps.scheduleType;
-                const isVisible = activeTypes.includes(scheduleType);
+                const category = event.extendedProps.category || 'sin_categoria';
+                const isVisible = activeCategories.includes(category);
                 
                 event.setProp('display', isVisible ? 'auto' : 'none');
                 

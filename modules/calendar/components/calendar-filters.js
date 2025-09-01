@@ -8,10 +8,15 @@ export class CalendarFilters {
     constructor(container, calendarView, options = {}) {
         this.container = container;
         this.calendarView = calendarView;
+        // 7 categorías según el sistema
         this.categories = options.categories || [
-            { id: 'interval', name: 'Repeticiones', color: '#3498db', icon: '⏱️' },
-            { id: 'specific', name: 'Días específicos', color: '#9b59b6', icon: '📅' },
-            { id: 'once', name: 'Evento único', color: '#e67e22', icon: '1️⃣' }
+            { id: 'ofertas', name: 'Ofertas', color: '#10b981' },
+            { id: 'eventos', name: 'Eventos', color: '#3b82f6' },
+            { id: 'informacion', name: 'Información', color: '#06b6d4' },
+            { id: 'servicios', name: 'Servicios', color: '#8b5cf6' },
+            { id: 'horarios', name: 'Horarios', color: '#f59e0b' },
+            { id: 'emergencias', name: 'Emergencias', color: '#ef4444' },
+            { id: 'sin_categoria', name: 'Sin categoría', color: '#6b7280' }
         ];
         this.activeCategories = this.categories.map(c => c.id);
         this.collapsed = false;
@@ -39,12 +44,6 @@ export class CalendarFilters {
     
     createFiltersHTML() {
         // Diseño minimalista con dots según test-calendar-styles.html
-        const filterColors = {
-            'interval': '#10b981',    // Verde para repeticiones
-            'specific': '#8b5cf6',    // Púrpura para días específicos  
-            'once': '#0891b2'        // Cyan para evento único
-        };
-        
         return this.categories.map(cat => `
             <label class="category-filter-item" title="${cat.name}">
                 <input type="checkbox" 
@@ -52,7 +51,7 @@ export class CalendarFilters {
                        value="${cat.id}" 
                        checked>
                 <span class="filter-dot" 
-                      style="background: ${filterColors[cat.id] || cat.color};">
+                      style="background: ${cat.color};">
                 </span>
             </label>
         `).join('');
@@ -84,11 +83,11 @@ export class CalendarFilters {
             this.container.querySelectorAll('.category-filter:checked')
         ).map(cb => cb.value);
         
-        console.log('[CalendarFilters] Active types:', this.activeCategories);
+        console.log('[CalendarFilters] Active categories:', this.activeCategories);
         
-        // Aplicar filtros al calendario usando el método correcto
-        if (this.calendarView && this.calendarView.filterByScheduleType) {
-            this.calendarView.filterByScheduleType(this.activeCategories);
+        // Aplicar filtros al calendario por categoría
+        if (this.calendarView && this.calendarView.filterByCategory) {
+            this.calendarView.filterByCategory(this.activeCategories);
         }
         
         // Guardar preferencias en localStorage
