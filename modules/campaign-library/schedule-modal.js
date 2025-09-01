@@ -53,116 +53,127 @@ export class ScheduleModal {
         modal.id = this.modalId;
         modal.className = 'modal-overlay';
         modal.innerHTML = `
-            <div class="modal-content schedule-modal">
+            <div class="schedule-modal">
                 <div class="modal-header">
-                    <h3>🕐 Programar Reproducción Automática</h3>
-                    <button class="close-btn" onclick="window.scheduleModal.hide()">✕</button>
+                    <h2>📅 Programar Mensaje</h2>
+                    <button class="modal-close" onclick="window.scheduleModal.hide()">×</button>
                 </div>
-                
-                <div class="modal-body">
+                <div class="modal-content">
                     <div class="schedule-info">
-                        <div class="info-row">
-                            <strong>Audio:</strong> ${this.selectedTitle || this.selectedFile}
-                        </div>
-                        <div class="info-row">
-                            <strong>Categoría:</strong> 
-                            <span class="category-badge category-${this.selectedCategory}">
-                                ${categoryInfo.emoji} ${categoryInfo.name}
-                            </span>
-                        </div>
+                        <strong>Mensaje:</strong> <span>${this.selectedTitle || this.selectedFile}</span>
+                        <br>
+                        <strong>Categoría:</strong> 
+                        <span class="category-badge category-${this.selectedCategory}">
+                            ${categoryInfo.emoji} ${categoryInfo.name}
+                        </span>
                     </div>
                     
-                    <div class="form-group">
-                        <label>📅 Tipo de programación:</label>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="scheduleType" value="interval" checked 
-                                       onchange="window.scheduleModal.changeType('interval')">
-                                Por intervalos
-                            </label>
-                            <label>
-                                <input type="radio" name="scheduleType" value="specific"
-                                       onchange="window.scheduleModal.changeType('specific')">
-                                Días y horas específicas
-                            </label>
-                            <label>
-                                <input type="radio" name="scheduleType" value="once"
-                                       onchange="window.scheduleModal.changeType('once')">
-                                Una sola vez
-                            </label>
-                        </div>
+                    <!-- Tabs de tipo de programación -->
+                    <div class="schedule-tabs">
+                        <button class="schedule-tab active" onclick="window.scheduleModal.selectTab('interval', this)">🔁 Intervalo</button>
+                        <button class="schedule-tab" onclick="window.scheduleModal.selectTab('specific', this)">📅 Específico</button>
+                        <button class="schedule-tab" onclick="window.scheduleModal.selectTab('once', this)">⏰ Una vez</button>
                     </div>
                     
-                    <!-- Configuración por intervalos -->
-                    <div id="intervalConfig" class="config-section">
-                        <div class="form-group">
-                            <label>⏰ Repetir cada:</label>
-                            <div class="interval-inputs">
-                                <input type="number" id="intervalHours" min="0" max="24" value="4">
-                                <span>horas</span>
-                                <input type="number" id="intervalMinutes" min="0" max="59" value="0">
-                                <span>minutos</span>
+                    <!-- Contenido del tab -->
+                    <div class="schedule-tab-content">
+                        <!-- Configuración por intervalos -->
+                        <div id="intervalConfig" class="config-section">
+                            <div class="form-group">
+                                <label class="form-label">Repetir cada:</label>
+                                <select class="form-control form-select" id="intervalSelect">
+                                    <option value="30">30 minutos</option>
+                                    <option value="60">1 hora</option>
+                                    <option value="120">2 horas</option>
+                                    <option value="180">3 horas</option>
+                                    <option value="240" selected>4 horas</option>
+                                    <option value="360">6 horas</option>
+                                    <option value="480">8 horas</option>
+                                    <option value="720">12 horas</option>
+                                    <option value="1440">24 horas</option>
+                                </select>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Configuración días específicos -->
-                    <div id="specificConfig" class="config-section" style="display:none;">
-                        <div class="form-group">
-                            <label>📅 Días de la semana:</label>
-                            <div class="days-selector">
-                                ${this.createDaysSelector()}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>⏰ Horas del día:</label>
-                            <div id="timesContainer">
-                                <div class="time-input">
-                                    <input type="time" class="schedule-time" value="14:00">
-                                    <button onclick="window.scheduleModal.addTimeSlot()">➕</button>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Días de la semana:</label>
+                                <div class="weekday-selector">
+                                    ${this.createWeekdayButtons('interval')}
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Hora inicio:</label>
+                                <input type="time" class="form-control" id="intervalStartTime" value="10:00">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Hora fin:</label>
+                                <input type="time" class="form-control" id="intervalEndTime" value="20:00">
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Configuración una vez -->
-                    <div id="onceConfig" class="config-section" style="display:none;">
+                        
+                        <!-- Configuración días específicos -->
+                        <div id="specificConfig" class="config-section" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">Días de la semana:</label>
+                                <div class="weekday-selector">
+                                    ${this.createWeekdayButtons('specific')}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Horas del día:</label>
+                                <div id="timesContainer">
+                                    <div class="time-input-group">
+                                        <input type="time" class="form-control schedule-time" value="14:00">
+                                        <button class="btn btn-icon" onclick="window.scheduleModal.addTimeSlot()">➕</button>
+                                    </div>
+                                </div>
+                                <small class="form-text">Agrega múltiples horarios con el botón +</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Configuración una vez -->
+                        <div id="onceConfig" class="config-section" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">Fecha y hora:</label>
+                                <input type="datetime-local" class="form-control" id="onceDateTime">
+                            </div>
+                        </div>
+                        
+                        <!-- Configuración común -->
                         <div class="form-group">
-                            <label>📅 Fecha y hora:</label>
-                            <input type="datetime-local" id="onceDateTime">
+                            <label class="form-label">Fecha inicio:</label>
+                            <input type="date" class="form-control" id="startDate" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Fecha fin (opcional):</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Notas (opcional):</label>
+                            <textarea class="form-control" id="scheduleNotes" rows="2" placeholder="Ej: Oferta especial de temporada"></textarea>
+                        </div>
+                        
+                        <div class="form-actions" style="margin-top: var(--spacing-lg);">
+                            <button class="btn btn-secondary" onclick="window.scheduleModal.hide()">Cancelar</button>
+                            <button class="btn btn-primary" onclick="window.scheduleModal.save()">Guardar Programación</button>
                         </div>
                     </div>
-                    
-                    <!-- Fechas de inicio y fin -->
-                    <div class="form-group">
-                        <label>📆 Fecha inicio:</label>
-                        <input type="date" id="startDate" value="${new Date().toISOString().split('T')[0]}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>📆 Fecha fin (opcional):</label>
-                        <input type="date" id="endDate">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>📝 Notas (opcional):</label>
-                        <textarea id="scheduleNotes" rows="2" placeholder="Ej: Oferta especial de temporada"></textarea>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="window.scheduleModal.save()">
-                        ✅ Programar
-                    </button>
-                    <button class="btn btn-secondary" onclick="window.scheduleModal.hide()">
-                        ❌ Cancelar
-                    </button>
                 </div>
             </div>
         `;
         
         document.body.appendChild(modal);
-        // this.addCategoryStyles(); // DESACTIVADO: Los estilos ya están en styles-v5
+        
+        // Agregar event listener para cerrar al hacer clic fuera
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                this.hide();
+            }
+        });
     }
     
     /**
@@ -250,27 +261,55 @@ export class ScheduleModal {
         document.head.appendChild(styles);
     }
     
-    createDaysSelector() {
+    /**
+     * Crear botones de días de la semana estilo elegante
+     */
+    createWeekdayButtons(prefix) {
         const days = [
-            { value: 'monday', label: 'Lun' },
-            { value: 'tuesday', label: 'Mar' },
-            { value: 'wednesday', label: 'Mié' },
-            { value: 'thursday', label: 'Jue' },
-            { value: 'friday', label: 'Vie' },
-            { value: 'saturday', label: 'Sáb' },
-            { value: 'sunday', label: 'Dom' }
+            { value: 'monday', label: 'LU' },
+            { value: 'tuesday', label: 'MA' },
+            { value: 'wednesday', label: 'MI' },
+            { value: 'thursday', label: 'JU' },
+            { value: 'friday', label: 'VI' },
+            { value: 'saturday', label: 'SA' },
+            { value: 'sunday', label: 'DO' }
         ];
         
-        return days.map(day => `
-            <label class="day-checkbox">
-                <input type="checkbox" value="${day.value}" class="schedule-day">
-                <span>${day.label}</span>
-            </label>
-        `).join('');
+        // Por defecto, días laborales seleccionados
+        const defaultSelected = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        
+        return days.map(day => {
+            const isSelected = defaultSelected.includes(day.value);
+            return `
+                <button class="weekday-btn ${isSelected ? 'selected' : ''}" 
+                        data-day="${day.value}"
+                        data-prefix="${prefix}"
+                        onclick="window.scheduleModal.toggleDay('${day.value}', '${prefix}', this)">
+                    ${day.label}
+                </button>
+            `;
+        }).join('');
     }
     
-    changeType(type) {
+    /**
+     * Toggle día de la semana
+     */
+    toggleDay(dayValue, prefix, button) {
+        button.classList.toggle('selected');
+    }
+    
+    /**
+     * Cambiar tab activo
+     */
+    selectTab(type, tabButton) {
+        // Actualizar tipo de programación
         this.scheduleType = type;
+        
+        // Actualizar tabs
+        document.querySelectorAll('.schedule-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        tabButton.classList.add('active');
         
         // Ocultar todas las secciones
         document.querySelectorAll('.config-section').forEach(section => {
@@ -287,15 +326,31 @@ export class ScheduleModal {
         }
     }
     
+    /**
+     * Agregar slot de tiempo (para horarios específicos)
+     */
     addTimeSlot() {
         const container = document.getElementById('timesContainer');
         const timeDiv = document.createElement('div');
-        timeDiv.className = 'time-input';
+        timeDiv.className = 'time-input-group';
         timeDiv.innerHTML = `
-            <input type="time" class="schedule-time" value="16:00">
-            <button onclick="this.parentElement.remove()">➖</button>
+            <input type="time" class="form-control schedule-time" value="16:00">
+            <button class="btn btn-icon" onclick="this.parentElement.remove()">➖</button>
         `;
         container.appendChild(timeDiv);
+    }
+    
+    // Mantener compatibilidad con changeType por si algo lo usa
+    changeType(type) {
+        const tab = document.querySelector(`.schedule-tab[onclick*="${type}"]`);
+        if (tab) {
+            this.selectTab(type, tab);
+        }
+    }
+    
+    createDaysSelector() {
+        // Método legacy mantenido por compatibilidad
+        return this.createWeekdayButtons('legacy');
     }
     
     async save() {
@@ -315,14 +370,30 @@ export class ScheduleModal {
         
         // Agregar configuración según el tipo
         if (this.scheduleType === 'interval') {
-            data.interval_hours = document.getElementById('intervalHours').value;
-            data.interval_minutes = document.getElementById('intervalMinutes').value;
+            // Obtener el valor del select en minutos y convertir a horas/minutos
+            const totalMinutes = parseInt(document.getElementById('intervalSelect').value);
+            data.interval_hours = Math.floor(totalMinutes / 60);
+            data.interval_minutes = totalMinutes % 60;
+            
+            // Obtener días seleccionados para intervalo
+            const days = [];
+            document.querySelectorAll('#intervalConfig .weekday-btn.selected').forEach(btn => {
+                days.push(btn.dataset.day);
+            });
+            data.schedule_days = days.length > 0 ? days : ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+            
+            // Obtener horas de inicio y fin
+            const startTime = document.getElementById('intervalStartTime').value;
+            const endTime = document.getElementById('intervalEndTime').value;
+            if (startTime && endTime) {
+                data.schedule_times = [startTime, endTime]; // Usar como rango horario
+            }
             
         } else if (this.scheduleType === 'specific') {
             // Obtener días seleccionados
             const days = [];
-            document.querySelectorAll('.schedule-day:checked').forEach(checkbox => {
-                days.push(checkbox.value);
+            document.querySelectorAll('#specificConfig .weekday-btn.selected').forEach(btn => {
+                days.push(btn.dataset.day);
             });
             data.schedule_days = days;
             

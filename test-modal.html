@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Modal Campaign Library</title>
+    <link rel="stylesheet" href="styles-v5/main.css">
+    <style>
+        .test-container {
+            padding: 20px;
+        }
+        .test-button {
+            background: #387ade;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .test-button:hover {
+            background: #2968c8;
+        }
+        .info-box {
+            background: #1c1b19;
+            border: 1px solid #387ade;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test del Modal de Programación</h1>
+        
+        <div class="info-box">
+            <p>Este test verifica que el modal de programación tenga los estilos correctos.</p>
+            <p>El modal debería tener:</p>
+            <ul>
+                <li>✅ Fondo con gradiente oscuro</li>
+                <li>✅ Header azul con gradiente</li>
+                <li>✅ Bordes redondeados</li>
+                <li>✅ Overlay semi-transparente</li>
+                <li>✅ Centrado en pantalla</li>
+            </ul>
+        </div>
+
+        <button class="test-button" onclick="showTestModal()">
+            📅 Abrir Modal de Programación
+        </button>
+
+        <button class="test-button" onclick="removeModal()">
+            ❌ Cerrar Modal
+        </button>
+    </div>
+
+    <script type="module">
+        // Importar el módulo del modal
+        import { ScheduleModal } from '/modules/campaign-library/schedule-modal.js';
+        
+        window.showTestModal = function() {
+            const modal = new ScheduleModal();
+            window.testModal = modal;
+            
+            // Simular datos de un archivo de audio
+            modal.show('test_audio_001.mp3', 'Mensaje de Prueba', 'ofertas');
+        }
+        
+        window.removeModal = function() {
+            if (window.testModal) {
+                window.testModal.hide();
+            }
+            // También remover cualquier modal existente
+            const existingModal = document.getElementById('scheduleModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+        }
+    </script>
+</body>
+</html>
