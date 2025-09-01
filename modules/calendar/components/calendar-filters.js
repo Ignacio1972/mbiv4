@@ -28,37 +28,31 @@ export class CalendarFilters {
     
     render() {
         const html = `
-            <div class="calendar-filters-bar">
-                <div class="filters-content">
-                    <span class="filters-label">
-                        <span class="filters-icon">🎯</span>
-                        Filtrar:
-                    </span>
-                    <div class="filters-checkboxes">
-                        ${this.createCheckboxesHTML()}
-                    </div>
-                    <button class="filters-toggle" title="Mostrar/Ocultar filtros">
-                        ▼
-                    </button>
-                </div>
+            <div class="category-filters">
+                <span class="filter-label">Filtros:</span>
+                ${this.createFiltersHTML()}
             </div>
         `;
         
         this.container.innerHTML = html;
     }
     
-    createCheckboxesHTML() {
+    createFiltersHTML() {
+        // Diseño minimalista con dots según test-calendar-styles.html
+        const filterColors = {
+            'interval': '#10b981',    // Verde para repeticiones
+            'specific': '#8b5cf6',    // Púrpura para días específicos  
+            'once': '#0891b2'        // Cyan para evento único
+        };
+        
         return this.categories.map(cat => `
-            <label class="filter-checkbox-item" title="${cat.name}">
+            <label class="category-filter-item" title="${cat.name}">
                 <input type="checkbox" 
                        class="category-filter" 
                        value="${cat.id}" 
                        checked>
-                <span class="filter-color-dot" 
-                      style="background-color: ${cat.color}">
-                </span>
-                <span class="filter-label-text">
-                    ${cat.icon} ${cat.name}
+                <span class="filter-dot" 
+                      style="background: ${filterColors[cat.id] || cat.color};">
                 </span>
             </label>
         `).join('');

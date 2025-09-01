@@ -506,131 +506,194 @@ export default class CalendarModule {
         const container = document.getElementById('schedules-table-container');
         if (!container) return;
         
+        // Actualizar contador
+        const countElement = document.getElementById('schedulesCount');
+        if (countElement) {
+            countElement.textContent = schedules ? schedules.length : 0;
+        }
+        
         if (!schedules || schedules.length === 0) {
             container.innerHTML = `
-                <div class="archive-list" style="padding: 3rem; text-align: center;">
-                    <div class="archive-empty">
-                        <div class="archive-empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
-                        <div style="color: var(--text-primary); font-size: 16px; font-weight: 500; margin-bottom: 8px;">
-                            No hay programaciones activas configuradas
-                        </div>
-                        <div style="color: var(--text-secondary); font-size: 14px;">
-                            Las programaciones aparecerán aquí cuando se creen desde "Mensajes Guardados"
-                        </div>
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-title">
+                        No hay programaciones activas configuradas
+                    </div>
+                    <div class="empty-state-description">
+                        Las programaciones aparecerán aquí cuando se creen desde Campaign Library
                     </div>
                 </div>
             `;
             return;
         }
         
-        // Crear tabla HTML con estética de Audio Archive
-        let tableHTML = `
-            <div class="archive-list">
-                <!-- Header de la tabla -->
-                <div class="archive-list-header" style="grid-template-columns: 50px 2fr 120px 150px 100px 120px;">
-                    <div></div>
-                    <div>Archivo</div>
-                    <div>Tipo</div>
-                    <div>Programación</div>
-                    <div>Estado</div>
-                    <div>Acciones</div>
-                </div>
-                <!-- Items de la lista -->
-                <div class="archive-list-items">
-        `;
+        // Crear cards de programaciones según test-calendar-styles.html
+        let schedulesHTML = '';
         
         schedules.forEach(schedule => {
             const type = this.getScheduleTypeLabel(schedule);
             const timing = this.getScheduleTimingForTable(schedule);
-            const status = schedule.is_active ? 
-                '<span class="archive-status-badge archive-status-active" style="padding: 2px 8px; background: var(--primary); color: white; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 500;">Activo</span>' : 
-                '<span class="archive-status-badge archive-status-inactive" style="padding: 2px 8px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 500;">Inactivo</span>';
-            
-            // Título o nombre del archivo
             const displayName = schedule.title || schedule.filename || 'Sin archivo';
+            const category = schedule.category || 'sin_categoria';
+            const categoryBadge = this.getCategoryBadge(category);
             
-            tableHTML += `
-                <div class="archive-list-item" style="grid-template-columns: 50px 2fr 120px 150px 100px 120px;">
-                    <!-- Botón de preview -->
-                    ${schedule.filename ? `
-                    <button class="archive-btn-preview" onclick="window.calendarModule.previewAudio('${schedule.filename}', this)" 
-                            title="Preview audio">
-                        ▶
-                    </button>
-                    ` : `<div></div>`}
-                    
-                    <!-- Título del archivo -->
-                    <div class="archive-item-title" title="${schedule.filename || ''}">
-                        ${this.truncateText(displayName, 35)}
+            // Crear card de programación según diseño de test-calendar-styles.html
+            schedulesHTML += `
+                <div class="schedule-card">
+                    <div class="schedule-time-block">
+                        <div class="schedule-time">${this.getScheduleTime(schedule)}</div>
+                        <div class="schedule-frequency">${this.getScheduleFrequency(schedule)}</div>
                     </div>
                     
-                    <!-- Tipo -->
-                    <div class="archive-item-voice">${type}</div>
+                    <div class="schedule-content">
+                        <div class="schedule-header">
+                            <h3 class="schedule-title">${this.truncateText(displayName, 35)}</h3>
+                            ${categoryBadge}
+                        </div>
+                        <p class="schedule-message">
+                            ${schedule.notes || 'Sin descripción'}
+                        </p>
+                        <div class="schedule-meta">
+                            <div class="schedule-meta-item">
+                                <span>📅</span>
+                                <span>${timing}</span>
+                            </div>
+                            <div class="schedule-meta-item">
+                                <span>🔄</span>
+                                <span>${type}</span>
+                            </div>
+                            ${this.getScheduleDays(schedule)}
+                        </div>
+                    </div>
                     
-                    <!-- Programación -->
-                    <div class="archive-item-date">${timing}</div>
-                    
-                    <!-- Estado -->
-                    <div>${status}</div>
-                    
-                    <!-- Acciones -->
-                    <div style="display: flex; gap: 4px; justify-content: center;">
-                        <button onclick="window.calendarModule.viewScheduleFromList(${schedule.id})" 
-                                title="Ver detalles" style="
-                                    width: 28px; height: 28px; 
-                                    border-radius: var(--radius-sm); 
-                                    border: 1px solid var(--border-color); 
-                                    background: var(--bg-tertiary); 
-                                    color: var(--text-secondary); 
-                                    display: flex; align-items: center; justify-content: center; 
-                                    cursor: pointer; transition: all 0.2s; font-size: 0.8rem;
-                                "
-                                onmouseover="this.style.background='var(--primary)'; this.style.color='white'"
-                                onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'">
-                            👁️
-                        </button>
-                        <button onclick="window.calendarModule.deleteScheduleFromList(${schedule.id})" 
-                                title="Eliminar" style="
-                                    width: 28px; height: 28px; 
-                                    border-radius: var(--radius-sm); 
-                                    border: 1px solid var(--border-color); 
-                                    background: var(--bg-tertiary); 
-                                    color: var(--text-secondary); 
-                                    display: flex; align-items: center; justify-content: center; 
-                                    cursor: pointer; transition: all 0.2s; font-size: 0.8rem;
-                                "
-                                onmouseover="this.style.background='#dc2626'; this.style.color='white'"
-                                onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'">
-                            🗑️
-                        </button>
+                    <div class="schedule-actions">
+                        <div class="schedule-status ${schedule.is_active ? 'active' : ''}">
+                            <span>●</span>
+                            <span>${schedule.is_active ? 'Activo' : 'Inactivo'}</span>
+                        </div>
+                        <div class="schedule-btn-group">
+                            ${schedule.is_active ? `
+                            <button class="btn-icon btn-icon--small" 
+                                    onclick="window.calendarModule.toggleScheduleStatus(${schedule.id}, false)"
+                                    title="Pausar">⏸️</button>
+                            ` : `
+                            <button class="btn-icon btn-icon--small" 
+                                    onclick="window.calendarModule.toggleScheduleStatus(${schedule.id}, true)"
+                                    title="Activar">▶️</button>
+                            `}
+                            <button class="btn-icon btn-icon--small" 
+                                    onclick="window.calendarModule.editSchedule(${schedule.id})"
+                                    title="Editar">✏️</button>
+                            <button class="btn-icon btn-icon--small btn-delete" 
+                                    onclick="window.calendarModule.deleteScheduleFromList(${schedule.id})"
+                                    title="Eliminar">🗑️</button>
+                        </div>
                     </div>
                 </div>
             `;
         });
         
-        tableHTML += `
-                </div>
-            </div>
-            <div class="archive-results-count" style="
-                padding: var(--space-md); 
-                background: var(--bg-tertiary); 
-                border-radius: var(--radius-md); 
-                margin-top: var(--space-lg); 
-                font-size: 0.875rem; 
-                color: var(--text-secondary);
-            ">
-                Total: <span style="font-weight: 600; color: var(--text-primary);">${schedules.length}</span> programación${schedules.length !== 1 ? 'es' : ''} activa${schedules.length !== 1 ? 's' : ''}
-            </div>
-        `;
-        
-        container.innerHTML = tableHTML;
+        container.innerHTML = schedulesHTML;
         
         // Hacer disponibles las funciones globalmente para onclick
         window.calendarModule = {
             viewScheduleFromList: (id) => this.viewScheduleFromList(id),
             deleteScheduleFromList: (id) => this.deleteScheduleFromList(id),
-            previewAudio: (filename, buttonElement) => this.previewAudio(filename, buttonElement)
+            previewAudio: (filename, buttonElement) => this.previewAudio(filename, buttonElement),
+            toggleScheduleStatus: (id, activate) => this.toggleScheduleStatus(id, activate),
+            editSchedule: (id) => this.editSchedule(id)
         };
+    }
+    
+    /**
+     * Obtiene el badge de categoría
+     */
+    getCategoryBadge(category) {
+        const categories = {
+            'ofertas': 'OFERTAS',
+            'eventos': 'EVENTOS', 
+            'informacion': 'INFO',
+            'emergencias': 'EMERGENCIA',
+            'servicios': 'SERVICIOS',
+            'horarios': 'HORARIOS',
+            'sin_categoria': 'GENERAL'
+        };
+        const label = categories[category] || 'GENERAL';
+        return `<span class="badge badge-${category}">${label}</span>`;
+    }
+    
+    /**
+     * Obtiene el tiempo de la programación
+     */
+    getScheduleTime(schedule) {
+        if (schedule.schedule_time) {
+            if (typeof schedule.schedule_time === 'string' && schedule.schedule_time.startsWith('[')) {
+                try {
+                    const times = JSON.parse(schedule.schedule_time);
+                    return Array.isArray(times) ? times[0] : schedule.schedule_time;
+                } catch(e) {
+                    return schedule.schedule_time;
+                }
+            }
+            return schedule.schedule_time;
+        }
+        return '00:00';
+    }
+    
+    /**
+     * Obtiene la frecuencia de la programación
+     */
+    getScheduleFrequency(schedule) {
+        if (schedule.schedule_type === 'interval') {
+            const h = parseInt(schedule.interval_hours) || 0;
+            const m = parseInt(schedule.interval_minutes) || 0;
+            if (h > 0 && m > 0) {
+                return `Cada ${h}h ${m}m`;
+            } else if (h > 0) {
+                return `Cada ${h}h`;
+            } else if (m > 0) {
+                return `Cada ${m}m`;
+            }
+        }
+        return schedule.schedule_type === 'once' ? 'Una vez' : 'Diario';
+    }
+    
+    /**
+     * Obtiene los días de la semana formateados
+     */
+    getScheduleDays(schedule) {
+        if (schedule.schedule_type !== 'specific' && schedule.schedule_type !== 'interval') {
+            return '';
+        }
+        
+        const dayMap = {
+            'monday': 'Lu', 'tuesday': 'Ma', 'wednesday': 'Mi',
+            'thursday': 'Ju', 'friday': 'Vi', 'saturday': 'Sa', 'sunday': 'Do'
+        };
+        
+        let days = [];
+        if (Array.isArray(schedule.schedule_days)) {
+            days = schedule.schedule_days;
+        } else if (schedule.schedule_days) {
+            try {
+                const parsed = JSON.parse(schedule.schedule_days);
+                if (Array.isArray(parsed)) {
+                    days = parsed;
+                }
+            } catch(e) {
+                // Ignorar error
+            }
+        }
+        
+        if (days.length === 0) return '';
+        
+        return `
+            <div class="schedule-days">
+                ${Object.keys(dayMap).map(key => `
+                    <div class="schedule-day ${days.includes(key) ? 'active' : ''}">${dayMap[key]}</div>
+                `).join('')}
+            </div>
+        `;
     }
     
     /**
@@ -770,6 +833,45 @@ export default class CalendarModule {
     /**
      * Eliminar schedule desde la lista
      */
+    /**
+     * Alterna el estado activo/inactivo de una programación
+     */
+    async toggleScheduleStatus(scheduleId, activate) {
+        try {
+            const action = activate ? 'activate' : 'deactivate';
+            const response = await fetch('/api/audio-scheduler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: action,
+                    schedule_id: scheduleId 
+                })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                this.showNotification(
+                    activate ? '✅ Programación activada' : '⏸️ Programación pausada',
+                    'success'
+                );
+                await this.loadSchedulesList();
+            } else {
+                this.showNotification('Error al cambiar estado', 'error');
+            }
+        } catch (error) {
+            console.error('[Calendar] Error toggling schedule:', error);
+            this.showNotification('Error al cambiar estado', 'error');
+        }
+    }
+    
+    /**
+     * Editar una programación
+     */
+    editSchedule(scheduleId) {
+        // Por ahora, mostrar mensaje informativo
+        this.showNotification('La edición de programaciones estará disponible próximamente', 'info');
+    }
+    
     async deleteScheduleFromList(scheduleId) {
         await this.confirmDeleteSchedule(scheduleId, () => {
             // Refrescar tanto la lista como el calendario
